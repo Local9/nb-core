@@ -1,5 +1,5 @@
 RegisterNetEvent('NB:OnPlayerSessionStart', function()
-    print(1)
+    print("PlayerSessionStart",source)
 end)
 
 CreateThread(function()
