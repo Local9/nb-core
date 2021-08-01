@@ -1,5 +1,5 @@
 fx_version 'adamant'
-resource_type 'gametype' { name = 'NBCore' }
+
 game 'gta5'
 
 files {
