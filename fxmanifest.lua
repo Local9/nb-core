@@ -5,7 +5,9 @@ game 'gta5'
 files {
 
 }
-
+shared_scripts {
+    "shared_main.lua"
+}
 client_scripts {
 '@threads/threads.lua',
 'client/*.lua'

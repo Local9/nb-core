@@ -1,7 +1,4 @@
-RegisterNetEvent('NB:OnPlayerSessionStart', function()
-    print("PlayerSessionStart",source)
+CreateThread(function()
+
 end)
 
-CreateThread(function()
-    print("[NBCore] Server Loaded")
-end)
