@@ -42,7 +42,7 @@ if IsServer() then
             RemoveEventHandler(a)
         end)
     end 
-    NB.RegisterServerCallback = RegisterServerCallback
+    NB.RegisterServerCallback = RegisterServerCallback --https://github.com/negbook/ServerCallback
 end 
 if IsClient() then 
     CreateThread(function()
@@ -78,6 +78,6 @@ if IsClient() then
         end)
         TriggerServerEvent(resname..":"..hash..":".."RequestCallback",ticketClient,...)
     end 
-    NB.TriggerServerCallback = TriggerServerCallback
+    NB.TriggerServerCallback = TriggerServerCallback --https://github.com/negbook/ServerCallback
 end 
 
