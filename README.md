@@ -1,2 +1,2 @@
 # nb-core
-test
+Learning making a framework for FiveM
