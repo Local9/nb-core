@@ -1,17 +1,21 @@
 fx_version 'adamant'
-
+resource_type 'gametype' { name = 'NBCore' }
 game 'gta5'
 
 files {
 
 }
 
-client_script 'client/*.lua'
-
+client_scripts {
+'@threads/threads.lua',
+'client/*.lua'
+}
 server_scripts{
 	'server/*.lua'
 }
 
 dependencies {
-	'ghmattimysql'
+    'spawnmanager',
+	'ghmattimysql',
+    'threads'
 }
