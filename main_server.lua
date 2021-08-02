@@ -39,6 +39,6 @@ function OnPlayerCommandText(playerid, cmdtext, args)
 	print('OnPlayerCommandText', playerid, cmdtext, json.encode(args))
 end
 
-function OnPlayerChat(playerid, text)
-	print('OnPlayerChat', playerid, text)
+function OnPlayerText(playerid, text)
+	print('OnPlayerText', playerid, text)
 end

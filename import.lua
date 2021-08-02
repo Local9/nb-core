@@ -74,8 +74,8 @@ if IsServer() then
 	end)
 	AddEventHandler('chatMessage', function(source, name, message)
 		if string.sub(message, 1, string.len("/")) ~= "/" then
-			if OnPlayerChat then
-				OnPlayerChat(source,message)
+			if OnPlayerText then
+				OnPlayerText(source,message)
 			end
 		else 
 			if OnPlayerCommandText then 
@@ -95,8 +95,8 @@ if IsClient() then
 	RegisterNetEvent('chat:addMessage', function(msg)
 		local message = msg.args[2]
 		if string.sub(message, 1, string.len("/")) ~= "/" then
-			if OnPlayerChat then
-				OnPlayerChat(message)
+			if OnPlayerText then
+				OnPlayerText(message)
 			end
 		else 
 			if OnPlayerCommandText then 
