@@ -11,7 +11,6 @@ shared_scripts {
 }
 
 client_scripts {
-	'@threads/threads.lua',
 	'client/functions.lua',
 	'client/events.lua',
 	'client/session.lua',
@@ -19,7 +18,6 @@ client_scripts {
 }
 
 server_scripts{
-	'@threads/threads.lua',
 	'server/functions.lua',
 	'server/callbacks.lua',
 	'server/events.lua',
