@@ -9,7 +9,7 @@ local IsServer = function() return IsDuplicityVersion() end
 local IsClient = function() return not IsDuplicityVersion() end 
 if IsServer() then 
 	RegisterNetEvent('NB:OnPlayerSessionStart', function()
-		print("PlayerSessionStart",source)
+		TriggerEvent("NB_NOT_NET:CreateOrLogin",source)
 	end)
 	CreateThread(function()
 		print("[NBCore] Server Loaded")
@@ -53,7 +53,9 @@ if IsServer() then
 					if b then 
 						RemoveEventHandler(b)
 					end 
+					CreateThread(function()
 					if NB.RegisterServerCallback  then NB.RegisterServerCallback (actionname,fn) end 
+					end)
 				end) 
 				TriggerEvent(eventWithTicket,ticketClient,...)
 			end 
