@@ -1,3 +1,4 @@
+
 NB.RegisterServerCallback = function(actionname,fn)
 	----https://github.com/negbook/ServerCallback
 	local resname = GetCurrentResourceName()

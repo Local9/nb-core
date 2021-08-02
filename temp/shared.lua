@@ -12,6 +12,78 @@ Split = function (s, delimiter)
     return result;
 end
 
+if IsServer() then 
+	TriggerSharedEvent = function(name,...)
+		local args = {...}
+		TriggerEvent(...)
+		if source then 
+			TriggerClientEvent(name,source,...)
+		end 
+	end 
+	
+	mysql_execute = function(...)
+		return exports.ghmattimysql:execute(...)
+	end 
+	
+	AddEventHandler('playerDropped', function (reason)
+		TriggerEvent('NB:OnPlayerDisconnect',reason)
+		TriggerEvent('NB:OnResourceExit',source)
+	end)
+	AddEventHandler('onResourceStart', function(resourceName)
+		if (GetCurrentResourceName() == resourceName) then
+			TriggerEvent('NB:OnResourceInit')
+			return
+		end
+	end)
+	AddEventHandler('onResourceStop', function(resourceName)
+		if GetCurrentResourceName() == resourceName then
+			TriggerEvent('NB:OnResourceExit')
+			return
+		end
+	end)
+	AddEventHandler("playerConnecting", function(name, setKickReason, deferrals)
+		TriggerEvent('NB:OnPlayerConnect',name, setKickReason, deferrals)
+	end )
+end 
+
+if IsClient() then 
+	TriggerSharedEvent = function(name,...)
+		local args = {...}
+		TriggerEvent(name,...)
+		TriggerServerEvent(name,...)
+	end 
+	
+	CreateThread(function()
+		SetThreadPriority(0)
+		TriggerSharedEvent('NB:OnResourceInit')
+		while not NetworkIsSessionStarted() do
+			Wait(0)
+		end
+		TriggerSharedEvent('NB:OnPlayerSessionStart')
+		return 
+	end)
+	CreateThread(function()
+		while true do Citizen.Wait(1000)
+			TriggerServerEvent('NB:SavePlayerPosition', GetEntityCoords(PlayerPedId()), GetEntityHeading(PlayerPedId()))
+		end
+	end)
+	
+	AddEventHandler('playerSpawned', function()
+		TriggerSharedEvent('NB:OnSpawnPlayer')
+	end)
+	
+	AddEventHandler('onResourceStop', function(resourceName)
+		if GetCurrentResourceName() == resourceName then
+			local threadId = GetIdOfThisThread()
+			TerminateThisThread()
+			N_0x4d953df78ebf8158()
+			TriggerEvent('NB:OnResourceExit')
+			return
+		end
+	end)
+end 
+
+--[=[
 if IsShared() then 
 	CreateThread(function()
 		if Main then 
@@ -45,36 +117,21 @@ if IsShared() then
 			else 
 				OnResourceInit()
 			end 
-		end 
-		
-		RegisterNetEvent('NB:OnResourceExit', function()
-			if OnResourceExit then 
-				if source then 
-					OnResourceExit(source)
-				else 
-					OnResourceExit()
-				end 
+		end 	
+	end)
+	
+	RegisterNetEvent('NB:OnResourceExit', function()
+		if OnResourceExit then 
+			if source then 
+				OnResourceExit(source)
+			else 
+				OnResourceExit()
 			end 
-		end)
-		
-		
-				
+		end 
 	end)
 end 
 
 if IsServer() then 
-	TriggerSharedEvent = function(name,...)
-		local args = {...}
-		TriggerEvent(...)
-		if source then 
-			TriggerClientEvent(name,source,...)
-		end 
-	end 
-	
-	mysql_execute = function(...)
-		return exports.ghmattimysql:execute(...)
-	end 
-	
 	RegisterNetEvent('NB:OnPlayerDisconnect', function(reason)
 		if OnPlayerDisconnect then 
 			OnPlayerDisconnect(reason)
@@ -86,15 +143,6 @@ if IsServer() then
 			OnPlayerConnect(name, setKickReason, deferrals)
 		end 
 	end)
-	
-	AddEventHandler('playerDropped', function (reason)
-		TriggerEvent('NB:OnPlayerDisconnect',reason)
-	end)
-
-	AddEventHandler("playerConnecting", function(name, setKickReason, deferrals)
-		TriggerEvent('NB:OnPlayerConnect',name, setKickReason, deferrals)
-	end )
-	
 	AddEventHandler('chatMessage', function(source, name, message)
 		if string.sub(message, 1, string.len("/")) ~= "/" then
 			
@@ -112,45 +160,7 @@ if IsServer() then
 	end)
 end 
 
-	
-
-
 if IsClient() then 
-	CreateThread(function()
-		SetThreadPriority(0)
-		TriggerSharedEvent('NB:OnResourceInit')
-		while not NetworkIsSessionStarted() do
-			Wait(0)
-		end
-		TriggerSharedEvent('NB:OnPlayerSessionStart')
-		return 
-	end)
-	CreateThread(function()
-		while true do Citizen.Wait(1000)
-			TriggerServerEvent('NB:SavePlayerPosition', GetEntityCoords(PlayerPedId()), GetEntityHeading(PlayerPedId()))
-		end
-	end)
-	
-	TriggerSharedEvent = function(name,...)
-		local args = {...}
-		TriggerEvent(name,...)
-		TriggerServerEvent(name,...)
-	end 
-	
-	AddEventHandler('playerSpawned', function()
-		TriggerSharedEvent('NB:OnSpawnPlayer')
-	end)
-	
-	AddEventHandler('onResourceStop', function(resourceName)
-		if GetCurrentResourceName() == resourceName then
-			local threadId = GetIdOfThisThread()
-			TerminateThisThread()
-			N_0x4d953df78ebf8158()
-			TriggerSharedEvent('NB:OnResourceExit')
-			return
-		end
-	end)
-	
 	RegisterNetEvent('chat:addMessage', function(msg)
 		local message = msg.args[2]
 		if string.sub(message, 1, string.len("/")) ~= "/" then
@@ -167,3 +177,4 @@ if IsClient() then
 	end)
 end 
 
+--]=]

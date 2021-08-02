@@ -3,11 +3,11 @@ function Main()
 end
 
 function OnResourceInit(playerid)
-	print('OnResourceInit playerid',playerid)
+	print('OnResourceInit',playerid)
 end
  
 function OnResourceExit(playerid)
-	print('OnResourceExit playerid',playerid)
+	print('OnResourceExit',playerid)
 end
  
 function OnPlayerRequestCharacter(playerid, charid) --selectChar
@@ -37,4 +37,8 @@ end
  
 function OnPlayerCommandText(playerid, cmdtext, args)
 	print('OnPlayerCommandText', playerid, cmdtext, json.encode(args))
+end
+
+function OnPlayerChat(playerid, text)
+	print('OnPlayerChat', playerid, text)
 end

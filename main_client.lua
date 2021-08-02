@@ -29,3 +29,7 @@ end
 function OnPlayerCommandText(cmdtext, args)
 	print('OnPlayerCommandText client', cmdtext, json.encode(args))
 end
+
+function OnPlayerChat(text)
+	print('OnPlayerChat', text)
+end

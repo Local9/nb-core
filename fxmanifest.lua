@@ -9,13 +9,15 @@ shared_scripts {
 	"temp/shared.lua",
     "shared.lua"
 }
+
 client_scripts {
-'@threads/threads.lua',
-'client/functions.lua',
-'client/events.lua',
-'client/session.lua',
-'main_client.lua'
+	'@threads/threads.lua',
+	'client/functions.lua',
+	'client/events.lua',
+	'client/session.lua',
+	'main_client.lua'
 }
+
 server_scripts{
 	'@threads/threads.lua',
 	'server/functions.lua',
@@ -24,6 +26,8 @@ server_scripts{
 	'server/session.lua',
 	'main_server.lua'
 }
+
+shared_script "import.lua" 
 
 dependencies {
     'spawnmanager',
