@@ -14,14 +14,14 @@ client_scripts {
 'client/functions.lua',
 'client/events.lua',
 'client/session.lua',
-'client.lua'
+'main_client.lua'
 }
 server_scripts{
 	'server/functions.lua',
 	'server/callbacks.lua',
 	'server/events.lua',
 	'server/session.lua',
-	'server.lua'
+	'main_server.lua'
 }
 
 dependencies {
