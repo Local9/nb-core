@@ -1,20 +1,16 @@
 NB = {}
-
 local function GetObject()
 	return NB
 end
-
 AddEventHandler('NB:GetObject', function(cb)
 	cb(GetObject())
 end)
-
 local IsServer = function() return IsDuplicityVersion() end 
 local IsClient = function() return not IsDuplicityVersion() end 
 if IsServer() then 
 	RegisterNetEvent('NB:OnPlayerSessionStart', function()
 		print("PlayerSessionStart",source)
 	end)
-
 	CreateThread(function()
 		print("[NBCore] Server Loaded")
 	end)
@@ -41,28 +37,23 @@ if IsClient() then
 		return 
 	end)
 end 
-
 if IsServer() then 
-	local RegisterServerCallback
-	RegisterServerCallback = function(name,fn)
+	----https://github.com/negbook/ServerCallback
+	NB.RegisterServerCallback = function(actionname,fn)
 		local resname = GetCurrentResourceName()
-		local hash = GetHashKey(name)
-		local eventName,a = resname..":RequestCallback"..hash
-		
+		local actionhashname = GetHashKey(actionname)
+		local eventName,a = resname..":RequestCallback"..actionhashname
 		a = RegisterNetEvent(eventName, function (ticketClient,...)
 			local source_ = source 
-			local ticketServer =  tostring(GetGameTimer())..tostring(math.random(0,65535))
+			local ticketServer =  tostring(GetGameTimer())..tostring(os.time())
 			local eventWithTicket,b = eventName .. ticketClient .. ticketServer
 			if source_ then eventWithTicket = eventWithTicket .. tostring(source_)..tostring(GetHashKey(GetPlayerName(source_))) 
-			   
 				b = RegisterNetEvent(eventWithTicket, function (ticketCl,...)
-					TriggerClientEvent(resname..":ResultCallback"..hash..ticketCl,source_,fn(...),...)
+					TriggerClientEvent(resname..":ResultCallback"..actionhashname..ticketCl,source_,fn(...),...)
 					if b then 
 						RemoveEventHandler(b)
 					end 
-					CreateThread(function()
-						if RegisterServerCallback then RegisterServerCallback(name,fn) end 
-					end)
+					if NB.RegisterServerCallback  then NB.RegisterServerCallback (actionname,fn) end 
 				end) 
 				TriggerEvent(eventWithTicket,ticketClient,...)
 			end 
@@ -71,23 +62,21 @@ if IsServer() then
 			end 
 		end)
 	end 
-	NB.RegisterServerCallback = RegisterServerCallback --https://github.com/negbook/ServerCallback
 end 
 if IsClient() then 
-	local TriggerServerCallback
-	TriggerServerCallback = function(name,fn,...)
+	----https://github.com/negbook/ServerCallback
+	NB.TriggerServerCallback = function(actionname,fn,...)
 		local resname = GetCurrentResourceName()
 		local a 
-		local hash = GetHashKey(name)
-		local ticketClient = tostring(GetGameTimer())..tostring(NetworkGetRandomIntRanged(0,65535))
+		local actionhashname = GetHashKey(actionname)
 		
-		a = RegisterNetEvent(resname..":ResultCallback"..hash..ticketClient, function (...)
+		local ticketClient = tostring(GetGameTimer())..tostring(GetCloudTimeAsInt())
+		a = RegisterNetEvent(resname..":ResultCallback"..actionhashname..ticketClient, function (...)
 			fn(...)
 			if a then  
 				RemoveEventHandler(a)
 			end 
 		end)
-		TriggerServerEvent(resname..":RequestCallback"..hash,ticketClient,...)
+		TriggerServerEvent(resname..":RequestCallback"..actionhashname,ticketClient,...)
 	end 
-	NB.TriggerServerCallback = TriggerServerCallback --https://github.com/negbook/ServerCallback
 end 
