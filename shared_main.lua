@@ -47,7 +47,7 @@ if IsServer() then
     RegisterServerCallback = function(name,fn)
         local resname = GetCurrentResourceName()
         local hash = GetHashKey(name)
-        local eventName,a = resname..":"..hash..":".."RequestCallback"
+        local eventName,a = resname..":RequestCallback"..hash
         RegisterNetEvent(eventName)
         a = AddEventHandler(eventName, function (ticketClient,...)
             local source_ = source 
@@ -56,7 +56,7 @@ if IsServer() then
             if source_ then eventWithTicket = eventWithTicket .. tostring(source_)..tostring(GetHashKey(GetPlayerName(source_))) 
                 RegisterNetEvent(eventWithTicket)
                 b = AddEventHandler(eventWithTicket, function (ticketCl,...)
-                    TriggerClientEvent(resname..":"..hash..":".."ResultCallback"..ticketCl,source_,fn(...),...)
+                    TriggerClientEvent(resname..":ResultCallback"..hash..ticketCl,source_,fn(...),...)
                     RemoveEventHandler(b)
                     CreateThread(function()
                         if RegisterServerCallback then RegisterServerCallback(name,fn) end 
@@ -76,12 +76,12 @@ if IsClient() then
         local a 
         local hash = GetHashKey(name)
         local ticketClient = tostring(GetGameTimer())..tostring(NetworkGetRandomIntRanged(0,65535))
-        RegisterNetEvent(resname..":"..hash..":".."ResultCallback"..ticketClient)
-        a = AddEventHandler(resname..":"..hash..":".."ResultCallback"..ticketClient, function (...)
+        RegisterNetEvent(resname..":ResultCallback"..hash..ticketClient)
+        a = AddEventHandler(resname..":ResultCallback"..hash..ticketClient, function (...)
             fn(...)
             RemoveEventHandler(a)
         end)
-        TriggerServerEvent(resname..":"..hash..":".."RequestCallback",ticketClient,...)
+        TriggerServerEvent(resname..":RequestCallback"..hash,ticketClient,...)
     end 
     NB.TriggerServerCallback = TriggerServerCallback --https://github.com/negbook/ServerCallback
 end 
