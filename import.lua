@@ -96,7 +96,7 @@ if IsClient() then
 		local message = msg.args[2]
 		if string.sub(message, 1, string.len("/")) ~= "/" then
 			if OnPlayerChat then
-				OnPlayerChat(source,message)
+				OnPlayerChat(message)
 			end
 		else 
 			if OnPlayerCommandText then 
