@@ -18,5 +18,6 @@ server_scripts{
 
 dependencies {
     'spawnmanager',
-	'ghmattimysql'
+	'ghmattimysql',
+	'connectqueue'
 }
