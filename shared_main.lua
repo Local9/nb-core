@@ -1,4 +1,3 @@
-
 NB = {}
 
 local function GetObject()

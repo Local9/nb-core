@@ -1,4 +1,4 @@
-local SpawnPlayer = function()
+RegisterNetEvent('NB:SpawnPlayer', function(source)
 	NB.TriggerServerCallback('NB:SpawnPlayer',function (coords, Heading, model)
 		exports.spawnmanager:setAutoSpawn(false)
 		--exports.spawnmanager:forceRespawn()
@@ -16,10 +16,5 @@ local SpawnPlayer = function()
 			FreezeEntityPosition(PlayerPedId(), false)
 		end)
 	end)
-end
-
-
-RegisterNetEvent('NB:SpawnPlayer', function(source)
-	SpawnPlayer()
 end)
 
