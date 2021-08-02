@@ -1,0 +1,1 @@
+NBCore = exports.nb-core:GetSharedObject()

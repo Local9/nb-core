@@ -7,7 +7,7 @@ files {
 }
 shared_scripts {
 	"temp/shared.lua",
-    "main_shared.lua"
+    "shared.lua"
 }
 client_scripts {
 '@threads/threads.lua',
@@ -17,6 +17,7 @@ client_scripts {
 'main_client.lua'
 }
 server_scripts{
+	'@threads/threads.lua',
 	'server/functions.lua',
 	'server/callbacks.lua',
 	'server/events.lua',
