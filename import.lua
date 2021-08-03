@@ -6,20 +6,15 @@ local case = {} --cfx-switchcase by negbook https://github.com/negbook/cfx-switc
 local default = {} --default must put after cases when use
 local switch = setmetatable({},{__call=function(a,b)case=setmetatable({},{__call=function(a,...)return a[{...}]end,__index=function(a,c)local d=false;if c and type(c)=="table"then for e=1,#c do local f=c[e]if f and b and f==b then d=true;break end end end;if d then return setmetatable({},{__call=function(a,g)default=setmetatable({},{__call=function(a,h)end})g()end})else return function()end end end})default=setmetatable({},{__call=function(a,b)if b and type(b)=="function"then b()end end})return a[b]end,__index=function(a,f)return setmetatable({},{__call=function(a,...)end})end})
 local Split = function (s, delimiter) result = {};for match in (s..delimiter):gmatch("(.-)"..delimiter) do table.insert(result, match);end;return result;end
-
 if not IsNBScript then 
 	NB = (function()return exports['nb-core']:GetSharedObject()end)()
 end 
-
 if IsShared() then 
 	CreateThread(function()
 		if Main then 
 			Main()
 		end 
-		
 	end)
-	
-	
 	if OnPlayerRequestSpawn or IsNBScript() then 
 		RegisterNetEvent('NB_UNSHARED:OnPlayerSessionStart', function()
 			if source then 
@@ -29,7 +24,6 @@ if IsShared() then
 			end 
 		end)
 	end
-	
 	if OnPlayerSpawn or IsNBScript() then 
 		RegisterNetEvent('NB:OnSpawnPlayer', function()
 			if source then 
@@ -48,7 +42,6 @@ if IsShared() then
 			end 	
 		end)
 	end
-	
 	if OnResourceExit or IsNBScript() then 
 		RegisterNetEvent('NB:OnResourceExit', function()
 			if source then 
@@ -58,7 +51,6 @@ if IsShared() then
 			end 
 		end)
 	end
-	
 	if OnPlayerText or IsNBScript() then
 		RegisterNetEvent('NB:OnPlayerText', function(message)
 			if source then 
@@ -68,7 +60,6 @@ if IsShared() then
 			end 
 		end)
 	end
-	
 	if OnPlayerCommandText or IsNBScript() then
 		RegisterNetEvent('NB:OnPlayerCommandText', function(cmd,args)
 			if source then 
@@ -79,7 +70,6 @@ if IsShared() then
 		end)
 	end
 end 
-
 if IsServer() then 
 	if OnPlayerDisconnect or IsNBScript() then 
 		RegisterNetEvent('NB:OnPlayerDisconnect', function(reason)
@@ -92,12 +82,10 @@ if IsServer() then
 		end)
 	end
 end 
-
 if IsShared() then 
 	AddEventHandler('onResourceStop', function(resourceName)
 		if GetCurrentResourceName() ~= resourceName then
 			return 
-			
 		end
 	end)
 	AddEventHandler('onResourceStart', function(resourceName)
@@ -105,5 +93,4 @@ if IsShared() then
 			return 
 		end
 	end)
-	
 end 

@@ -11,7 +11,6 @@ function OnResourceExit(playerid)
 end
  
 function OnPlayerRequestCharacter(playerid, charid) --selectChar
-	
 end
  
 function OnPlayerRequestSpawn(playerid)
@@ -32,7 +31,6 @@ function OnPlayerSpawn(playerid)
 end
  
 function OnPlayerDeath(playerid, killerid, reason)
-	
 end
  
 function OnPlayerCommandText(playerid, cmdtext, args)

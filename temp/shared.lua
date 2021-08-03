@@ -11,7 +11,6 @@ Split = function (s, delimiter)
     end
     return result;
 end
-
 if IsServer() then 
 	TriggerSharedEvent = function(name,...)
 		local args = {...}
@@ -20,11 +19,9 @@ if IsServer() then
 			TriggerClientEvent(name,source,...)
 		end 
 	end 
-	
 	mysql_execute = function(...)
 		return exports.ghmattimysql:execute(...)
 	end 
-	
 	AddEventHandler('playerDropped', function (reason)
 		TriggerEvent('NB:OnPlayerDisconnect',reason)
 		TriggerEvent('NB:OnResourceExit',source)
@@ -35,19 +32,16 @@ if IsServer() then
 			return
 		end
 	end)
-	
 	AddEventHandler("playerConnecting", function(name, setKickReason, deferrals)
 		TriggerEvent('NB:OnPlayerConnect',name, setKickReason, deferrals)
 	end )
 end 
-
 if IsClient() then 
 	TriggerSharedEvent = function(name,...)
 		local args = {...}
 		TriggerEvent(name,...)
 		TriggerServerEvent(name,...)
 	end 
-	
 	CreateThread(function()
 		SetThreadPriority(0)
 		while not NetworkIsSessionStarted() do
@@ -61,13 +55,9 @@ if IsClient() then
 			NB.TriggerServerCallback('NB_UNSHARED:SavePlayerPosition',function(result) print(result) end,GetEntityCoords(PlayerPedId()), GetEntityHeading(PlayerPedId()))
 		end
 	end)
-	
 	AddEventHandler('playerSpawned', function()
 		TriggerSharedEvent('NB:OnSpawnPlayer')
 	end)
-	
-	
-	
 	RegisterNetEvent('chat:addMessage', function(msg)
 		local message = msg.args[2]
 		if string.sub(message, 1, string.len("/")) ~= "/" then
