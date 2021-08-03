@@ -8,11 +8,9 @@ local switch = setmetatable({},{__call=function(a,b)case=setmetatable({},{__call
 local Split = function (s, delimiter) result = {};for match in (s..delimiter):gmatch("(.-)"..delimiter) do table.insert(result, match);end;return result;end
 NB = (function()return exports['nb-core']:GetSharedObject()end)()
 if IsShared() then 
-	CreateThread(function()
-		if Main then 
-			Main()
-		end 
-	end)
+	if Main then 
+		Main()
+	end 
 	if OnPlayerRequestSpawn or IsNBScript then 
 		RegisterNetEvent('NB:OnPlayerRequestSpawn', function()
 			if source then 
