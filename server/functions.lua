@@ -34,7 +34,12 @@ NB.GetExpensivePlayerData = function(source,tablename,dataname,resultcb)
     end)
 end 
 
-NB.SetExpensivePlayerData = function(source,tablename,dataname,datas)
+NB.SetExpensivePlayerData = function(source,tablename,dataname,datas,...)
+	local otherargs = {...}
+	local datas = datas 
+	if #otherargs > 0 then 
+		datas = {datas[1],...}
+	end 
 	local covertDatas = function(datas)
 		if datas then 
 			local test_ = {}

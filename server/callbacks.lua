@@ -8,6 +8,7 @@ NB.RegisterServerCallback("NB:SpawnPlayer",function(source,cb)
 		if result then 
 			local pos = json.decode(result[1].position)
 			cb(vector3(pos.x, pos.y, pos.z), pos.heading)
+			--cb(vector3(pos[1], pos[2], pos[3]), pos[4])
 		end 
 	end)
 end )
