@@ -12,7 +12,7 @@ NB.RegisterServerCallback = function(actionname,fn)
 				local c = function(...)
 					TriggerClientEvent(resname..":ResultCallback"..actionhashname..ticketCl,source_,...)
 				end 
-				fn(source_,c,...)
+				if fn then fn(source_,c,...) end 
 				if b then 
 					RemoveEventHandler(b)
 				end 

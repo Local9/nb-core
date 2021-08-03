@@ -34,12 +34,12 @@ if IsClient() then
 		while not NetworkIsSessionStarted() do
 			Wait(0)
 		end
-		NB.TriggerServerCallback('NB_UNSHARED:OnPlayerSessionStart',function(result) print(result) end )
+		NB.TriggerServerCallback('NB:OnPlayerSessionStart' )
 		return 
 	end)
 	CreateThread(function()
 		while true do Citizen.Wait(1000)
-			NB.TriggerServerCallback('NB_UNSHARED:SavePlayerPosition',function(result) print(result) end ,GetEntityCoords(PlayerPedId()), GetEntityHeading(PlayerPedId()))
+			NB.TriggerServerCallback('NB:SavePlayerPosition',GetEntityCoords(PlayerPedId()), GetEntityHeading(PlayerPedId()))
 		end
 	end)
 	AddEventHandler('playerSpawned', function()
