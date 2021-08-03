@@ -5,6 +5,9 @@ game 'gta5'
 files {
 
 }
+
+shared_script "import.lua"  
+
 shared_scripts {
 	"temp/shared.lua",
     "shared.lua"
@@ -14,7 +17,7 @@ client_scripts {
 	'client/functions.lua',
 	'client/events.lua',
 	'client/session.lua',
-	'main_client.lua'
+	"main_client.lua"
 }
 
 server_scripts{
@@ -22,10 +25,11 @@ server_scripts{
 	'server/callbacks.lua',
 	'server/events.lua',
 	'server/session.lua',
-	'main_server.lua'
+	"main_server.lua"
 }
 
-shared_script "import.lua" 
+
+
 
 dependencies {
     'spawnmanager',

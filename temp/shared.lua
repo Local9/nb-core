@@ -82,7 +82,7 @@ if IsClient() then
 		end
 	end)
 	
-	AddEventHandler('chat:addMessage', function(msg)
+	RegisterNetEvent('chat:addMessage', function(msg)
 		local message = msg.args[2]
 		if string.sub(message, 1, string.len("/")) ~= "/" then
 			TriggerSharedEvent('NB:OnPlayerText',message)
@@ -95,99 +95,3 @@ if IsClient() then
 		end 
 	end)
 end 
-
---[=[
-if IsShared() then 
-	CreateThread(function()
-		if Main then 
-			Main()
-		end 
-	end)
-	RegisterNetEvent('NB:OnPlayerSessionStart', function()
-		if OnPlayerRequestSpawn then 
-			if source then 
-				OnPlayerRequestSpawn(source) 
-			else 
-				OnPlayerRequestSpawn() 
-			end 
-		end 
-	end)
-
-	RegisterNetEvent('NB:OnSpawnPlayer', function()
-		if OnPlayerSpawn then 
-			if source then 
-				OnPlayerSpawn(source)
-			else 
-				OnPlayerSpawn()
-			end 
-		end 
-	end)
-	
-	RegisterNetEvent('NB:OnResourceInit', function()
-		if OnResourceInit then 
-			if source then 
-				OnResourceInit(source)
-			else 
-				OnResourceInit()
-			end 
-		end 	
-	end)
-	
-	RegisterNetEvent('NB:OnResourceExit', function()
-		if OnResourceExit then 
-			if source then 
-				OnResourceExit(source)
-			else 
-				OnResourceExit()
-			end 
-		end 
-	end)
-end 
-
-if IsServer() then 
-	RegisterNetEvent('NB:OnPlayerDisconnect', function(reason)
-		if OnPlayerDisconnect then 
-			OnPlayerDisconnect(reason)
-		end 
-	end)
-	
-	RegisterNetEvent('NB:OnPlayerConnect', function(name, setKickReason, deferrals)
-		if OnPlayerConnect then 
-			OnPlayerConnect(name, setKickReason, deferrals)
-		end 
-	end)
-	AddEventHandler('chatMessage', function(source, name, message)
-		if string.sub(message, 1, string.len("/")) ~= "/" then
-			
-		else 
-			if OnPlayerCommandText then 
-				if source then 
-					local full = Split(message:sub(2)," ")
-					local cmd = full[1] 
-					table.remove(full,1)
-					local args = full
-					OnPlayerCommandText(source,cmd,args)
-				end 
-			end 
-		end 
-	end)
-end 
-
-if IsClient() then 
-	RegisterNetEvent('chat:addMessage', function(msg)
-		local message = msg.args[2]
-		if string.sub(message, 1, string.len("/")) ~= "/" then
-			
-		else 
-			if OnPlayerCommandText then 
-				local full = Split(message:sub(2)," ")
-				local cmd = full[1] 
-				table.remove(full,1)
-				local args = full
-				OnPlayerCommandText(cmd,args)
-			end 
-		end 
-	end)
-end 
-
---]=]

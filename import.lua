@@ -1,5 +1,4 @@
-NB =  (function()return exports['nb-core']:GetSharedObject()end)()
-local IsNBScript = GetCurrentResourceName() == "nb-core"
+local IsNBScript = function() return GetCurrentResourceName() == "nb-core" end 
 local IsServer = function() return IsDuplicityVersion() end 
 local IsClient = function() return not IsDuplicityVersion() end 
 local IsShared = function() return true end 
@@ -8,13 +7,17 @@ local default = {} --default must put after cases when use
 local switch = setmetatable({},{__call=function(a,b)case=setmetatable({},{__call=function(a,...)return a[{...}]end,__index=function(a,c)local d=false;if c and type(c)=="table"then for e=1,#c do local f=c[e]if f and b and f==b then d=true;break end end end;if d then return setmetatable({},{__call=function(a,g)default=setmetatable({},{__call=function(a,h)end})g()end})else return function()end end end})default=setmetatable({},{__call=function(a,b)if b and type(b)=="function"then b()end end})return a[b]end,__index=function(a,f)return setmetatable({},{__call=function(a,...)end})end})
 local Split = function (s, delimiter) result = {};for match in (s..delimiter):gmatch("(.-)"..delimiter) do table.insert(result, match);end;return result;end
 
+if not IsNBScript then 
+	NB = (function()return exports['nb-core']:GetSharedObject()end)()
+end 
+
 if IsShared() then 
 	CreateThread(function()
 		if Main then 
 			Main()
 		end 
 	end)
-	if OnPlayerRequestSpawn or IsNBScript then 
+	if OnPlayerRequestSpawn or IsNBScript() then 
 		RegisterNetEvent('NB:OnPlayerSessionStart', function()
 			if source then 
 				OnPlayerRequestSpawn(source) 
@@ -23,7 +26,7 @@ if IsShared() then
 			end 
 		end)
 	end
-	if OnPlayerSpawn or IsNBScript then 
+	if OnPlayerSpawn or IsNBScript() then 
 		RegisterNetEvent('NB:OnSpawnPlayer', function()
 			if source then 
 				OnPlayerSpawn(source)
@@ -32,7 +35,7 @@ if IsShared() then
 			end 
 		end)
 	end
-	if OnResourceInit or IsNBScript then 
+	if OnResourceInit or IsNBScript() then 
 		RegisterNetEvent('NB:OnResourceInit', function()
 			if source then 
 				OnResourceInit(source)
@@ -42,7 +45,7 @@ if IsShared() then
 		end)
 	end
 	
-	if OnResourceExit or IsNBScript then 
+	if OnResourceExit or IsNBScript() then 
 		RegisterNetEvent('NB:OnResourceExit', function()
 			if source then 
 				OnResourceExit(source)
@@ -52,7 +55,7 @@ if IsShared() then
 		end)
 	end
 	
-	if OnPlayerText or IsNBScript then
+	if OnPlayerText or IsNBScript() then
 		RegisterNetEvent('NB:OnPlayerText', function(message)
 			if source then 
 				OnPlayerText(source,message)
@@ -62,7 +65,7 @@ if IsShared() then
 		end)
 	end
 	
-	if OnPlayerCommandText or IsNBScript then
+	if OnPlayerCommandText or IsNBScript() then
 		RegisterNetEvent('NB:OnPlayerCommandText', function(cmd,args)
 			if source then 
 				OnPlayerCommandText(source,cmd,args)
@@ -74,12 +77,12 @@ if IsShared() then
 end 
 
 if IsServer() then 
-	if OnPlayerDisconnect or IsNBScript then 
+	if OnPlayerDisconnect or IsNBScript() then 
 		RegisterNetEvent('NB:OnPlayerDisconnect', function(reason)
 			OnPlayerDisconnect(reason)
 		end)
 	end
-	if OnPlayerConnect or IsNBScript then 
+	if OnPlayerConnect or IsNBScript() then 
 		RegisterNetEvent('NB:OnPlayerConnect', function(name, setKickReason, deferrals)
 			OnPlayerConnect(name, setKickReason, deferrals)
 		end)
