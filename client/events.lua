@@ -1,4 +1,4 @@
-RegisterNetEvent('NB:SpawnPlayer', function(source)
+RegisterNetEvent('NB:SpawnPlayer', function()
 	NB.TriggerServerCallback('NB:SpawnPlayer',function (coords, Heading, model)
 		exports.spawnmanager:setAutoSpawn(false)
 		--exports.spawnmanager:forceRespawn()

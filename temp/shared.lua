@@ -35,12 +35,7 @@ if IsServer() then
 			return
 		end
 	end)
-	AddEventHandler('onResourceStop', function(resourceName)
-		if GetCurrentResourceName() == resourceName then
-			TriggerEvent('NB:OnResourceExit')
-			return
-		end
-	end)
+	
 	AddEventHandler("playerConnecting", function(name, setKickReason, deferrals)
 		TriggerEvent('NB:OnPlayerConnect',name, setKickReason, deferrals)
 	end )
@@ -55,16 +50,15 @@ if IsClient() then
 	
 	CreateThread(function()
 		SetThreadPriority(0)
-		TriggerSharedEvent('NB:OnResourceInit')
 		while not NetworkIsSessionStarted() do
 			Wait(0)
 		end
-		TriggerSharedEvent('NB:OnPlayerSessionStart')
+		TriggerSharedEvent('NB_UNSHARED:OnPlayerSessionStart')
 		return 
 	end)
 	CreateThread(function()
 		while true do Citizen.Wait(1000)
-			TriggerServerEvent('NB:SavePlayerPosition', GetEntityCoords(PlayerPedId()), GetEntityHeading(PlayerPedId()))
+			NB.TriggerServerCallback('NB_UNSHARED:SavePlayerPosition',function(result) print(result) end,GetEntityCoords(PlayerPedId()), GetEntityHeading(PlayerPedId()))
 		end
 	end)
 	
@@ -72,15 +66,7 @@ if IsClient() then
 		TriggerSharedEvent('NB:OnSpawnPlayer')
 	end)
 	
-	AddEventHandler('onResourceStop', function(resourceName)
-		if GetCurrentResourceName() == resourceName then
-			local threadId = GetIdOfThisThread()
-			TerminateThisThread()
-			N_0x4d953df78ebf8158()
-			TriggerEvent('NB:OnResourceExit')
-			return
-		end
-	end)
+	
 	
 	RegisterNetEvent('chat:addMessage', function(msg)
 		local message = msg.args[2]

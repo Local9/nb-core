@@ -1,5 +1,6 @@
 
 NB.TriggerServerCallback = function(actionname,fn,...)
+	
 	----https://github.com/negbook/ServerCallback
 	local resname = GetCurrentResourceName()
 	local a 

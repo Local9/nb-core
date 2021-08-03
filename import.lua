@@ -16,16 +16,20 @@ if IsShared() then
 		if Main then 
 			Main()
 		end 
+		
 	end)
+	
+	
 	if OnPlayerRequestSpawn or IsNBScript() then 
-		RegisterNetEvent('NB:OnPlayerSessionStart', function()
+		RegisterNetEvent('NB_UNSHARED:OnPlayerSessionStart', function()
 			if source then 
-				OnPlayerRequestSpawn(source) 
+				OnPlayerRequestSpawn(source)
 			else 
-				OnPlayerRequestSpawn() 
+				OnPlayerRequestSpawn()
 			end 
 		end)
 	end
+	
 	if OnPlayerSpawn or IsNBScript() then 
 		RegisterNetEvent('NB:OnSpawnPlayer', function()
 			if source then 
@@ -89,3 +93,17 @@ if IsServer() then
 	end
 end 
 
+if IsShared() then 
+	AddEventHandler('onResourceStop', function(resourceName)
+		if GetCurrentResourceName() ~= resourceName then
+			return 
+			
+		end
+	end)
+	AddEventHandler('onResourceStart', function(resourceName)
+		if GetCurrentResourceName() ~= resourceName then
+			return 
+		end
+	end)
+	
+end 

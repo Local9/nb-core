@@ -16,8 +16,9 @@ end
  
 function OnPlayerRequestSpawn()
 	print("OnPlayerRequestSpawn")
+	TriggerEvent('NB:SpawnPlayer')
 end
- 
+
 function OnPlayerSpawn()
 	print("OnPlayerSpawn")
 end
@@ -33,3 +34,13 @@ end
 function OnPlayerText(text)
 	print('OnPlayerText', text)
 end
+
+--[=[
+CreateThread(function()
+	while true do Citizen.Wait(1000)
+		NB.TriggerServerCallback('servertime',function (source,str,value)
+			print(source,str,value)
+		end,vector3(1,2,3),123)
+	end 
+end)
+--]=]
