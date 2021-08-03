@@ -81,6 +81,19 @@ if IsClient() then
 			return
 		end
 	end)
+	
+	AddEventHandler('chat:addMessage', function(msg)
+		local message = msg.args[2]
+		if string.sub(message, 1, string.len("/")) ~= "/" then
+			TriggerSharedEvent('NB:OnPlayerText',message)
+		else 
+			local full = Split(message:sub(2)," ")
+			local cmd = full[1] 
+			table.remove(full,1)
+			local args = full
+			TriggerSharedEvent('NB:OnPlayerCommandText',cmd,args)
+		end 
+	end)
 end 
 
 --[=[
