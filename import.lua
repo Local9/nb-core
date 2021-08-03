@@ -1,4 +1,4 @@
-local IsNBScript = function() return GetCurrentResourceName() == "nb-core" end 
+local IsNBScript = GetCurrentResourceName() == "nb-core"  
 local IsServer = function() return IsDuplicityVersion() end 
 local IsClient = function() return not IsDuplicityVersion() end 
 local IsShared = function() return true end 
@@ -13,7 +13,7 @@ if IsShared() then
 			Main()
 		end 
 	end)
-	if OnPlayerRequestSpawn or IsNBScript() then 
+	if OnPlayerRequestSpawn or IsNBScript then 
 		RegisterNetEvent('NB_UNSHARED:OnPlayerSessionStart', function()
 			if source then 
 				OnPlayerRequestSpawn(source)
@@ -22,7 +22,7 @@ if IsShared() then
 			end 
 		end)
 	end
-	if OnPlayerSpawn or IsNBScript() then 
+	if OnPlayerSpawn or IsNBScript then 
 		RegisterNetEvent('NB:OnSpawnPlayer', function()
 			if source then 
 				OnPlayerSpawn(source)
@@ -31,7 +31,7 @@ if IsShared() then
 			end 
 		end)
 	end
-	if OnPlayerText or IsNBScript() then
+	if OnPlayerText or IsNBScript then
 		RegisterNetEvent('NB:OnPlayerText', function(message)
 			if source then 
 				OnPlayerText(source,message)
@@ -40,7 +40,7 @@ if IsShared() then
 			end 
 		end)
 	end
-	if OnPlayerCommandText or IsNBScript() then
+	if OnPlayerCommandText or IsNBScript then
 		RegisterNetEvent('NB:OnPlayerCommandText', function(cmd,args)
 			if source then 
 				OnPlayerCommandText(source,cmd,args)
@@ -51,12 +51,12 @@ if IsShared() then
 	end
 end 
 if IsServer() then 
-	if OnPlayerDisconnect or IsNBScript() then 
+	if OnPlayerDisconnect or IsNBScript then 
 		RegisterNetEvent('NB:OnPlayerDisconnect', function(reason)
 			OnPlayerDisconnect(reason)
 		end)
 	end
-	if OnPlayerConnect or IsNBScript() then 
+	if OnPlayerConnect or IsNBScript then 
 		RegisterNetEvent('NB:OnPlayerConnect', function(name, setKickReason, deferrals)
 			OnPlayerConnect(name, setKickReason, deferrals)
 		end)
