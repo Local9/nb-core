@@ -1,41 +1,41 @@
 function Main()
-	print("My script loaded!")
+
 end
 
 function OnResourceInit()
-	print('OnResourceInit')
+
 end
  
 function OnResourceExit()
-	print('OnResourceExit')
+
 end
  
 function OnPlayerRequestCharacter(playerid, charid) --selectChar
 end
  
 function OnPlayerRequestSpawn(playerid)
-	print("OnPlayerRequestSpawn",playerid)
+
 end
  
 function OnPlayerConnect(playerid)
-	print("OnPlayerConnect",playerid)
+
 end
  
 function OnPlayerDisconnect(playerid, reason)
-	print("OnPlayerDisconnect",playerid,reason or "no reason")
+
 end
  
 function OnPlayerSpawn(playerid)
-	print("OnPlayerSpawn",playerid)
+
 end
  
 function OnPlayerDeath(playerid, killerid, reason)
 end
  
 function OnPlayerCommandText(playerid, cmdtext, args)
-	print('OnPlayerCommandText', playerid, cmdtext, json.encode(args))
+
 end
 
 function OnPlayerText(playerid, text)
-	print('OnPlayerText', playerid, text)
+
 end
