@@ -4,15 +4,15 @@ NB.RegisterServerCallback('NB:OnPlayerSessionStart', function(source,cb)
 end)
 
 NB.RegisterServerCallback("NB:SpawnPlayer",function(source,cb)
-	NB.GetExpensivePlayerDataLongText(source,'users','position',function(result)
+	NB.GetExpensivePlayerData(source,'users','position',function(result)
 		if result then 
 			local pos = json.decode(result[1].position)
-			cb(vector3(pos[1], pos[2], pos[3]), pos[4])
+			cb(vector3(pos.x, pos.y, pos.z), pos.heading)
 		end 
 	end)
 end )
 
 NB.RegisterServerCallback('NB:SavePlayerPosition', function(source,cb,coords,heading)
 	local x, y, z = table.unpack(coords)
-	NB.SetExpensivePlayerDataLongText(source,'users','position',x,y,z,heading)
+	NB.SetExpensivePlayerData(source,'users','position',{x=x,y=y,z=z,heading=heading})
 end)
