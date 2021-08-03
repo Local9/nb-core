@@ -15,8 +15,3 @@ NB.RegisterServerCallback('NB_UNSHARED:SavePlayerPosition', function(source,cb,c
         ['@position'] = '{ ' .. x  .. ', ' .. y .. ', ' .. z .. ', ' .. heading .. '}'
     })
 end)
---[=[
-NB.RegisterServerCallback("servertime",function(source,cb,value,heading)
-    cb(os.date("%Y %m %d %H %M %S"),value,heading)
-end )
---]=]

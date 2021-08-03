@@ -5,11 +5,12 @@ files {
 
 }
 
-shared_script "import.lua"  
+
 
 shared_scripts {
 	"temp/shared.lua",
-    "shared.lua"
+    "shared.lua",
+	"import.lua"
 }
 
 client_scripts {

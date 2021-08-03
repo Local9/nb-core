@@ -2,12 +2,12 @@ function Main()
 	print("My script loaded!")
 end
 
-function OnResourceInit(playerid)
-	print('OnResourceInit',playerid)
+function OnResourceInit()
+	print('OnResourceInit')
 end
  
-function OnResourceExit(playerid)
-	print('OnResourceExit',playerid)
+function OnResourceExit()
+	print('OnResourceExit')
 end
  
 function OnPlayerRequestCharacter(playerid, charid) --selectChar

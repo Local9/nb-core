@@ -24,13 +24,6 @@ if IsServer() then
 	end 
 	AddEventHandler('playerDropped', function (reason)
 		TriggerEvent('NB:OnPlayerDisconnect',reason)
-		TriggerEvent('NB:OnResourceExit',source)
-	end)
-	AddEventHandler('onResourceStart', function(resourceName)
-		if (GetCurrentResourceName() == resourceName) then
-			TriggerEvent('NB:OnResourceInit')
-			return
-		end
 	end)
 	AddEventHandler("playerConnecting", function(name, setKickReason, deferrals)
 		TriggerEvent('NB:OnPlayerConnect',name, setKickReason, deferrals)
