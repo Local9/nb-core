@@ -19,8 +19,8 @@ if IsServer() then
 end 
 
 if IsClient() then 
+	SetThreadPriority(0)
 	CreateThread(function()
-		SetThreadPriority(0)
 		while not NetworkIsSessionStarted() do
 			Wait(0)
 		end
