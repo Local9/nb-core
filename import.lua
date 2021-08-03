@@ -102,12 +102,12 @@ end
 if IsServer() then 
 	NB.RegisterServerCallback = function(actionname,fn)
 		----https://github.com/negbook/ServerCallback
-		local resname = function() return GetCurrentResourceName() end 
+		local resname = GetCurrentResourceName()
 		local actionhashname = GetHashKey(actionname)
-		local eventName,a = resname()..":RequestCallback"..actionhashname
+		local eventName,a = resname..":RequestCallback"..actionhashname
 		a = RegisterNetEvent(eventName, function (ticketClient,...) --client send datas into ...
 			local source_ = source 
-			local ticketServer =  math.abs(GetGameTimer() - GetHashKey(tostring(os.time()))) 
+			local ticketServer =  math.abs(GetGameTimer()*GetHashKey(tostring(os.time()))) 
 			local eventWithTicket,b = math.abs(GetHashKey(eventName)*ticketClient/(ticketServer+1))
 			local sender = function(...) 
 				TriggerEvent(eventWithTicket,ticketClient,...) 
@@ -116,7 +116,7 @@ if IsServer() then
 				
 				b = RegisterNetEvent(eventWithTicket, function (ticketCl,...)
 					local c = function(...)
-						TriggerClientEvent(resname()..":ResultCallback"..tostring(math.abs(actionhashname/ticketCl+1)),source_,...)
+						TriggerClientEvent(resname..":ResultCallback"..tostring(math.abs(actionhashname/ticketCl+1)),source_,...)
 					end 
 					if fn then fn(source_,c,...) end 
 					if b then 

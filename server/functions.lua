@@ -1,5 +1,3 @@
-
-
 NB.GetExpensivePlayerData = function(source,tablename,dataname,resultcb)
 	mysql_execute('SELECT '..dataname..' FROM '..tablename..' WHERE identifier = @identifier', {
         ['@identifier'] = GetPlayerIdentifier(source)
