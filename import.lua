@@ -13,8 +13,10 @@ if IsShared() then
 			Main()
 		end 
 	end)
+	
 	if OnPlayerRequestSpawn or IsNBScript then 
-		RegisterNetEvent('NB_UNSHARED:OnPlayerSessionStart', function()
+		RegisterNetEvent('NB:OnPlayerRequestSpawn', function()
+			print('NB:OnPlayerRequestSpawn')
 			if source then 
 				OnPlayerRequestSpawn(source)
 			else 

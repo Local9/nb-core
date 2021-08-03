@@ -12,13 +12,6 @@ Split = function (s, delimiter)
     return result;
 end
 if IsServer() then 
-	TriggerSharedEvent = function(name,...)
-		local args = {...}
-		TriggerEvent(...)
-		if source then 
-			TriggerClientEvent(name,source,...)
-		end 
-	end 
 	mysql_execute = function(...)
 		return exports.ghmattimysql:execute(...)
 	end 
@@ -35,17 +28,18 @@ if IsClient() then
 		TriggerEvent(name,...)
 		TriggerServerEvent(name,...)
 	end 
+	
 	CreateThread(function()
 		SetThreadPriority(0)
 		while not NetworkIsSessionStarted() do
 			Wait(0)
 		end
-		TriggerSharedEvent('NB_UNSHARED:OnPlayerSessionStart')
+		NB.TriggerServerCallback('NB_UNSHARED:OnPlayerSessionStart',function(result) print(result) end )
 		return 
 	end)
 	CreateThread(function()
 		while true do Citizen.Wait(1000)
-			NB.TriggerServerCallback('NB_UNSHARED:SavePlayerPosition',function(result) print(result) end,GetEntityCoords(PlayerPedId()), GetEntityHeading(PlayerPedId()))
+			NB.TriggerServerCallback('NB_UNSHARED:SavePlayerPosition',function(result) print(result) end ,GetEntityCoords(PlayerPedId()), GetEntityHeading(PlayerPedId()))
 		end
 	end)
 	AddEventHandler('playerSpawned', function()

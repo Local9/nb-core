@@ -15,7 +15,6 @@ end
  
 function OnPlayerRequestSpawn(playerid)
 	print("OnPlayerRequestSpawn",playerid)
-	TriggerClientEvent('NB:SpawnPlayer',playerid)
 end
  
 function OnPlayerConnect(playerid)
