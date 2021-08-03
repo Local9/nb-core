@@ -11,6 +11,20 @@ Split = function (s, delimiter)
     end
     return result;
 end
+HexToRGB = function (hex)
+    local r = hex >> 16
+    local offset = hex - (r << 16)
+    local g = offset >> 8
+    local b = offset - (g << 8)
+    return {r=r,g=g,b=b};
+end 
+HexToRGB2 = function (hex)
+    local r = hex >> 16
+    local offset = hex - (r << 16)
+    local g = offset >> 8
+    local b = offset - (g << 8)
+    return {r,g,b};
+end 
 
 if IsServer() then 
 	mysql_execute = function(...)
@@ -48,15 +62,17 @@ if IsClient() then
 		TriggerSharedEvent('NB:OnSpawnPlayer')
 	end)
 	RegisterNetEvent('chat:addMessage', function(msg)
-		local message = msg.args[2]
-		if string.sub(message, 1, string.len("/")) ~= "/" then
-			TriggerSharedEvent('NB:OnPlayerText',message)
-		else 
-			local full = Split(message:sub(2)," ")
-			local cmd = full[1] 
-			table.remove(full,1)
-			local args = full
-			TriggerSharedEvent('NB:OnPlayerCommandText',cmd,args)
+		if msg.args[2] then 
+			local message = msg.args[2]
+			if string.sub(message, 1, string.len("/")) ~= "/" then
+				TriggerSharedEvent('NB:OnPlayerText',message)
+			else 
+				local full = Split(message:sub(2)," ")
+				local cmd = full[1] 
+				table.remove(full,1)
+				local args = full
+				TriggerSharedEvent('NB:OnPlayerCommandText',cmd,args)
+			end 
 		end 
 	end)
 end 

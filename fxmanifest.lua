@@ -32,6 +32,7 @@ server_scripts{
 
 
 dependencies {
+	'chat',
     'spawnmanager',
 	'ghmattimysql',
 	'connectqueue'
