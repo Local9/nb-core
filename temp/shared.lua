@@ -11,24 +11,14 @@ Split = function (s, delimiter)
     end
     return result;
 end
+
 if IsServer() then 
 	mysql_execute = function(...)
 		return exports.ghmattimysql:execute(...)
 	end 
-	AddEventHandler('playerDropped', function (reason)
-		TriggerEvent('NB:OnPlayerDisconnect',reason)
-	end)
-	AddEventHandler("playerConnecting", function(name, setKickReason, deferrals)
-		TriggerEvent('NB:OnPlayerConnect',name, setKickReason, deferrals)
-	end )
 end 
+
 if IsClient() then 
-	TriggerSharedEvent = function(name,...)
-		local args = {...}
-		TriggerEvent(name,...)
-		TriggerServerEvent(name,...)
-	end 
-	
 	CreateThread(function()
 		SetThreadPriority(0)
 		while not NetworkIsSessionStarted() do
@@ -42,6 +32,23 @@ if IsClient() then
 			NB.TriggerServerCallback('NB:SavePlayerPosition',GetEntityCoords(PlayerPedId()), GetEntityHeading(PlayerPedId()))
 		end
 	end)
+end 
+
+if IsServer() then 
+	AddEventHandler('playerDropped', function (reason)
+		TriggerEvent('NB:OnPlayerDisconnect',reason)
+	end)
+	AddEventHandler("playerConnecting", function(name, setKickReason, deferrals)
+		TriggerEvent('NB:OnPlayerConnect',name, setKickReason, deferrals)
+	end )
+end 
+
+if IsClient() then 
+	local TriggerSharedEvent = function(name,...)
+		local args = {...}
+		TriggerEvent(name,...)
+		TriggerServerEvent(name,...)
+	end 
 	AddEventHandler('playerSpawned', function()
 		TriggerSharedEvent('NB:OnSpawnPlayer')
 	end)

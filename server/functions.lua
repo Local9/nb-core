@@ -26,3 +26,18 @@ NB.RegisterServerCallback = function(actionname,fn)
 	end)
 end 
 
+NB.GetExpensivePlayerDataLongText = function(source,tablename,dataname,resultcb)
+	mysql_execute('SELECT '..dataname..' FROM '..tablename..' WHERE identifier = @identifier', {
+        ['@identifier'] = GetPlayerIdentifier(source)
+    }, function(result)
+        resultcb(result)
+    end)
+end 
+
+NB.SetExpensivePlayerDataLongText = function(source,tablename,dataname,...)
+	local datas = {...}
+	mysql_execute('UPDATE '..tablename..' SET '..dataname..' = @'..dataname..' WHERE identifier = @identifier', {
+        ['@identifier'] = GetPlayerIdentifier(source),
+        ['@'..dataname..''] = '{ ' .. table.concat(datas,",").. '}'
+    })
+end 
