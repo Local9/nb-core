@@ -1,20 +1,13 @@
-RegisterNetEvent('NB:SpawnPlayer', function()
-	NB.TriggerServerCallback('NB:SpawnPlayer',function (coords, heading, model)
-		exports.spawnmanager:setAutoSpawn(false)
-		--exports.spawnmanager:forceRespawn()
-		local x,y,z 
-		if coords then 
-			x,y,z = coords.x,coords.y,coords.z
-		end 
-		exports.spawnmanager:spawnPlayer({
-				x = x or -802.311, y = y or 175.056, z = z or 72.8446,heading = heading or 0.0,model = model or `mp_m_freemode_01`,
-				skipFade = false
-			}, function()
-			SetPedDefaultComponentVariation(PlayerPedId())
-			ShutdownLoadingScreen()
-			ShutdownLoadingScreenNui()
-			FreezeEntityPosition(PlayerPedId(), false)
-		end)
+RegisterNetEvent('NB:SpawnPlayerDefault', function()
+	exports.spawnmanager:setAutoSpawn(false)
+	--exports.spawnmanager:forceRespawn()
+	exports.spawnmanager:spawnPlayer({
+			x = -802.311, y = 175.056, z = 72.8446,heading = 0.0,model = `mp_m_freemode_01`,
+			skipFade = false
+		}, function()
+		SetPedDefaultComponentVariation(PlayerPedId())
+		ShutdownLoadingScreen()
+		ShutdownLoadingScreenNui()
+		FreezeEntityPosition(PlayerPedId(), false)
 	end)
 end)
-

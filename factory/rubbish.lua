@@ -24,13 +24,8 @@ if IsClient() then
 		while not NetworkIsSessionStarted() do
 			Wait(0)
 		end
-		NB.TriggerServerCallback('NB:OnPlayerSessionStart' )
+		TriggerServerEvent('NB:OnPlayerSessionStart')
 		return 
-	end)
-	CreateThread(function()
-		while true do Citizen.Wait(1000)
-			NB.TriggerServerCallback('NB:SavePlayerPosition',GetEntityCoords(PlayerPedId()), GetEntityHeading(PlayerPedId()))
-		end
 	end)
 end 
 
