@@ -74,6 +74,17 @@ if IsClient() then
 		TriggerServerEvent('NB:OnPlayerSessionStart')
 		DoScreenFadeOut(0)
 		freezePlayer(PlayerId(), true)
+		CreateThread(function()
+			Wait(5000)
+			if IsScreenFadedOut() and not IsScreenFadedIn() then
+				DoScreenFadeIn(0)
+				while not IsScreenFadedIn() do
+					Citizen.Wait(0)
+				end
+				NB.SpawnPlayerDefault()
+				print("Default Spawned Player due to no any spawn script handled.")
+			end
+		end)
 		return 
 	end)
 end 
