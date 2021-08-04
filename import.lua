@@ -18,68 +18,104 @@ if IsShared() then
 		end 
 	end)
 	RegisterNetEvent('NB:OnPlayerSessionStart', function()
-		if source then 
+		if source and IsServer() then 
 			TriggerEvent('NB:OnPlayerRequestSpawn',source)
 			TriggerClientEvent('NB:OnPlayerRequestSpawn',source)
 		end 
 	end)
-	if OnPlayerRequestCharacter or IsNBScript then 
-		RegisterNetEvent('NB:OnPlayerRequestCharacter', function(charid)
-			if source then 
+	local OnPlayerRequestCharacter_event = 
+	RegisterNetEvent('NB:OnPlayerRequestCharacter', function(charid)
+		if OnPlayerRequestCharacter or IsNBScript then 
+			if source and IsServer() then 
 				OnPlayerRequestCharacter(source,charid)
 			else 
 				OnPlayerRequestCharacter(charid)
 			end 
-		end)
-	end
-	if OnPlayerRequestSpawn or IsNBScript then 
-		RegisterNetEvent('NB:OnPlayerRequestSpawn', function()
-			if source then 
-				OnPlayerRequestSpawn(source)
-			else 
-				OnPlayerRequestSpawn()
-			end 
-		end)
-	end
-	if OnPlayerSpawn or IsNBScript then 
-		RegisterNetEvent('NB:OnSpawnPlayer', function()
-			if source then 
+			print("OnPlayerRequestCharacter",GetCurrentResourceName(),IsServer())
+		else 
+			RemoveEventHandler(OnPlayerRequestCharacter_event)
+		end
+	end)
+	
+	
+	local OnPlayerRequestSpawn_event =	
+	RegisterNetEvent('NB:OnPlayerRequestSpawn', function()
+		if OnPlayerRequestSpawn or IsNBScript then 
+		if source and IsServer() then 
+			OnPlayerRequestSpawn(source)
+		else 
+			OnPlayerRequestSpawn()
+		end 
+		print("OnPlayerRequestSpawn",GetCurrentResourceName(),IsServer())
+		else 
+			RemoveEventHandler(OnPlayerRequestSpawn_event)
+		end
+	end)
+	
+	
+	local OnPlayerSpawn_event =	RegisterNetEvent('NB:OnSpawnPlayer', function()
+		if OnPlayerSpawn or IsNBScript then 
+			if source and IsServer() then 
 				OnPlayerSpawn(source)
 			else 
 				OnPlayerSpawn()
 			end 
-		end)
-	end
-	if OnPlayerText or IsNBScript then
-		RegisterNetEvent('NB:OnPlayerText', function(message)
-			if source then 
-				OnPlayerText(source,message)
+			print("OnPlayerSpawn",GetCurrentResourceName(),IsServer())
+		else 
+			RemoveEventHandler(OnPlayerSpawn_event)
+		end
+	end)
+	
+	
+	local OnPlayerText_event =	RegisterNetEvent('NB:OnPlayerText', function(message)
+			if OnPlayerText or IsNBScript then
+				if source and IsServer() then 
+					OnPlayerText(source,message)
+				else 
+					OnPlayerText(message)
+				end 
+				print("OnPlayerText",GetCurrentResourceName(),IsServer())
 			else 
-				OnPlayerText(message)
-			end 
+				RemoveEventHandler(OnPlayerText_event)
+			end
 		end)
-	end
-	if OnPlayerCommandText or IsNBScript then
-		RegisterNetEvent('NB:OnPlayerCommandText', function(cmd,args)
-			if source then 
-				OnPlayerCommandText(source,cmd,args)
+	
+	
+	local OnPlayerCommandText_event =	RegisterNetEvent('NB:OnPlayerCommandText', function(cmd,args)
+			if OnPlayerCommandText or IsNBScript then
+				if source and IsServer() then 
+					OnPlayerCommandText(source,cmd,args)
+				else 
+					OnPlayerCommandText(cmd,args)
+				end 
+				print("OnPlayerCommandText",GetCurrentResourceName(),IsServer())
 			else 
-				OnPlayerCommandText(cmd,args)
-			end 
+				RemoveEventHandler(OnPlayerCommandText_event)
+			end
 		end)
-	end
+	
 end 
 if IsServer() then 
-	if OnPlayerDisconnect or IsNBScript then 
-		RegisterNetEvent('NB:OnPlayerDisconnect', function(reason)
+	
+	local OnPlayerDisconnect_event =	RegisterNetEvent('NB:OnPlayerDisconnect', function(reason)
+		if OnPlayerDisconnect or IsNBScript then 
 			OnPlayerDisconnect(reason)
-		end)
-	end
-	if OnPlayerConnect or IsNBScript then 
-		RegisterNetEvent('NB:OnPlayerConnect', function(name, setKickReason, deferrals)
+			print("OnPlayerDisconnect",GetCurrentResourceName(),IsServer())
+		else 
+			RemoveEventHandler(OnPlayerDisconnect_event)
+		end
+	end)
+	
+	
+	local OnPlayerConnect_event =	RegisterNetEvent('NB:OnPlayerConnect', function(name, setKickReason, deferrals)
+		if OnPlayerConnect or IsNBScript then 
 			OnPlayerConnect(name, setKickReason, deferrals)
-		end)
-	end
+			print("OnPlayerConnect",GetCurrentResourceName(),IsServer())
+		else 
+			RemoveEventHandler(OnPlayerConnect_event)
+		end
+	end)
+	
 end 
 if IsShared() then 
 	AddEventHandler('onResourceStop', function(resourceName)
@@ -88,6 +124,7 @@ if IsShared() then
 		end
 		if OnResourceExit then 
 			OnResourceExit()
+			print("OnResourceExit",GetCurrentResourceName(),IsServer())
 		end 	
 	end)
 	AddEventHandler('onResourceStart', function(resourceName)
@@ -96,6 +133,7 @@ if IsShared() then
 		end
 		if OnResourceInit then 
 			OnResourceInit()
+			print("OnResourceInit",GetCurrentResourceName(),IsServer())
 		end
 	end)
 end 
@@ -136,6 +174,7 @@ if IsServer() then
 	end 
 end 
 if IsClient() then 
+	
 	NB.TriggerServerCallback = function(actionname,...)
 		----https://github.com/negbook/ServerCallback
 		local resname = GetCurrentResourceName()
@@ -146,7 +185,7 @@ if IsClient() then
 		if fn and type(fn) == 'function' then 
 			table.remove(args,1)
 		end 
-		local ticketClient = math.abs(GetGameTimer()*GetHashKey(tostring(GetCloudTimeAsInt()))*GetIdOfThisThread())
+		local ticketClient = math.abs(GetGameTimer()*GetHashKey(tostring(GetCloudTimeAsInt())))
 		a = RegisterNetEvent(resname..":ResultCallback"..tostring(math.abs(actionhashname/ticketClient+1)), function (...)
 			if fn then fn(...) end 
 			if a then  
@@ -155,5 +194,79 @@ if IsClient() then
 		end)
 		TriggerServerEvent(resname..":RequestCallback"..actionhashname,ticketClient,table.unpack(args))
 	end 
+end 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+if IsClient() then 
+	NB.RegisterClientCallback = function(actionname,fn)
+		----https://github.com/negbook/ClientCallback
+		local resname = GetCurrentResourceName()
+		local actionhashname = GetHashKey(actionname)
+		local eventName,a = resname..":RequestCallback"..actionhashname
+		a = RegisterNetEvent(eventName, function (ticketServer,...) --Client send datas into ...
+			local source_ = PlayerId() 
+			local ticketClient =  math.abs(GetGameTimer()*GetHashKey(tostring(GetCloudTimeAsInt()))*GetIdOfThisThread()) 
+			local eventWithTicket,b = math.abs(GetHashKey(eventName)*ticketServer/(ticketClient+1))
+			local sender = function(...) 
+				TriggerEvent(eventWithTicket,ticketServer,...) 
+			end 
+			if source_ then eventWithTicket = tostring(source_)..tostring(eventWithTicket*GetHashKey(GetPlayerName(source_))) 
+				
+				b = RegisterNetEvent(eventWithTicket, function (ticketCl,...)
+					local c = function(...)
+						TriggerServerEvent(resname..":ResultCallback"..tostring(math.abs(actionhashname/ticketCl+1)),...)
+					end 
+					if fn then fn(c,...) end 
+					if b then 
+						RemoveEventHandler(b)
+					end 
+					if NB.RegisterClientCallback  then NB.RegisterClientCallback (actionname,fn) end 
+				end) 
+				sender(...)
+			end 
+			if a then 
+				RemoveEventHandler(a)
+			end 
+		end)
+	end 
+end 
+
+if IsServer() then 
+	
+	NB.TriggerClientCallback = function(actionname,player,...)
+		----https://github.com/negbook/ClientCallback
+		local resname = GetCurrentResourceName()
+		local a 
+		local actionhashname = GetHashKey(actionname)
+		local args = {...}
+		local fn = args[1] 
+		if fn and type(fn) == 'function' then 
+			table.remove(args,1)
+		end 
+		local ticketServer = math.abs(GetGameTimer()*GetHashKey(tostring(os.time())))
+		a = RegisterNetEvent(resname..":ResultCallback"..tostring(math.abs(actionhashname/ticketServer+1)), function (...)
+			if fn then fn(...) ; player = source end 
+			if a then  
+				RemoveEventHandler(a)
+			end 
+		end)
+		TriggerClientEvent(resname..":RequestCallback"..actionhashname,player,ticketServer,table.unpack(args))
+	end 
 end 

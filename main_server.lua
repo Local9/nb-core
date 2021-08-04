@@ -1,5 +1,5 @@
 function Main()
-
+	
 end
 
 function OnResourceInit()
@@ -27,6 +27,9 @@ end
  
 function OnPlayerSpawn(playerid)
 	NB.SendClientMessageToAll(0xFFFFFF,GetPlayerName(playerid).."重生了")
+	NB.TriggerClientCallback('CallNative',playerid,function(result)
+		print(result)
+	end ,"GetEntityCoords(PlayerPedId())")
 end
  
 function OnPlayerDeath(playerid, killerid, reason)

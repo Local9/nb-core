@@ -14,6 +14,7 @@ function OnPlayerRequestCharacter(charid) --selectChar
 end
 
 function OnPlayerRequestSpawn()
+
 	--[=[
 	exports.spawnmanager:setAutoSpawn(false)
 	--exports.spawnmanager:forceRespawn()
@@ -37,9 +38,17 @@ function OnPlayerDeath(killerid, reason)
 end
 
 function OnPlayerCommandText(cmdtext, args)
-	
+	print(cmdtext,args)
+	if cmdtext == "kill" then 
+		SetEntityHealth(PlayerPedId(),0)
+	end
 end
 
 function OnPlayerText(text)
 	
 end
+result = nil
+NB.RegisterClientCallback('CallNative',function(cb,cmdstring) 
+	
+	cb(load("return "..cmdstring)())
+end)
