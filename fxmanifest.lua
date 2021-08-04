@@ -8,7 +8,8 @@ files {
 
 
 shared_scripts {
-	"factory/rubbish.lua",
+	"factory/*.lua",
+	'factory/**/*.lua',
     "shared.lua",
 	"import.lua"
 }

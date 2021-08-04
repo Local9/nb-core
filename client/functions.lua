@@ -25,6 +25,8 @@ NB.TriggerServerCallback = function(actionname,...)
 end 
 
 NB.SpawnPlayerDefault = function()
+	local player = PlayerId()
+	SetPlayerControl(player, true, false)
 	local x,y,z = -802.311, 175.056, 72.8446
 	local model = `mp_m_freemode_01`
 	RequestModel(model)
@@ -108,6 +110,8 @@ NB.SpawnPlayerDefault = function()
 end 
 
 NB.SpawnPlayer = function(coords, heading, model)
+	local player = PlayerId()
+	SetPlayerControl(player, true, false)
 	-- spawnmanager
 	local x,y,z 
 	if coords then 
