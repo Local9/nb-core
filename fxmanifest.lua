@@ -8,9 +8,9 @@ files {
 
 
 shared_scripts {
-	"factory/*.lua",
-	'factory/**/*.lua',
-	'factory/**/RESPECT/*.lua',
+	"com/init.lua",
+	'com/**/*.lua',
+	'com/**/**/*.lua',
     "shared.lua",
 	"import.lua"
 }

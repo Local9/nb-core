@@ -2,7 +2,7 @@ local IsServer = function() return IsDuplicityVersion() end
 local IsClient = function() return not IsServer() end 
 local IsShared = function() return true end 
 
-ESX = {} -- https://github.com/esx-framework/es_extended
+ESX = {} -- https://github.com/esx-framework/esx-legacy
 
 
 if IsServer() then 

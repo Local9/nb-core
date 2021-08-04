@@ -1,8 +1,9 @@
 local IsServer = function() return IsDuplicityVersion() end 
 local IsClient = function() return not IsDuplicityVersion() end 
 local IsShared = function() return true end 
+com.utils.Remote = {}
 if IsServer() then 
-	mysql_execute = function(...)
+	com.utils.Remote.mysql_execute = function(...)
 		return exports.ghmattimysql:execute(...)
 	end 
 end 
