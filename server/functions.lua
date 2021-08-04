@@ -3,7 +3,7 @@ NB.com = com
 
 NB.SendClientMessage = function(source, color, message)
 	TriggerClientEvent('chat:addMessage',source, {
-	  color = color == -1 and 255 or NB.com.lua.utils.Colour.HexToRGB2(color),
+	  color = color == -1 and 255 or NB.com.lua.utils.Colour.HexToRGB(color,true),
 	  multiline = true,
 	  args = {message}
 	})
@@ -11,7 +11,7 @@ end
 
 NB.SendClientMessageToAll = function(color,message)
 	TriggerClientEvent('chat:addMessage',-1, {
-	  color = color == -1 and 255 or NB.com.lua.utils.Colour.HexToRGB2(color),
+	  color = color == -1 and 255 or NB.com.lua.utils.Colour.HexToRGB(color,true),
 	  multiline = true,
 	  args = { message}
 	})
