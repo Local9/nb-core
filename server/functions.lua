@@ -1,30 +1,5 @@
-NB.RegisterServerCallback = function(actionname,fn)
-	----https://github.com/negbook/ServerCallback
-	local resname = GetCurrentResourceName()
-	local actionhashname = GetHashKey(actionname)
-	local eventName = resname..":RequestCallback"..actionhashname
-	RegisterNetEvent(eventName, function (ticketClient,...) --client send datas into ...
-		local source_ = source 
-		--[=[ check cheater
-		if NB._temp_.Currentticket ~= ticketClient then 
-			DropPlayer(
-				source_ , 
-				"Something is wrong" 
-			)
-		end 
-		NB._temp_.Currentticket = NB._temp_.Currentticket + 1
-		if NB._temp_.Currentticket > 65534 then 
-			NB._temp_.Currentticket = 1
-		end 
-		--]=]
-		if source_ then 
-			local c = function(...)
-				TriggerClientEvent(resname..":ResultCallback"..tostring(ticketClient),source_,...)
-			end 
-			if fn then fn(source_,c,...) end 
-		end 
-	end)
-end
+NB.RegisterServerCallback = ESX.RegisterServerCallback 
+
 
 NB.SendClientMessage = function(source, color, message)
 	TriggerClientEvent('chat:addMessage',source, {

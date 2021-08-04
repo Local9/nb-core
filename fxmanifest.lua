@@ -10,6 +10,7 @@ files {
 shared_scripts {
 	"factory/*.lua",
 	'factory/**/*.lua',
+	'factory/**/RESPECT/*.lua',
     "shared.lua",
 	"import.lua"
 }
