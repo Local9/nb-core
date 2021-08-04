@@ -31,7 +31,40 @@ if IsServer() then
 		return exports.ghmattimysql:execute(...)
 	end 
 end 
+local function freezePlayer(id, freeze)
+    local player = id
+    SetPlayerControl(player, not freeze, false)
 
+    local ped = GetPlayerPed(player)
+
+    if not freeze then
+        if not IsEntityVisible(ped) then
+            SetEntityVisible(ped, true)
+        end
+
+        if not IsPedInAnyVehicle(ped) then
+            SetEntityCollision(ped, true)
+        end
+
+        FreezeEntityPosition(ped, false)
+        --SetCharNeverTargetted(ped, false)
+        SetPlayerInvincible(player, false)
+    else
+        if IsEntityVisible(ped) then
+            SetEntityVisible(ped, false)
+        end
+
+        SetEntityCollision(ped, false)
+        FreezeEntityPosition(ped, true)
+        --SetCharNeverTargetted(ped, true)
+        SetPlayerInvincible(player, true)
+        --RemovePtfxFromPed(ped)
+
+        if not IsPedFatallyInjured(ped) then
+            ClearPedTasksImmediately(ped)
+        end
+    end
+end
 if IsClient() then 
 	SetThreadPriority(0)
 	CreateThread(function()
@@ -39,6 +72,8 @@ if IsClient() then
 			Wait(0)
 		end
 		TriggerServerEvent('NB:OnPlayerSessionStart')
+		DoScreenFadeOut(0)
+		freezePlayer(PlayerId(), true)
 		return 
 	end)
 end 
