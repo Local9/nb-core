@@ -1,4 +1,4 @@
-com.utils.SpawnManager = {}
+
 local function freezePlayer(id, freeze)
     local player = id
     SetPlayerControl(player, not freeze, false)

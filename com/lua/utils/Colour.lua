@@ -1,4 +1,4 @@
-com.utils.Colour = {}
+
 com.utils.Colour.HexToRGB = function (hex)
     local r = hex >> 16
     local offset = hex - (r << 16)
