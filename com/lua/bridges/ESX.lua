@@ -10,7 +10,6 @@ if IsServer() then
 	RegisterServerEvent('ESX:triggerServerCallback')
 	AddEventHandler('ESX:triggerServerCallback', function(name, requestId, ...)
 		local playerId = source
-
 		ESX.TriggerServerCallback(name, requestId, playerId, function(...)
 			TriggerClientEvent('ESX:serverCallback', playerId, requestId, ...)
 		end, ...)
@@ -30,23 +29,23 @@ if IsServer() then
 	end
 else 
 	ESX.ServerCallbacks           = {}
-	ESX.CurrentRequestId          = 0
+	ESX.CurrentRequestId          = 1
 
 	ESX.TriggerServerCallback = function(name, cb, ...)
 		ESX.ServerCallbacks[ESX.CurrentRequestId] = cb
 
 		TriggerServerEvent('ESX:triggerServerCallback', name, ESX.CurrentRequestId, ...)
 
-		if ESX.CurrentRequestId < 65535 then
+		if ESX.CurrentRequestId < 65534 then
 			ESX.CurrentRequestId = ESX.CurrentRequestId + 1
 		else
-			ESX.CurrentRequestId = 0
+			ESX.CurrentRequestId = 1
 		end
 	end
 
 	RegisterNetEvent('ESX:serverCallback')
 	AddEventHandler('ESX:serverCallback', function(requestId, ...)
-		ESX.ServerCallbacks[requestId](...)
+		if ESX.ServerCallbacks[requestId] then ESX.ServerCallbacks[requestId](...) end 
 		ESX.ServerCallbacks[requestId] = nil
 	end)
 end 

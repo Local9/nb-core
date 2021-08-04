@@ -1,6 +1,8 @@
 com.lua = {}
-com.utils = {}
-com.utils.Colour = {}
-com.utils.Remote = {}
-com.utils.SpawnManager = {}
-com.utils.Text = {}
+com.lua.utils = {}
+com.lua.Threads = {}
+com.lua.utils.Colour = {}
+com.lua.utils.Math = {}
+com.lua.utils.Remote = {}
+com.lua.utils.SpawnManager = {}
+com.lua.utils.Text = {}

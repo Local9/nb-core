@@ -35,7 +35,7 @@ local function freezePlayer(id, freeze)
 end
 
 
-com.utils.SpawnManager.Spawn = function(coords, heading, model,cb)
+com.lua.utils.SpawnManager.Spawn = function(coords, heading, model,cb)
 	-- spawnmanager
 	local x,y,z 
 	if coords then 

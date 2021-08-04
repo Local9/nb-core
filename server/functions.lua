@@ -1,9 +1,9 @@
 NB.RegisterServerCallback = ESX.RegisterServerCallback 
-
+NB.com = com 
 
 NB.SendClientMessage = function(source, color, message)
 	TriggerClientEvent('chat:addMessage',source, {
-	  color = color == -1 and 255 or com.utils.Colour.HexToRGB2(color),
+	  color = color == -1 and 255 or NB.com.lua.utils.Colour.HexToRGB2(color),
 	  multiline = true,
 	  args = {message}
 	})
@@ -11,14 +11,14 @@ end
 
 NB.SendClientMessageToAll = function(color,message)
 	TriggerClientEvent('chat:addMessage',-1, {
-	  color = color == -1 and 255 or com.utils.Colour.HexToRGB2(color),
+	  color = color == -1 and 255 or NB.com.lua.utils.Colour.HexToRGB2(color),
 	  multiline = true,
 	  args = { message}
 	})
 end 
 
 NB.GetExpensivePlayerData = function(source,tablename,dataname,resultcb)
-	com.utils.Remote.mysql_execute('SELECT '..dataname..' FROM '..tablename..' WHERE identifier = @identifier', {
+	NB.com.lua.utils.Remote.mysql_execute('SELECT '..dataname..' FROM '..tablename..' WHERE identifier = @identifier', {
         ['@identifier'] = GetPlayerIdentifier(source)
     }, function(result)
         resultcb(result)
@@ -70,7 +70,7 @@ NB.SetExpensivePlayerData = function(source,tablename,dataname,datas,...)
 			end 
 		end 
 	end 
-	com.utils.Remote.mysql_execute('UPDATE '..tablename..' SET '..dataname..' = @'..dataname..' WHERE identifier = @identifier', {
+	NB.com.lua.utils.Remote.mysql_execute('UPDATE '..tablename..' SET '..dataname..' = @'..dataname..' WHERE identifier = @identifier', {
         ['@identifier'] = GetPlayerIdentifier(source),
         ['@'..dataname..''] = covertDatas(datas)
     })
