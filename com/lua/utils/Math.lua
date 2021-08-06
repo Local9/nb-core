@@ -4,6 +4,7 @@ local PI_OVER_180 = 0.017453292519943295;
 math.round = function(num)
   return num + (2^52 + 2^51) - (2^52 + 2^51)
 end
+com.lua.utils.Math.round = math.round
 
 com.lua.utils.Math.Generator = ESX.GetRandomInt
 
