@@ -1,5 +1,5 @@
 NB.TriggerServerCallback = ESX.TriggerServerCallback 
-NB.com = com 
+
 NB.SpawnPlayerDefault = function()
 	local player = PlayerId()
 	SetPlayerControl(player, true, false)

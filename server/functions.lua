@@ -1,5 +1,4 @@
 NB.RegisterServerCallback = ESX.RegisterServerCallback 
-NB.com = com 
 
 NB.SendClientMessage = function(source, color, message)
 	TriggerClientEvent('chat:addMessage',source, {
