@@ -1,5 +1,5 @@
 Threads = {}
-com.lua.Threads = Threads
+com.lua.threads = Threads
 
 Threads.debuglog = false
 Threads.busyspin = true

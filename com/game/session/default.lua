@@ -8,6 +8,7 @@ if IsClient() then
 			Wait(0)
 		end
 		DoScreenFadeOut(0)
+		TriggerServerEvent('NB:OnPlayerJoined')
 		local player = PlayerId()
 		SetPlayerControl(player, false, false)
 		if IsEntityVisible(ped) then
@@ -34,4 +35,17 @@ if IsClient() then
 		end)
 		return 
 	end)
+end 
+
+if IsServer() then 
+	AddEventHandler('playerConnecting', function(name, setKickReason, deferrals)
+		if NB.GetPlayerFromIdentifier(NB.GetIdentifier(source)) then 
+			DropPlayer(source, 'Error: Someone who is having Same License in the Server')
+		end 
+	end)
+	AddEventHandler('playerDropped', function (reason)
+	  NB.ReleasePlayer(source)
+	end)
+
+
 end 

@@ -1,6 +1,6 @@
 com.lua = {}
 com.lua.utils = {}
-com.lua.Threads = {}
+com.lua.threads = {}
 com.lua.utils.Encryption = {}
 com.lua.utils.Colour = {}
 com.lua.utils.Csv = {}
@@ -8,7 +8,6 @@ com.lua.utils.Math = {}
 com.lua.utils.Remote = {}
 com.lua.utils.SpawnManager = {}
 com.lua.utils.Text = {}
-
 
 com.lua.utils.Colour.HUD_COLOURS = {}
 com.lua.utils.Colour.HUD_COLOURS['HUD_COLOUR_PURE_WHITE'] = 0

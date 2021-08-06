@@ -8,9 +8,13 @@ files {
 lua54 'yes'
 
 shared_scripts {
+	'config.lua',
+	"init.lua",
 	"com/init.lua",
-	'com/**/*.lua',
-	'com/**/**/*.lua',
+	'com/lua/*.lua',
+	'com/lua/**/*.lua',
+	'com/game/*.lua',
+	'com/game/**/*.lua',
     "shared.lua",
 	"import.lua"
 }
@@ -25,8 +29,8 @@ server_scripts{
 	'server/functions.lua',
 	'server/callbacks.lua',
 	'server/events.lua',
-	'server/session.lua',
-	'server/datas.lua'
+	'server/player.lua',
+	'server/session.lua'
 }
 
 
