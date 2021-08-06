@@ -42,10 +42,11 @@ RegisterNetEvent('NB:OnPlayerJoined', function()
 				
 				if not result[1] then
 					
-					NB.Utils.Remote.mysql_execute('INSERT INTO players (citizenid,license,position) VALUES (@citizenid,@license,@position)', {
-						['@citizenid'] = NB.CreatePlayerSomething('citizenid',function()return tostring(com.lua.utils.Text.Generator(7) .. com.lua.utils.Math.Generator(9)):upper()end),
-						['@license'] = license,
-						['@position'] = json.encode(DEFAULT_SPAWN_POSITION)
+					NB.Utils.Remote.mysql_execute('INSERT INTO players (CitizenID,License,AdminLevel,Position) VALUES (@CitizenID,@License,@AdminLevel,@Position)', {
+						['@CitizenID'] = NB.CreatePlayerSomethingSerious('CitizenID',function()return tostring(com.lua.utils.Text.Generator(7) .. com.lua.utils.Math.Generator(9)):upper()end),
+						['@AdminLevel'] = NB.CreatePlayerSomethingSerious('AdminLevel',function()return 0 end),
+						['@License'] = license,
+						['@Position'] = json.encode(DEFAULT_SPAWN_POSITION)
 					}, function(result)
 						print("Created player into database")
 						NB.Players[source] = CreatePlayer(source, license)
@@ -131,7 +132,7 @@ NB.SetExpensivePlayerData = function(source,tablename,dataname,datas,...)
 
 end 
 
-NB.CreatePlayerSomething = function(name,checkfn)
+NB.CreatePlayerSomethingSerious = function(name,checkfn)
 	local SomethingExist = false
 	local Something = nil
 
