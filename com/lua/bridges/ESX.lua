@@ -3,7 +3,32 @@ local IsClient = function() return not IsServer() end
 local IsShared = function() return true end 
 
 ESX = {} -- https://github.com/esx-framework/esx-legacy
+if IsShared() then 
+	local Charset = {}
+	
+	for i = 48,  57 do table.insert(Charset, string.char(i)) end
+	for i = 65,  90 do table.insert(Charset, string.char(i)) end
+	for i = 97, 122 do table.insert(Charset, string.char(i)) end
 
+	ESX.GetRandomString = function(length)
+		math.randomseed(GetGameTimer())
+
+		if length > 0 then
+			return ESX.GetRandomString(length - 1) .. Charset[math.random(1, #Charset)]
+		else
+			return ''
+		end
+	end
+	ESX.GetRandomInt = function(length)
+		math.randomseed(GetGameTimer())
+
+		if length > 0 then
+			return ESX.GetRandomInt(length - 1) .. tostring(math.random(1, 9))
+		else
+			return ''
+		end
+	end
+end 
 
 if IsServer() then 
 	ESX.ServerCallbacks = {}

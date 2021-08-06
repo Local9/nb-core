@@ -5,6 +5,8 @@ math.round = function(num)
   return num + (2^52 + 2^51) - (2^52 + 2^51)
 end
 
+com.lua.utils.Math.Generator = ESX.GetRandomInt
+
 com.lua.utils.Math.getRandomNumber = function(min, max)
       local num = math.floor(math.random() * (max - min + 1)) + min;
       return num;

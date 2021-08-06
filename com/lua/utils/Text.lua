@@ -1,4 +1,7 @@
 
+com.lua.utils.Text.Generator = ESX.GetRandomString
+
+
 com.lua.utils.Text.Split = function (s, delimiter)
     result = {};
     for match in (s..delimiter):gmatch("(.-)"..delimiter) do

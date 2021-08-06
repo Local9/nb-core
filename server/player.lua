@@ -41,8 +41,9 @@ RegisterNetEvent('NB:OnPlayerJoined', function()
 			}, function(result)
 				
 				if not result[1] then
-					--[=[
-					NB.Utils.Remote.mysql_execute('INSERT INTO players (license,position) VALUES (@license,@position)', {
+					
+					NB.Utils.Remote.mysql_execute('INSERT INTO players (citizenid,license,position) VALUES (@citizenid,@license,@position)', {
+						['@citizenid'] = NB.CreatePlayerSomething('citizenid',function()return tostring(com.lua.utils.Text.Generator(7) .. com.lua.utils.Math.Generator(9)):upper()end),
 						['@license'] = license,
 						['@position'] = json.encode(DEFAULT_SPAWN_POSITION)
 					}, function(result)
@@ -50,7 +51,7 @@ RegisterNetEvent('NB:OnPlayerJoined', function()
 						NB.Players[source] = CreatePlayer(source, license)
 						
 					end )
-					--]=]
+					
 					NB.SendClientMessageToAll(-1,"一個新玩家加入了服務器，正在進行選角")
 					NB.Players[source] = CreatePlayer(source, license)
 				else 
@@ -129,6 +130,21 @@ NB.SetExpensivePlayerData = function(source,tablename,dataname,datas,...)
 		})
 
 end 
+
+NB.CreatePlayerSomething = function(name,checkfn)
+	local SomethingExist = false
+	local Something = nil
+
+	while not SomethingExist do
+		Something = checkfn(name)
+		if not Something then error("error on creating player something",2) end 
+		local result = exports.ghmattimysql:executeSync('SELECT COUNT(*) as count FROM players WHERE '..name..'=@'..name..'', {['@'..name..''] = Something})
+		if result[1].count == 0 then
+			SomethingExist = true
+		end
+	end
+	return Something
+end
 
 AddEventHandler('playerConnecting', function(name, setKickReason, deferrals)
 	if NB.GetPlayerFromIdentifier(NB.GetIdentifier(source)) then 
