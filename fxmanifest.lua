@@ -5,7 +5,7 @@ files {
 	'xls/table/monster.csv'
 }
 
-
+lua54 'yes'
 
 shared_scripts {
 	"com/init.lua",

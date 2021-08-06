@@ -1,6 +1,7 @@
 com.lua = {}
 com.lua.utils = {}
 com.lua.Threads = {}
+com.lua.utils.Encryption = {}
 com.lua.utils.Colour = {}
 com.lua.utils.Csv = {}
 com.lua.utils.Math = {}
