@@ -23,7 +23,7 @@ if IsClient() then
 			ClearPedTasksImmediately(ped)
 		end
 		CreateThread(function()
-			Wait(5000)
+			Wait(100)
 			if IsScreenFadedOut() and not IsScreenFadedIn() then
 				DoScreenFadeIn(0)
 				while not IsScreenFadedIn() do
@@ -37,15 +37,3 @@ if IsClient() then
 	end)
 end 
 
-if IsServer() then 
-	AddEventHandler('playerConnecting', function(name, setKickReason, deferrals)
-		if NB.GetPlayerFromIdentifier(NB.GetIdentifier(source)) then 
-			DropPlayer(source, 'Error: Someone who is having Same License in the Server')
-		end 
-	end)
-	AddEventHandler('playerDropped', function (reason)
-	  NB.ReleasePlayer(source)
-	end)
-
-
-end 

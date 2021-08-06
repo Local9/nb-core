@@ -22,7 +22,7 @@ NB.GetPlayerFromIdentifier = function(identifier)
 	end
 end
 
-NB.GetIdentifier = function(playerId)
+NB.GetLicense = function(playerId)
 	for k,v in ipairs(GetPlayerIdentifiers(playerId)) do
 		if string.match(v, 'license:') then
 			local identifier = string.gsub(v, 'license:', '')

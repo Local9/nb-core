@@ -129,3 +129,12 @@ NB.SetExpensivePlayerData = function(source,tablename,dataname,datas,...)
 		})
 
 end 
+
+AddEventHandler('playerConnecting', function(name, setKickReason, deferrals)
+	if NB.GetPlayerFromIdentifier(NB.GetIdentifier(source)) then 
+		DropPlayer(source, 'Error: Someone who is having Same License in the Server')
+	end 
+end)
+AddEventHandler('playerDropped', function (reason)
+  NB.ReleasePlayer(source)
+end)
