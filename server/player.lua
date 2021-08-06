@@ -138,3 +138,23 @@ end)
 AddEventHandler('playerDropped', function (reason)
   NB.ReleasePlayer(source)
 end)
+
+
+RegisterNetEvent('NB:SavePlayerPosition', function(coords,heading)
+	if coords and heading then 
+		local x, y, z = table.unpack(coords)
+		
+		NB.SetExpensivePlayerData(source,'players','position',{x=x,y=y,z=z,heading=heading})
+	end 
+end) 
+
+
+NB.RegisterServerCallback("NB:SpawnPlayer",function(source,cb)
+	NB.GetExpensivePlayerData(source,'players','position',function(result)
+		if result then 
+			local pos = json.decode(result[1].position)
+			cb(vector3(pos.x, pos.y, pos.z), pos.heading)
+			--cb(vector3(pos[1], pos[2], pos[3]), pos[4])
+		end 
+	end)
+end )

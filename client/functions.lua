@@ -16,3 +16,17 @@ NB.SpawnPlayer = function(coords, heading, model)
 	NB.Utils.SpawnManager.Spawn(coords, heading, model)
 end 
 
+RegisterNetEvent('NB:SpawnPlayer', function()
+	NB.TriggerServerCallback('NB:SpawnPlayer',function (coords, heading, model)
+		NB.SpawnPlayer(coords, heading, model)
+	end)
+end)
+
+
+CreateThread(function() Wait(500)
+	TriggerEvent('NB:SpawnPlayer')
+	TriggerEvent('NB:CancelDefaultSpawn')
+	NB.Threads.CreateLoop('spawn',1000,function()
+		TriggerServerEvent('NB:SavePlayerPosition',GetEntityCoords(PlayerPedId()), GetEntityHeading(PlayerPedId()))
+	end)
+end)
