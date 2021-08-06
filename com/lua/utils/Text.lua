@@ -1,3 +1,4 @@
+
 com.lua.utils.Text.Split = function (s, delimiter)
     result = {};
     for match in (s..delimiter):gmatch("(.-)"..delimiter) do
