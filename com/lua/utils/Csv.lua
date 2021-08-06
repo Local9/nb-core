@@ -1,8 +1,3 @@
-
-local IsServer = function() return IsDuplicityVersion() end 
-local IsClient = function() return not IsServer() end 
-local IsShared = function() return true end 
-
 com.lua.utils.Csv.LoadDataSheet = function (name,returnkeys)
 	local split = function (s, delimiter)
 		result = {};

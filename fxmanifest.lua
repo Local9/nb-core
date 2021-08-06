@@ -10,6 +10,7 @@ lua54 'yes'
 shared_scripts {
 	'config.lua',
 	"init.lua",
+	"main.lua",
 	"com/init.lua",
 	'com/lua/*.lua',
 	'com/lua/**/*.lua',

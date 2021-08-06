@@ -28,7 +28,7 @@ function CreatePlayer(playerId, license)
 	return self
 end
 
-RegisterNetEvent('NB:OnPlayerJoined', function()
+RegisterNetEvent('NB:OnPlayerJoined', function() --called by com.game.session.default.lua/CreateThread
 	local source = source
 	local xPlayer = NB.GetPlayerFromId(source)
 	if not NB.Players[source] then
@@ -62,7 +62,7 @@ RegisterNetEvent('NB:OnPlayerJoined', function()
 				end
 			end)
 		else 
-			DropPlayer(playerId, 'Your license could not be found,the cause of this error is not known.')
+			DropPlayer(source, 'Your license could not be found,the cause of this error is not known.')
 			return false 
 		end 
 	end
