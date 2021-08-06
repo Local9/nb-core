@@ -118,7 +118,7 @@ com.lua.utils.Csv.CreateDataSheet = function (name,data,keys)
 end 
 
 
-com.lua.utils.Csv.LoadEncryptedDataSheet = function (name,returnkeys)
+com.lua.utils.Csv.LoadDataSheetDecode = function (name,returnkeys)
 	local split = function (s, delimiter)
 		result = {};
 		for match in (s..delimiter):gmatch('(.-)'..delimiter) do
@@ -126,7 +126,7 @@ com.lua.utils.Csv.LoadEncryptedDataSheet = function (name,returnkeys)
 		end
 		return result;
 	end
-	local filecontent = split(string.gsub(com.lua.utils.Encryption.SimpleDecrypt(LoadResourceFile(GetCurrentResourceName(),"/xls/table/"..name..".csv")),"\r",""),"\n") or {}
+	local filecontent = split(string.gsub(com.lua.utils.Encryption.SimpleDecrypt(LoadResourceFile(GetCurrentResourceName(),"/xls/table/"..name..".csv.code")),"\r",""),"\n") or {}
 	local nowindex = 1
 	local keys = {}
 	local datasfull = {}
@@ -161,17 +161,17 @@ com.lua.utils.Csv.LoadEncryptedDataSheet = function (name,returnkeys)
 	return datasfull,returnkeys and keys or nil
 end 
 
-com.lua.utils.Csv.CreateEncryptedDataSheet = function (name,data,keys)
+com.lua.utils.Csv.CreateDataSheetEncode = function (name,data,keys)
 	if IsServer() then 
 		local file_exists = function (name)
 			local f=io.open(name,"r")
 			
 			if f~=nil then io.close(f) return true else return false end
 		end
-		if file_exists(GetResourcePath(GetCurrentResourceName())..'/xls/table/pre-'..name..'.csv') then 
+		if file_exists(GetResourcePath(GetCurrentResourceName())..'/xls/table/pre-'..name..'.csv.code') then 
 			error('Can not create due to file pre-'..name..'.csv already exist',2) 
 		else 
-			local f,err = io.open(GetResourcePath(GetCurrentResourceName())..'/xls/table/pre-'..name..'.csv','w+') --匯出
+			local f,err = io.open(GetResourcePath(GetCurrentResourceName())..'/xls/table/pre-'..name..'.csv.code','w+') --匯出
 			if f then 
 				local split = function (s, delimiter)
 					result = {};
@@ -200,13 +200,13 @@ com.lua.utils.Csv.CreateEncryptedDataSheet = function (name,data,keys)
 			else 
 				print(err)
 			end 
-			local f,err = io.open(GetResourcePath(GetCurrentResourceName())..'/xls/table/pre-'..name..'.csv','r')
+			local f,err = io.open(GetResourcePath(GetCurrentResourceName())..'/xls/table/pre-'..name..'.csv.code','r')
 			local content
 			if f then 
 				content = f:read "*a" -- *a or *all reads the whole file
 				f:close()
 			end 
-			local f,err = io.open(GetResourcePath(GetCurrentResourceName())..'/xls/table/pre-'..name..'.csv','w+')
+			local f,err = io.open(GetResourcePath(GetCurrentResourceName())..'/xls/table/pre-'..name..'.csv.code','w+')
 			if f then 
 				f:write(com.lua.utils.Encryption.SimpleEncrypt(content))
 				f:close()
