@@ -10,5 +10,5 @@ LoadDataSheet = function(dataname)
 end 
 
 
-
+LoadDataSheet("items")
 LoadDataSheet("monster")
