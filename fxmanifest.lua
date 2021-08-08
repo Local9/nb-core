@@ -21,7 +21,7 @@ shared_scripts {
 
 client_scripts {
 	'client/functions.lua',
-	'client/events.lua'
+	'client/player.lua'
 }
 
 server_scripts{
@@ -34,5 +34,6 @@ server_scripts{
 dependencies {
 	'chat',
 	'ghmattimysql',
-	'connectqueue'
+	'connectqueue',
+	'skinchanger'
 }

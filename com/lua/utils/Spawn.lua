@@ -43,23 +43,26 @@ com.lua.utils.SpawnManager.Spawn = function(coords, heading, model,cb)
 	else 
 		x,y,z = -802.311, 175.056, 72.8446
 	end 
-	local model = model or `mp_m_freemode_01`
+	local model = model
+
 	-- freeze the local player
     com.lua.utils.SpawnManager.SpawnFreeze(PlayerId(), true)
-	RequestModel(model)
+	if model then 
+		RequestModel(model)
 
-    -- load the model for this spawn
-    while not HasModelLoaded(model) do
-        RequestModel(model)
+		-- load the model for this spawn
+		while not HasModelLoaded(model) do
+			RequestModel(model)
 
-        Wait(0)
-    end
+			Wait(0)
+		end
 
-    -- change the player model
-    SetPlayerModel(PlayerId(), model)
+		-- change the player model
+		SetPlayerModel(PlayerId(), model)
 
-    -- release the player model
-    SetModelAsNoLongerNeeded(model)
+		-- release the player model
+		SetModelAsNoLongerNeeded(model)
+	end 
 	-- preload collisions for the spawnpoint
     RequestCollisionAtCoord(x, y, z)
 
@@ -119,7 +122,8 @@ com.lua.utils.SpawnManager.Spawn = function(coords, heading, model,cb)
     --SetCharNeverTargetted(ped, false)
     SetPlayerInvincible(player, false)
     TriggerEvent('playerSpawned')
-	if model == `mp_m_freemode_01` or model == `mp_f_freemode_01` then 
+	--local model = GetEntityModel(ped)
+	if model and model == `mp_m_freemode_01` or model == `mp_f_freemode_01` then 
 		SetPedDefaultComponentVariation(ped)
 	end 
 	ShutdownLoadingScreen()

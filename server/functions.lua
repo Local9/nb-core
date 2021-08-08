@@ -1,7 +1,9 @@
 NB.Utils = com.lua.utils
 NB.Threads = com.lua.threads
-
 NB.RegisterServerCallback = ESX.RegisterServerCallback 
+
+
+
 
 NB.SendClientMessage = function(playerId, color, message)
 	TriggerClientEvent('chat:addMessage',playerId, {

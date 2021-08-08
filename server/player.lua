@@ -9,10 +9,10 @@ end)
 
 AddEventHandler('playerDropped', function (reason)
 	local playerId = NB.PlayerId(source)
-	NB.ReleasePlayer()
 	if OnPlayerDisconnect then OnPlayerDisconnect(playerId) end 
 	
 	TriggerEvent('NB:log','Player Disconnected',playerId)
+	NB.ReleasePlayer()
 end)
 
 NB.GetPlayers = function(id)
@@ -28,8 +28,8 @@ NB.UpdatePlayerId = function(playerId)
 end
 
 NB.PlayerId = function(playerId)
-	local playerid = NB.UpdatePlayerId(playerId)
-	return playerid
+	local playerid,playerdata = NB.UpdatePlayerId(playerId)
+	return playerid,playerdata
 end 
 
 NB.PlayerData = function(playerId)
@@ -226,14 +226,26 @@ end
 RegisterNetEvent('NB:SavePlayerPosition', function(coords,heading)
 	if coords and heading then 
 		local x, y, z = table.unpack(coords)
-		local playerData = NB.PlayerData(source)
-		local citizenID = playerData.citizenID 
-		NB.SetExpensiveCitizenData(citizenID,'characters','Position',{x=x,y=y,z=z,heading=heading})
+		local playerData = NB.PlayerData(tonumber(source))
+		local citizenID = playerData and playerData.citizenID 
+		if citizenID then 
+			NB.SetExpensiveCitizenData(citizenID,'characters','Position',{x=x,y=y,z=z,heading=heading})
+		end 
 	end 
 end) 
 
 
-NB.RegisterServerCallback("NB:SpawnPlayer",function(playerId,cb)
+RegisterNetEvent("NB:SaveCharacterSkin",function(result)
+	local playerData = NB.PlayerData(playerid)
+	local citizenID = playerData.citizenID 
+	if citizenID and result then 
+		NB.SetExpensiveCitizenData(citizenID,'characters','Skin',result)
+	end 
+end )
+
+
+
+NB.RegisterServerCallback("NB:GetLastPosition",function(playerId,cb)
 	local playerData = NB.PlayerData(playerId)
 	local citizenID = playerData.citizenID 
 	NB.GetExpensiveCitizenData(citizenID,'characters','Position',function(result)

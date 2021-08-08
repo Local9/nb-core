@@ -49,11 +49,11 @@ if IsServer() then
 	end 
 
 	function OnPlayerRegister(playerid, license, citizenID)
-		NB.Utils.Remote.mysql_execute('INSERT INTO users (License,AdminLevel) VALUES (@License,@AdminLevel)', {
-			['@AdminLevel'] = NB.UserSomethingSeriousGenerator('AdminLevel','users',function()return 0 end),
+		NB.Utils.Remote.mysql_execute('INSERT INTO users (License) VALUES (@License)', {
 			['@License'] = license
 		}, function(result)
 			--下面是新建角色才會執行，目前先省略建立步驟
+			
 			NB.Utils.Remote.mysql_execute('INSERT INTO characters (CitizenID,License,Position) VALUES (@CitizenID,@License,@Position)', {
 				['@CitizenID'] = citizenID,
 				['@License'] = license,
@@ -68,14 +68,23 @@ if IsServer() then
 
 	function OnPlayerLogin(playerid, license, citizenID)
 		
+		TriggerClientEvent("NB:ReadyToSpawn",playerid) -- 出生，應該跟在上面的建立角色之後，目前先在這裡
+		if OnPlayerSpawn then OnPlayerSpawn(playerid) end 
 	end 
 
+	function OnPlayerSpawn(playerid)
+		
+	end 
+	
 	function OnPlayerUpdate(playerid)
 		
 	end 
 
 	function OnPlayerDisconnect(playerid)
+		local playerData = NB.PlayerData(playerid)
+		local citizenID = playerData.citizenID 
 		
 	end 
-
+	
+	
 end 
