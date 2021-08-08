@@ -32,18 +32,19 @@ function DB_IsUserExist(license)
 	local result = NB.Utils.Remote.mysql_execute_sync('SELECT id FROM users WHERE license = @license', {
 		['@license'] = license
 	})
-	return license and (not not result[1])
+	return license and (result and not not result[1] or false)
 end 
 
 function DB_GetCharacterLicense(citizenID)
-	local result = NB.Utils.Remote.mysql_execute_sync('SELECT u.License FROM users u inner join characters s on u.CitizenID = s.CitizenID WHERE u.CitizenID = @CitizenID', {
+	--'SELECT u.License FROM users u inner join characters s on u.CitizenID = s.CitizenID WHERE u.CitizenID = @CitizenID'
+	local result = NB.Utils.Remote.mysql_execute_sync('SELECT License FROM characters WHERE CitizenID = @CitizenID', {
 		['@CitizenID'] = citizenID
 	})
 	return result and result[1].License or nil
 end 
 
 function DB_GetCharactersByLicense(license,idx)
-	local result = NB.Utils.Remote.mysql_execute_sync('SELECT CitizenID FROM users WHERE License = @License', {
+	local result = NB.Utils.Remote.mysql_execute_sync('SELECT CitizenID FROM characters WHERE License = @License', {
 		['@License'] = license
 	})
 	if idx then 
@@ -68,14 +69,14 @@ RegisterNetEvent('NB:OnPlayerJoined', function() --called by com.game.session.de
 		local license = com.game.license.GetLicense(source)
 		if license then 
 			if not DB_IsUserExist(license) then
-				local citizenID = NB.UserSomethingSeriousGenerator('CitizenID',function()return tostring(com.lua.utils.Text.Generator(7) .. com.lua.utils.Math.Generator(9)):upper()end)
-				NB.Utils.Remote.mysql_execute('INSERT INTO players (CitizenID,License,AdminLevel,Position) VALUES (@CitizenID,@License,@AdminLevel,@Position)', {
-					['@CitizenID'] = citizenID,
-					['@AdminLevel'] = NB.UserSomethingSeriousGenerator('AdminLevel',function()return 0 end),
+				local citizenID = NB.UserSomethingSeriousGenerator('CitizenID','characters',function()return tostring(com.lua.utils.Text.Generator(7) .. com.lua.utils.Math.Generator(9)):upper()end)
+				NB.Utils.Remote.mysql_execute('INSERT INTO users (License,AdminLevel) VALUES (@License,@AdminLevel)', {
+					['@AdminLevel'] = NB.UserSomethingSeriousGenerator('AdminLevel','users',function()return 0 end),
 					['@License'] = license
 				}, function(result)
-					NB.Utils.Remote.mysql_execute('INSERT INTO characters (CitizenID,Position) VALUES (@CitizenID,@Position)', {
+					NB.Utils.Remote.mysql_execute('INSERT INTO characters (CitizenID,License,Position) VALUES (@CitizenID,@License,@Position)', {
 						['@CitizenID'] = citizenID,
+						['@License'] = license,
 						['@Position'] = json.encode(DEFAULT_SPAWN_POSITION)
 					}, function(result)
 						print("Created player into database")
@@ -160,14 +161,14 @@ NB.SetExpensiveCitizenData = function(CitizenID,tablename,dataname,datas,...)
 
 end 
 
-NB.UserSomethingSeriousGenerator = function(name,checkfn)
+NB.UserSomethingSeriousGenerator = function(name,tablename,checkfn)
 	local SomethingExist = false
 	local Something = nil
 
 	while not SomethingExist do
 		Something = checkfn(name)
 		if not Something then error("error on creating player something",2) end 
-		local result = NB.Utils.Remote.mysql_execute_sync('SELECT COUNT(*) as count FROM users WHERE '..name..'=@'..name..'', {['@'..name..''] = Something})
+		local result = NB.Utils.Remote.mysql_execute_sync('SELECT COUNT(*) as count FROM '..tablename..' WHERE '..name..'=@'..name..'', {['@'..name..''] = Something})
 		if result[1].count == 0 then
 			SomethingExist = true
 		end
