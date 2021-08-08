@@ -10,6 +10,7 @@ end)
 AddEventHandler('playerDropped', function (reason)
 	local playerId = NB.PlayerId(source)
 	NB.ReleasePlayer()
+	if OnPlayerDisconnect then OnPlayerDisconnect(playerId) end 
 	
 	TriggerEvent('NB:log','Player Disconnected',playerId)
 end)
@@ -125,28 +126,17 @@ RegisterNetEvent('NB:OnPlayerJoined', function() --called by com.game.session.de
 		local license = com.game.license.GetLicense(playerId)
 		if license then 
 			if not DB_IsUserExist(license) then
-				local citizenID = NB.UserSomethingSeriousGenerator('CitizenID','characters',function()return tostring(com.lua.utils.Text.Generator(7) .. com.lua.utils.Math.Generator(9)):upper()end)
-				NB.Utils.Remote.mysql_execute('INSERT INTO users (License,AdminLevel) VALUES (@License,@AdminLevel)', {
-					['@AdminLevel'] = NB.UserSomethingSeriousGenerator('AdminLevel','users',function()return 0 end),
-					['@License'] = license
-				}, function(result)
-					NB.Utils.Remote.mysql_execute('INSERT INTO characters (CitizenID,License,Position) VALUES (@CitizenID,@License,@Position)', {
-						['@CitizenID'] = citizenID,
-						['@License'] = license,
-						['@Position'] = json.encode(DEFAULT_SPAWN_POSITION)
-					}, function(result)
-						print("Created player into database")
-						NB.SetPlayer(CreatePlayer(playerId, license, citizenID))
-					end )
-				end )
-				
 				NB.SendClientMessageToAll(-1,"一個新玩家加入了服務器，正在進行選角")
+				local citizenID = NB.UserSomethingSeriousGenerator('CitizenID','characters',function()return tostring(com.lua.utils.Text.Generator(7) .. com.lua.utils.Math.Generator(9)):upper()end)
 				NB.SetPlayer(CreatePlayer(playerId, license, citizenID))
+				if OnPlayerRegister then OnPlayerRegister(playerId, license, citizenID) end 
+				return NB.GetPlayers(playerId)
 			else 
 				NB.SendClientMessageToAll(-1,"一個老玩家加入了服務器，正在進行選角")
 				local citizenID = DB_GetCharactersByLicense(license,1)
 				NB.SetPlayer(CreatePlayer(playerId, license, citizenID))
-				return NB.Players[playerId]
+				if OnPlayerLogin then OnPlayerLogin(playerId, license, citizenID) end 
+				return NB.GetPlayers(playerId)
 			end
 			
 		else 

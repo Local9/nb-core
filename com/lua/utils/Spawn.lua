@@ -1,5 +1,5 @@
 
-local function freezePlayer(id, freeze)
+com.lua.utils.SpawnManager.SpawnFreeze = function(id, freeze)
     local player = id
     SetPlayerControl(player, not freeze, false)
 
@@ -45,7 +45,7 @@ com.lua.utils.SpawnManager.Spawn = function(coords, heading, model,cb)
 	end 
 	local model = model or `mp_m_freemode_01`
 	-- freeze the local player
-    freezePlayer(PlayerId(), true)
+    com.lua.utils.SpawnManager.SpawnFreeze(PlayerId(), true)
 	RequestModel(model)
 
     -- load the model for this spawn

@@ -9,19 +9,7 @@ if IsClient() then
 		end
 		DoScreenFadeOut(0)
 		TriggerServerEvent('NB:OnPlayerJoined')
-		local player = PlayerId()
-		SetPlayerControl(player, false, false)
-		if IsEntityVisible(ped) then
-			SetEntityVisible(ped, false)
-		end
-		SetEntityCollision(ped, false)
-		FreezeEntityPosition(ped, true)
-		--SetCharNeverTargetted(ped, true)
-		SetPlayerInvincible(player, true)
-		--RemovePtfxFromPed(ped)
-		if not IsPedFatallyInjured(ped) then
-			ClearPedTasksImmediately(ped)
-		end
+		com.lua.utils.SpawnManager.SpawnFreeze(PlayerId(),true)
 		CreateThread(function()
 			Wait(5000)
 			if IsScreenFadedOut() and not IsScreenFadedIn() then
@@ -41,7 +29,6 @@ if IsClient() then
 	end)
 	AddEventHandler("NB:CancelDefaultSpawn",function()
 		DefaultSpawnCanceled = true
-		print('CancelDefaultSpawn')
 	end )
 end 
 
