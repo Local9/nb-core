@@ -30,7 +30,7 @@ if IsServer() then
 	ESX.ServerCallbacks = {}
 	RegisterServerEvent('ESX:triggerServerCallback')
 	AddEventHandler('ESX:triggerServerCallback', function(name, requestId, ...)
-		local playerId = source
+		local playerId = NB and NB.PlayerId and NB.PlayerId(source) or tonumber(source)
 		ESX.TriggerServerCallback(name, requestId, playerId, function(...)
 			TriggerClientEvent('ESX:serverCallback', playerId, requestId, ...)
 		end, ...)
@@ -41,9 +41,9 @@ if IsServer() then
 		ESX.ServerCallbacks[name] = cb
 	end
 
-	ESX.TriggerServerCallback = function(name, requestId, source, cb, ...)
+	ESX.TriggerServerCallback = function(name, requestId, playerId, cb, ...)
 		if ESX.ServerCallbacks[name] then
-			ESX.ServerCallbacks[name](source, cb, ...)
+			ESX.ServerCallbacks[name](playerId, cb, ...)
 		else
 			print(('[^3WARNING^7] Server callback ^5"%s"^0 does not exist. ^1Please Check The Server File for Errors!'):format(name))
 		end

@@ -3,8 +3,8 @@ NB.Threads = com.lua.threads
 
 NB.RegisterServerCallback = ESX.RegisterServerCallback 
 
-NB.SendClientMessage = function(source, color, message)
-	TriggerClientEvent('chat:addMessage',source, {
+NB.SendClientMessage = function(playerId, color, message)
+	TriggerClientEvent('chat:addMessage',playerId, {
 	  color = color == -1 and 255 or NB.Utils.Colour.HexToRGB(color,true),
 	  multiline = true,
 	  args = {message}

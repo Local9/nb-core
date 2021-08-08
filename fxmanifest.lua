@@ -21,16 +21,12 @@ shared_scripts {
 
 client_scripts {
 	'client/functions.lua',
-	'client/events.lua',
-	'client/session.lua'
+	'client/events.lua'
 }
 
 server_scripts{
 	'server/functions.lua',
-	'server/callbacks.lua',
-	'server/events.lua',
-	'server/player.lua',
-	'server/session.lua'
+	'server/player.lua'
 }
 
 

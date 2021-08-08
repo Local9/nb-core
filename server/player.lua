@@ -1,33 +1,38 @@
 NB._temp_.thisPlayerId = -1
 
-NB.PlayerId = function()
-	return NB._temp_.thisPlayerId
-end 
-
 AddEventHandler('playerConnecting', function(name, setKickReason, deferrals)
-	NB.UpdatePlayerId(source)
-	if OnPlayerConnect then OnPlayerConnect(source, name, setKickReason, deferrals) end 
+	local playerId = NB.PlayerId(source)
+	if OnPlayerConnect then OnPlayerConnect(playerId, name, setKickReason, deferrals) end 
+	
+	TriggerEvent('NB:log','Player Connected',playerId)
 end)
 
 AddEventHandler('playerDropped', function (reason)
-	NB.UpdatePlayerId(source)
+	local playerId = NB.PlayerId(source)
 	NB.ReleasePlayer()
+	
+	TriggerEvent('NB:log','Player Disconnected',playerId)
 end)
 
 NB.GetPlayers = function(id)
 	return not id and NB.Players or NB.Players[id]
 end
 
-NB.UpdatePlayerId = function(source)
-	if source then 
-		NB._temp_.thisPlayerId = source
+NB.UpdatePlayerId = function(playerId)
+	if tonumber(playerId) then 
+		NB._temp_.thisPlayerId = tonumber(playerId)
 	end 
-	local playerId = NB.PlayerId()
+	local playerId = NB._temp_.thisPlayerId
 	return playerId,NB.GetPlayers(playerId)
 end
 
-NB.PlayerData = function(source)
-	local playerid, playerdata = NB.UpdatePlayerId(source)
+NB.PlayerId = function(playerId)
+	local playerid = NB.UpdatePlayerId(playerId)
+	return playerid
+end 
+
+NB.PlayerData = function(playerId)
+	local playerid, playerdata = NB.UpdatePlayerId(playerId)
 	return playerdata,playerid
 end 
 
@@ -57,6 +62,7 @@ NB.GetIdentifier = NB.GetLicense
 function CreatePlayer(playerId, license,citizenID)
 	local self = {}
 	self.playerId = playerId
+	self.PlayerId = playerId
 	self.source = playerId
 	self.license = license
 	self.variables = {}
@@ -144,7 +150,7 @@ RegisterNetEvent('NB:OnPlayerJoined', function() --called by com.game.session.de
 			end
 			
 		else 
-			DropPlayer(source, 'Your license could not be found,the cause of this error is not known.')
+			DropPlayer(playerId, 'Your license could not be found,the cause of this error is not known.')
 			return false 
 		end 
 	end
@@ -230,16 +236,16 @@ end
 RegisterNetEvent('NB:SavePlayerPosition', function(coords,heading)
 	if coords and heading then 
 		local x, y, z = table.unpack(coords)
-		local xPlayer = NB.PlayerData(source)
-		local citizenID = xPlayer.citizenID 
+		local playerData = NB.PlayerData(source)
+		local citizenID = playerData.citizenID 
 		NB.SetExpensiveCitizenData(citizenID,'characters','Position',{x=x,y=y,z=z,heading=heading})
 	end 
 end) 
 
 
-NB.RegisterServerCallback("NB:SpawnPlayer",function(source,cb)
-	local xPlayer = NB.PlayerData(source)
-	local citizenID = xPlayer.citizenID 
+NB.RegisterServerCallback("NB:SpawnPlayer",function(playerId,cb)
+	local playerData = NB.PlayerData(playerId)
+	local citizenID = playerData.citizenID 
 	NB.GetExpensiveCitizenData(citizenID,'characters','Position',function(result)
 		if result then 
 			local pos = json.decode(result[1].Position)

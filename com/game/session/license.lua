@@ -1,5 +1,5 @@
-com.game.license.GetLicense = function(source)
-	local identifiers = GetPlayerIdentifiers(source)
+com.game.license.GetLicense = function(playerId)
+	local identifiers = GetPlayerIdentifiers(playerId)
 	local license
 
 	-- you can use [steam, license] --

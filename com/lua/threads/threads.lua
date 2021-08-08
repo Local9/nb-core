@@ -219,7 +219,7 @@ CreateThread(function()
 		end 
 		RegisterServerEvent(thisname..':log')
 		AddEventHandler(thisname..':log', function(strings,sourcename)
-			print(strings.." player:"..GetPlayerName(source).." \n\x1B[32m[\x1B[33m"..thisname.."\x1B[32m]\x1B[33m"..GetResourcePath(sourcename)..'\x1B[0m')
+			print(strings.." player:"..GetPlayerName(NB.PlayerId(source)).." \n\x1B[32m[\x1B[33m"..thisname.."\x1B[32m]\x1B[33m"..GetResourcePath(sourcename)..'\x1B[0m')
 		end)
 	else 
 		if GetCurrentResourceName() ~= thisname then 
