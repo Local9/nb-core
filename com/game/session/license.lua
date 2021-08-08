@@ -13,3 +13,4 @@ com.game.license.GetLicense = function(source)
 	end
 	return license
 end 
+

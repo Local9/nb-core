@@ -1,5 +1,57 @@
+NB._temp_.thisPlayerId = -1
+
+NB.PlayerId = function()
+	return NB._temp_.thisPlayerId
+end 
+
+AddEventHandler('playerConnecting', function(name, setKickReason, deferrals)
+	NB.UpdatePlayerId(source)
+	if OnPlayerConnect then OnPlayerConnect(source, name, setKickReason, deferrals) end 
+end)
+
+AddEventHandler('playerDropped', function (reason)
+	NB.UpdatePlayerId(source)
+	NB.ReleasePlayer()
+end)
+
+NB.GetPlayers = function(id)
+	return not id and NB.Players or NB.Players[id]
+end
+
+NB.UpdatePlayerId = function(source)
+	if source then 
+		NB._temp_.thisPlayerId = source
+	end 
+	local playerId = NB.PlayerId()
+	return playerId,NB.GetPlayers(playerId)
+end
+
+NB.PlayerData = function(source)
+	local playerid, playerdata = NB.UpdatePlayerId(source)
+	return playerdata,playerid
+end 
+
+NB.SetPlayer = function(value)
+	NB.Players[NB.PlayerId()] = value
+end 
+
+NB.ReleasePlayer = function()
+	NB.Players[NB.PlayerId()] = nil 
+end
 
 
+
+NB.GetPlayerFromIdentifier = function(identifier)
+	for k,v in pairs(NB.Players) do
+		if v.identifier == identifier then
+			return v
+		end
+	end
+end
+
+NB.GetLicense = com.game.license.GetLicense
+
+NB.GetIdentifier = NB.GetLicense
 
 
 function CreatePlayer(playerId, license,citizenID)
@@ -62,11 +114,9 @@ function DB_IsCharacterExist(citizenID)
 end 
 
 RegisterNetEvent('NB:OnPlayerJoined', function() --called by com.game.session.default.lua/CreateThread
-	local source = source
-	local xPlayer = NB.GetPlayerFromId(source)
-	if not NB.Players[source] then
-		local source = source
-		local license = com.game.license.GetLicense(source)
+	local playerdata,playerId = NB.PlayerData(source)
+	if not playerdata then
+		local license = com.game.license.GetLicense(playerId)
 		if license then 
 			if not DB_IsUserExist(license) then
 				local citizenID = NB.UserSomethingSeriousGenerator('CitizenID','characters',function()return tostring(com.lua.utils.Text.Generator(7) .. com.lua.utils.Math.Generator(9)):upper()end)
@@ -80,18 +130,19 @@ RegisterNetEvent('NB:OnPlayerJoined', function() --called by com.game.session.de
 						['@Position'] = json.encode(DEFAULT_SPAWN_POSITION)
 					}, function(result)
 						print("Created player into database")
-						NB.Players[source] = CreatePlayer(source, license, citizenID)
+						NB.SetPlayer(CreatePlayer(playerId, license, citizenID))
 					end )
 				end )
 				
 				NB.SendClientMessageToAll(-1,"一個新玩家加入了服務器，正在進行選角")
-				NB.Players[source] = CreatePlayer(source, license, citizenID)
+				NB.SetPlayer(CreatePlayer(playerId, license, citizenID))
 			else 
 				NB.SendClientMessageToAll(-1,"一個老玩家加入了服務器，正在進行選角")
 				local citizenID = DB_GetCharactersByLicense(license,1)
-				NB.Players[source] = CreatePlayer(source, license, citizenID)
-				return NB.Players[source]
+				NB.SetPlayer(CreatePlayer(playerId, license, citizenID))
+				return NB.Players[playerId]
 			end
+			
 		else 
 			DropPlayer(source, 'Your license could not be found,the cause of this error is not known.')
 			return false 
@@ -176,20 +227,10 @@ NB.UserSomethingSeriousGenerator = function(name,tablename,checkfn)
 	return Something
 end
 
-AddEventHandler('playerConnecting', function(name, setKickReason, deferrals)
-	if NB.GetPlayerFromIdentifier(NB.GetIdentifier(source)) then 
-		DropPlayer(source, 'Error: Someone who is having Same License in the Server')
-	end 
-end)
-AddEventHandler('playerDropped', function (reason)
-  NB.ReleasePlayer(source)
-end)
-
-
 RegisterNetEvent('NB:SavePlayerPosition', function(coords,heading)
 	if coords and heading then 
 		local x, y, z = table.unpack(coords)
-		local xPlayer = NB.GetPlayerFromId(source)
+		local xPlayer = NB.PlayerData(source)
 		local citizenID = xPlayer.citizenID 
 		NB.SetExpensiveCitizenData(citizenID,'characters','Position',{x=x,y=y,z=z,heading=heading})
 	end 
@@ -197,7 +238,7 @@ end)
 
 
 NB.RegisterServerCallback("NB:SpawnPlayer",function(source,cb)
-	local xPlayer = NB.GetPlayerFromId(source)
+	local xPlayer = NB.PlayerData(source)
 	local citizenID = xPlayer.citizenID 
 	NB.GetExpensiveCitizenData(citizenID,'characters','Position',function(result)
 		if result then 
