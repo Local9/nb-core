@@ -1,6 +1,6 @@
 if IsServer() then 
 	RegisterServerEvent("NB:log")
-	AddEventHandler("NB:log", function (strings,playerId_)
+	AddEventHandler("NB:log", function (strings,isprint,playerId_)
 		local playerId = NB and NB.PlayerId and NB.PlayerId(source) or tonumber(source)
 		if playerId or playerId_ then 
 			if NB and NB.GetLicense then 
@@ -14,6 +14,9 @@ if IsServer() then
 		local f,err = io.open('nbcore_log.txt','a+') 
 		if f then 
 			f:write(strings.."\n")
+			if isprint then 
+				print(strings)
+			end 
 			f:close()
 		else 
 			print(err)

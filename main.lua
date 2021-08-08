@@ -76,15 +76,16 @@ if IsServer() then
 		
 	end 
 	
-	function OnPlayerUpdate(playerid)
-		
-	end 
-
 	function OnPlayerDisconnect(playerid)
 		local playerData = NB.PlayerData(playerid)
 		local citizenID = playerData.citizenID 
 		
 	end 
 	
-	
+end 
+
+if IsClient() then 
+	function OnPlayerUpdate()
+		
+	end 
 end 

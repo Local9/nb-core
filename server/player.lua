@@ -4,14 +4,14 @@ AddEventHandler('playerConnecting', function(name, setKickReason, deferrals)
 	local playerId = NB.PlayerId(source)
 	if OnPlayerConnect then OnPlayerConnect(playerId, name, setKickReason, deferrals) end 
 	
-	TriggerEvent('NB:log','Player Connected',playerId)
+	TriggerEvent('NB:log','Player Connected',false,playerId)
 end)
 
 AddEventHandler('playerDropped', function (reason)
 	local playerId = NB.PlayerId(source)
 	if OnPlayerDisconnect then OnPlayerDisconnect(playerId) end 
 	
-	TriggerEvent('NB:log','Player Disconnected',playerId)
+	TriggerEvent('NB:log','Player Disconnected',false,playerId)
 	NB.ReleasePlayer()
 end)
 
@@ -230,6 +230,7 @@ RegisterNetEvent('NB:SavePlayerPosition', function(coords,heading)
 		local citizenID = playerData and playerData.citizenID 
 		if citizenID then 
 			NB.SetExpensiveCitizenData(citizenID,'characters','Position',{x=x,y=y,z=z,heading=heading})
+			--TriggerEvent("NB:log","[Citizen:"..citizenID.."] Position Saved")
 		end 
 	end 
 end) 
@@ -240,6 +241,7 @@ RegisterNetEvent("NB:SaveCharacterSkin",function(result)
 	local citizenID = playerData.citizenID 
 	if citizenID and result then 
 		NB.SetExpensiveCitizenData(citizenID,'characters','Skin',result)
+		TriggerEvent("NB:log","[Citizen:"..citizenID.."] Skin Saved",true)
 	end 
 end )
 
