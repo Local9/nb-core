@@ -2,13 +2,13 @@
 
 
 
-function CreatePlayer(playerId, license)
+function CreatePlayer(playerId, license,citizenID)
 	local self = {}
 	self.playerId = playerId
 	self.source = playerId
 	self.license = license
 	self.variables = {}
-	
+	self.citizenID = citizenID
 	self.triggerEvent = function(eventName, ...)
 		TriggerClientEvent(eventName, self.source, ...)
 	end
@@ -28,39 +28,69 @@ function CreatePlayer(playerId, license)
 	return self
 end
 
+function DB_IsPlayerExist(license)
+	local result = NB.Utils.Remote.mysql_execute_sync('SELECT id FROM players WHERE license = @license', {
+		['@license'] = license
+	})
+	return license and (not not result[1])
+end 
+
+function DB_GetCharacterLicense(citizenID)
+	local result = NB.Utils.Remote.mysql_execute_sync('SELECT u.License FROM players u inner join characters s on u.CitizenID = s.CitizenID WHERE u.CitizenID = @CitizenID', {
+		['@CitizenID'] = citizenID
+	})
+	return result and result[1].License or nil
+end 
+
+function DB_GetCharactersByLicense(license,idx)
+	local result = NB.Utils.Remote.mysql_execute_sync('SELECT CitizenID FROM players WHERE License = @License', {
+		['@License'] = license
+	})
+	if idx then 
+		return result and result[idx].CitizenID or nil
+	else
+		return result or nil 
+	end 
+end 
+
+function DB_IsCharacterExist(citizenID)
+	local result = NB.Utils.Remote.mysql_execute_sync('SELECT CitizenID FROM characters WHERE CitizenID = @CitizenID', {
+		['@CitizenID'] = citizenID
+	})
+	return license and (not not result[1])
+end 
+
 RegisterNetEvent('NB:OnPlayerJoined', function() --called by com.game.session.default.lua/CreateThread
 	local source = source
 	local xPlayer = NB.GetPlayerFromId(source)
 	if not NB.Players[source] then
 		local source = source
 		local license = com.game.license.GetLicense(source)
-		print(license)
 		if license then 
-			NB.Utils.Remote.mysql_execute('SELECT id FROM players WHERE license = @license', {
-				['@license'] = license
-			}, function(result)
-				
-				if not result[1] then
-					
-					NB.Utils.Remote.mysql_execute('INSERT INTO players (CitizenID,License,AdminLevel,Position) VALUES (@CitizenID,@License,@AdminLevel,@Position)', {
-						['@CitizenID'] = NB.CreatePlayerSomethingSerious('CitizenID',function()return tostring(com.lua.utils.Text.Generator(7) .. com.lua.utils.Math.Generator(9)):upper()end),
-						['@AdminLevel'] = NB.CreatePlayerSomethingSerious('AdminLevel',function()return 0 end),
-						['@License'] = license,
+			if not DB_IsPlayerExist(license) then
+				local citizenID = NB.PlayerSomethingSeriousGenerator('CitizenID',function()return tostring(com.lua.utils.Text.Generator(7) .. com.lua.utils.Math.Generator(9)):upper()end)
+				NB.Utils.Remote.mysql_execute('INSERT INTO players (CitizenID,License,AdminLevel,Position) VALUES (@CitizenID,@License,@AdminLevel,@Position)', {
+					['@CitizenID'] = citizenID,
+					['@AdminLevel'] = NB.PlayerSomethingSeriousGenerator('AdminLevel',function()return 0 end),
+					['@License'] = license
+				}, function(result)
+					NB.Utils.Remote.mysql_execute('INSERT INTO characters (CitizenID,Position) VALUES (@CitizenID,@Position)', {
+						['@CitizenID'] = citizenID,
 						['@Position'] = json.encode(DEFAULT_SPAWN_POSITION)
 					}, function(result)
 						print("Created player into database")
-						NB.Players[source] = CreatePlayer(source, license)
-						
+						NB.Players[source] = CreatePlayer(source, license, citizenID)
 					end )
-					
-					NB.SendClientMessageToAll(-1,"一個新玩家加入了服務器，正在進行選角")
-					NB.Players[source] = CreatePlayer(source, license)
-				else 
-					NB.SendClientMessageToAll(-1,"一個老玩家加入了服務器，正在進行選角")
-					NB.Players[source] = CreatePlayer(source, license)
-					return NB.Players[source]
-				end
-			end)
+				end )
+				
+				NB.SendClientMessageToAll(-1,"一個新玩家加入了服務器，正在進行選角")
+				NB.Players[source] = CreatePlayer(source, license, citizenID)
+			else 
+				NB.SendClientMessageToAll(-1,"一個老玩家加入了服務器，正在進行選角")
+				local citizenID = DB_GetCharactersByLicense(license,1)
+				NB.Players[source] = CreatePlayer(source, license, citizenID)
+				return NB.Players[source]
+			end
 		else 
 			DropPlayer(source, 'Your license could not be found,the cause of this error is not known.')
 			return false 
@@ -70,17 +100,15 @@ RegisterNetEvent('NB:OnPlayerJoined', function() --called by com.game.session.de
 end)
 
 
-NB.GetExpensivePlayerData = function(source,tablename,dataname,resultcb)
-	local license = com.game.license.GetLicense(source)
-	NB.Utils.Remote.mysql_execute('SELECT '..dataname..' FROM '..tablename..' WHERE license = @license', {
-		['@license'] = license
+NB.GetExpensiveCitizenData = function(CitizenID,tablename,dataname,resultcb)
+	NB.Utils.Remote.mysql_execute('SELECT '..dataname..' FROM '..tablename..' WHERE CitizenID = @CitizenID', {
+		['@CitizenID'] = CitizenID
 	}, function(result)
 		resultcb(result)
 	end)
 end 
 
-NB.SetExpensivePlayerData = function(source,tablename,dataname,datas,...)
-	local license = com.game.license.GetLicense(source)
+NB.SetExpensiveCitizenData = function(CitizenID,tablename,dataname,datas,...)
 		local otherargs = {...}
 		local datas = datas 
 		if #otherargs > 0 then 
@@ -125,21 +153,21 @@ NB.SetExpensivePlayerData = function(source,tablename,dataname,datas,...)
 				end 
 			end 
 		end 
-		NB.Utils.Remote.mysql_execute('UPDATE '..tablename..' SET '..dataname..' = @'..dataname..' WHERE license = @license', {
-			['@license'] = license,
+		NB.Utils.Remote.mysql_execute('UPDATE '..tablename..' SET '..dataname..' = @'..dataname..' WHERE CitizenID = @CitizenID', {
+			['@CitizenID'] = CitizenID,
 			['@'..dataname..''] = covertDatas(datas)
 		})
 
 end 
 
-NB.CreatePlayerSomethingSerious = function(name,checkfn)
+NB.PlayerSomethingSeriousGenerator = function(name,checkfn)
 	local SomethingExist = false
 	local Something = nil
 
 	while not SomethingExist do
 		Something = checkfn(name)
 		if not Something then error("error on creating player something",2) end 
-		local result = exports.ghmattimysql:executeSync('SELECT COUNT(*) as count FROM players WHERE '..name..'=@'..name..'', {['@'..name..''] = Something})
+		local result = NB.Utils.Remote.mysql_execute_sync('SELECT COUNT(*) as count FROM players WHERE '..name..'=@'..name..'', {['@'..name..''] = Something})
 		if result[1].count == 0 then
 			SomethingExist = true
 		end
@@ -160,16 +188,19 @@ end)
 RegisterNetEvent('NB:SavePlayerPosition', function(coords,heading)
 	if coords and heading then 
 		local x, y, z = table.unpack(coords)
-		
-		NB.SetExpensivePlayerData(source,'players','position',{x=x,y=y,z=z,heading=heading})
+		local xPlayer = NB.GetPlayerFromId(source)
+		local citizenID = xPlayer.citizenID 
+		NB.SetExpensiveCitizenData(citizenID,'characters','Position',{x=x,y=y,z=z,heading=heading})
 	end 
 end) 
 
 
 NB.RegisterServerCallback("NB:SpawnPlayer",function(source,cb)
-	NB.GetExpensivePlayerData(source,'players','position',function(result)
+	local xPlayer = NB.GetPlayerFromId(source)
+	local citizenID = xPlayer.citizenID 
+	NB.GetExpensiveCitizenData(citizenID,'characters','Position',function(result)
 		if result then 
-			local pos = json.decode(result[1].position)
+			local pos = json.decode(result[1].Position)
 			cb(vector3(pos.x, pos.y, pos.z), pos.heading)
 			--cb(vector3(pos[1], pos[2], pos[3]), pos[4])
 		end 
