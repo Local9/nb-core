@@ -1,6 +1,8 @@
 if IsClient() then 
 	local DefaultSpawnCanceled = false 
 	SetThreadPriority(0)
+	ClearPlayerWantedLevel(PlayerId())
+	SetMaxWantedLevel(MAX_WANTED_LEVEL)
 	CreateThread(function()
 		while not NetworkIsSessionStarted() do
 			Wait(0)

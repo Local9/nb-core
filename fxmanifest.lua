@@ -2,7 +2,7 @@ fx_version 'adamant'
 game 'gta5'
 
 files {
-	'xls/table/monster.csv'
+	'xls/table/*.csv'
 }
 
 lua54 'yes'
