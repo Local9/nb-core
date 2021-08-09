@@ -176,7 +176,7 @@ NB.SaveAllCacheCitizenDataIntoMysql = function(CitizenID)
 						if not NB.IsCacheSomthingExist(citizenid,tablename,"DontSaveToMysql") then 
 							local task = function(cb)
 									NB.SetExpensiveCitizenData(citizenid,tablename,datanames,data)
-									print(citizenid,tablename,dataname,data)
+									--print(citizenid,tablename,dataname,data)
 								cb("Async")
 							end
 							table.insert(tasks, task)
@@ -190,7 +190,7 @@ NB.SaveAllCacheCitizenDataIntoMysql = function(CitizenID)
 end 
 
 CreateThread(function()
-	Wait(500)
+	Wait(10000)
 	while true do 
 		NB.SaveAllCacheCitizenDataIntoMysql()
 		Wait(60000)
