@@ -4,6 +4,7 @@ local LastSkinDecode = nil
 local LastCoords = vector3(0.0,0.0,0.0) 
 if DEFAULT_SPAWN_METHOD then 
 RegisterNetEvent("NB:ReadyToSpawn",function()
+	print("NB:ReadyToSpawn")
 	TriggerEvent('NB:CancelDefaultSpawn')
 	NB.TriggerServerCallback('NB:GetLastPosition',function (coords, heading)
 		local coords,heading = coords,heading or DEFAULT_SPAWN_POSITION

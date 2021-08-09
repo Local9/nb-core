@@ -88,18 +88,28 @@ function CreatePlayer(playerId, license,citizenID)
 end
 
 function DB_IsUserExist(license)
-	local result = NB.Utils.Remote.mysql_execute_sync('SELECT id FROM users WHERE license = @license', {
+	local result = NB.Utils.Remote.mysql_scalar_sync('SELECT COUNT(*) as count FROM users WHERE license = @license', {
 		['@license'] = license
 	})
-	return license and (result and not not result[1] or false)
+	local r = not not (result > 0)
+	
+	return r
+end 
+
+function DB_IsCharacterExist(citizenID)
+	local result = NB.Utils.Remote.mysql_scalar_sync('SELECT COUNT(*) as count FROM characters WHERE CitizenID = @CitizenID', {
+		['@CitizenID'] = citizenID
+	})
+	local r = not not (result > 0)
+	return r 
 end 
 
 function DB_GetCharacterLicense(citizenID)
 	--'SELECT u.License FROM users u inner join characters s on u.CitizenID = s.CitizenID WHERE u.CitizenID = @CitizenID'
-	local result = NB.Utils.Remote.mysql_execute_sync('SELECT License FROM characters WHERE CitizenID = @CitizenID', {
+	local result = NB.Utils.Remote.mysql_scalar_sync('SELECT License FROM characters WHERE CitizenID = @CitizenID', {
 		['@CitizenID'] = citizenID
 	})
-	return result and result[1].License or nil
+	return result and result or nil
 end 
 
 function DB_GetCharactersByLicense(license,idx)
@@ -107,17 +117,10 @@ function DB_GetCharactersByLicense(license,idx)
 		['@License'] = license
 	})
 	if idx then 
-		return result and result[idx].CitizenID or nil
+		return result and result[idx] and result[idx].CitizenID or nil
 	else
 		return result or nil 
 	end 
-end 
-
-function DB_IsCharacterExist(citizenID)
-	local result = NB.Utils.Remote.mysql_execute_sync('SELECT CitizenID FROM characters WHERE CitizenID = @CitizenID', {
-		['@CitizenID'] = citizenID
-	})
-	return license and (not not result[1])
 end 
 
 RegisterNetEvent('NB:OnPlayerJoined', function() --called by com.game.session.default.lua/CreateThread
@@ -126,12 +129,14 @@ RegisterNetEvent('NB:OnPlayerJoined', function() --called by com.game.session.de
 		local license = com.game.license.GetLicense(playerId)
 		if license then 
 			if not DB_IsUserExist(license) then
+				
 				NB.SendClientMessageToAll(-1,"一個新玩家加入了服務器，正在進行選角")
 				local citizenID = NB.UserSomethingSeriousGenerator('CitizenID','characters',function()return tostring(com.lua.utils.Text.Generator(7) .. com.lua.utils.Math.Generator(9)):upper()end)
 				NB.SetPlayer(CreatePlayer(playerId, license, citizenID))
 				if OnPlayerRegister then OnPlayerRegister(playerId, license, citizenID) end 
 				return NB.GetPlayers(playerId)
 			else 
+				
 				NB.SendClientMessageToAll(-1,"一個老玩家加入了服務器，正在進行選角")
 				local citizenID = DB_GetCharactersByLicense(license,1)
 				NB.SetPlayer(CreatePlayer(playerId, license, citizenID))
@@ -149,11 +154,10 @@ end)
 
 
 NB.GetExpensiveCitizenData = function(CitizenID,tablename,dataname,resultcb)
-	NB.Utils.Remote.mysql_execute('SELECT '..dataname..' FROM '..tablename..' WHERE CitizenID = @CitizenID', {
+	local result = NB.Utils.Remote.mysql_scalar_sync('SELECT '..dataname..' FROM '..tablename..' WHERE CitizenID = @CitizenID', {
 		['@CitizenID'] = CitizenID
-	}, function(result)
-		resultcb(result)
-	end)
+	})
+	return result 
 end 
 
 NB.SetExpensiveCitizenData = function(CitizenID,tablename,dataname,datas,...)
@@ -250,11 +254,10 @@ end )
 NB.RegisterServerCallback("NB:GetLastPosition",function(playerId,cb)
 	local playerData = NB.PlayerData(playerId)
 	local citizenID = playerData.citizenID 
-	NB.GetExpensiveCitizenData(citizenID,'characters','Position',function(result)
-		if result then 
-			local pos = json.decode(result[1].Position)
-			cb(vector3(pos.x, pos.y, pos.z), pos.heading)
-			--cb(vector3(pos[1], pos[2], pos[3]), pos[4])
-		end 
-	end)
+	local result = NB.GetExpensiveCitizenData(citizenID,'characters','Position')
+	if result then 
+		local pos = json.decode(result)
+		cb(vector3(pos.x, pos.y, pos.z), pos.heading)
+		--cb(vector3(pos[1], pos[2], pos[3]), pos[4])
+	end 
 end )
