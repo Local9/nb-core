@@ -81,7 +81,7 @@ com.lua.utils.Csv.LoadDataSheet = function (name,returnkeys)
 			else 
 				for i=1,#keys do 
 					if string.find(datatable[i],"{") then 
-						datatable[i] = json.decode(datatable[i])
+						datatable[i] = json.decodetable(datatable[i])
 					elseif string.find(datatable[i],"vector") then 
 						datatable[i] = extractVector(datatable[i])
 					elseif datatable[i] == "nil" or datatable[i] == "null" then 
@@ -263,7 +263,7 @@ com.lua.utils.Csv.LoadDataSheetDecode = function (name,returnkeys)
 			else 
 				for i=1,#keys do 
 					if string.find(datatable[i],"{") then 
-						datatable[i] = json.decode(datatable[i])
+						datatable[i] = json.decodetable(datatable[i])
 					elseif string.find(datatable[i],"vector") then 
 						datatable[i] = extractVector(datatable[i])
 					elseif datatable[i] == "nil" or datatable[i] == "null" then 

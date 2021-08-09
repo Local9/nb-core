@@ -160,9 +160,9 @@ NB.GetExpensiveCitizenData = function(CitizenID,tablename,dataname)
 	local result = NB.Utils.Remote.mysql_scalar_sync('SELECT '..dataname..' FROM '..tablename..' WHERE CitizenID = @CitizenID', {
 		['@CitizenID'] = CitizenID
 	})
-	local t = json.decode(result)
+	local t = json.decodetable(result)
 	NB.SetTempSomething("CitizenDatas",CitizenID,tablename,dataname,t)
-	return json.decode(result) 
+	return t 
 end 
 
 NB.SetExpensiveCitizenData = function(CitizenID,tablename,dataname,datas,...)
