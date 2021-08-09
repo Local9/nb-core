@@ -1,8 +1,10 @@
+
+
 com.lua.utils.Table.SetTableSomething = function(obj,...)
 	local args = {...}
 	local thisparent = obj
 	local lastv = nil 
-	
+
 	for i=1,#args-1 do 
 		local v = tostring(args[i])
 		if thisparent[v] == nil then 
@@ -48,25 +50,25 @@ end
 
 com.lua.utils.Table.IsTableSomthingExist = function(obj,...)
 	local args = {...}
-		local thisparent = obj
-		local lastv = nil 
-		for i=1,#args do 
-			local v = tostring(args[i])
+	local thisparent = obj
+	local lastv = nil 
+	for i=1,#args do 
+		local v = tostring(args[i])
+		if thisparent[v] == nil then 
+			return false 
+		end 
+		if i ~= #args then 
+			thisparent = thisparent[v]
+		else 
 			if thisparent[v] == nil then 
 				return false 
-			end 
-			if i ~= #args then 
-				thisparent = thisparent[v]
 			else 
-				if thisparent[v] == nil then 
-					return false 
-				else 
-					return not (thisparent[v]==nil)
-				end 
 				return not (thisparent[v]==nil)
 			end 
+			return not (thisparent[v]==nil)
 		end 
-		return false 
+	end 
+	return false 
 end 
 
 com.lua.utils.Table.GetTableSomthing = function(obj,...)
