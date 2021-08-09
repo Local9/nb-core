@@ -55,7 +55,46 @@ NB.MakeSureTempSomethingExist = function(...)
 	return nil 
 end 
 NB.GetTempSomthing = function(...)
-	return NB.MakeSureTempSomethingExist(...)
+	local GetTempSomthing_ = function(...)
+		local args = {...}
+		local thisparent = NB._temp_
+		local lastv = nil 
+		
+		for i=1,#args do 
+			local v = tostring(args[i])
+			if thisparent[v] == nil then 
+				thisparent[v] = {} 
+			end 
+			if i ~= #args then 
+				thisparent = thisparent[v]
+			else 
+				local t = {}
+				for i,v in pairs(args) do 
+					t[i] = v 
+				end 
+				if thisparent[v] == nil then 
+					thisparent[v] = nil
+				else 
+					return thisparent[v]
+				end 
+				return thisparent[v]
+			end 
+		end 
+		return nil 
+	end 
+	local args = {...}
+	local lastarg = args[#args]
+	table.remove(args,#args)
+	local args2 = args 
+	return GetTempSomthing_(table.unpack(args2))[lastarg]
+end 
+
+NB.IsTempSomthingExist = function(...)
+	local args = {...}
+	local lastarg = args[#args]
+	table.remove(args,#args)
+	local args2 = args 
+	return NB.GetTempSomthing(table.unpack(args2))[lastarg]
 end 
 
 NB.SendClientMessage = function(playerId, color, message)

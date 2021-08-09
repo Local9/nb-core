@@ -153,7 +153,7 @@ RegisterNetEvent('NB:OnPlayerJoined', function() --called by com.game.session.de
 end)
 
 NB.GetCheapCitizenData = function(CitizenID,tablename,dataname)
-	return NB._temp_.CitizenDatas[CitizenID][tablename][dataname] or NB.GetExpensiveCitizenData(CitizenID,tablename,dataname)
+	return NB.GetTempSomthing("CitizenDatas",CitizenID,tablename,dataname) or NB.GetExpensiveCitizenData(CitizenID,tablename,dataname)
 end 
 
 NB.GetExpensiveCitizenData = function(CitizenID,tablename,dataname)
@@ -228,7 +228,7 @@ end )
 NB.RegisterServerCallback("NB:GetLastPosition",function(playerId,cb)
 	local playerData = NB.PlayerData(playerId)
 	local citizenID = playerData.citizenID 
-	local pos = NB.GetExpensiveCitizenData(citizenID,'characters','Position')
+	local pos = NB.GetCheapCitizenData(citizenID,'characters','Position')
 	if pos then 
 		cb(vector3(pos.x, pos.y, pos.z), pos.heading)
 		--cb(vector3(pos[1], pos[2], pos[3]), pos[4])
@@ -238,9 +238,11 @@ end )
 --[=[
 CreateThread(function()
 	while true do Wait(1000)
+		local playerData = NB.PlayerData()
+		local citizenID = playerData.citizenID 
 		--NB.MakeSureTempSomethingExist("CitizenDatas2","xD","xD","xD")
-		NB.SetTempSomething("CitizenDatas2","xD","xD","xD",{1,2,3})
-		print(json.encode(NB.GetTempSomthing("CitizenDatas2","xD","xD","xD")))
+		NB.SetTempSomething("CitizenDatas2",citizenID,"characters","Position",{1,2,3})
+		print(json.encode(NB.GetTempSomthing("CitizenDatas2",citizenID,"characters","Position2")))
 	end 
 end)
 --]=]
