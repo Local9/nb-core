@@ -1,9 +1,10 @@
 NB.Utils = com.lua.utils
 NB.Threads = com.lua.threads
 NB.RegisterServerCallback = ESX.RegisterServerCallback 
-NB.SetTempSomething = function(...) return com.lua.utils.Table.SetTableSomething(NB._temp_,...) end
-NB.IsTempSomthingExist = function(...) return com.lua.utils.Table.IsTableSomthingExist(NB._temp_,...) end 
-NB.GetTempSomthing = function(...) return com.lua.utils.Table.GetTableSomthing(NB._temp_,...) end  
+NB.SetTempSomething = function(...) return com.lua.utils.Table.SetTableSomething(NB,"_temp_",...) end
+NB.IsTempSomthingExist = function(...) return com.lua.utils.Table.IsTableSomthingExist(NB,"_temp_",...) end 
+NB.GetTempSomthing = function(...) return com.lua.utils.Table.GetTableSomthing(NB,"_temp_",...) end  
+
 
 
 NB.SendClientMessage = function(playerId, color, message)

@@ -35,10 +35,6 @@ com.lua.utils.Table.MakeSureTableSomethingExist = function(obj,...)
 		if i ~= #args then 
 			thisparent = thisparent[v]
 		else 
-			local t = {}
-			for i,v in pairs(args) do 
-				t[i] = v 
-			end 
 			if thisparent[v] == nil then 
 				thisparent[v] = nil
 			else 
@@ -62,10 +58,6 @@ com.lua.utils.Table.IsTableSomthingExist = function(obj,...)
 			if i ~= #args then 
 				thisparent = thisparent[v]
 			else 
-				local t = {}
-				for i,v in pairs(args) do 
-					t[i] = v 
-				end 
 				if thisparent[v] == nil then 
 					return false 
 				else 
@@ -92,10 +84,6 @@ com.lua.utils.Table.GetTableSomthing = function(obj,...)
 				if i ~= #args then 
 					thisparent = thisparent[v]
 				else 
-					local t = {}
-					for i,v in pairs(args) do 
-						t[i] = v 
-					end 
 					if thisparent[v] == nil then 
 						thisparent[v] = nil
 					else 
