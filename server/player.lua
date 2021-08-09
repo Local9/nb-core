@@ -235,14 +235,16 @@ NB.RegisterServerCallback("NB:GetLastPosition",function(playerId,cb)
 	end 
 end )
 
-
+--[=[
 CreateThread(function()
 	while true do Wait(1000)
 		local playerData = NB.PlayerData()
 		local citizenID = playerData.citizenID 
 		--NB.MakeSureTempSomethingExist("CitizenDatas2","xD","xD","xD")
 		NB.SetTempSomething("CitizenDatas2",citizenID,"characters","Position",{1,2,3})
+		--NB.SetTempSomething("CitizenDatas2",citizenID,"characters","Position2",{1,2,3})
 		print(json.encode(NB.GetTempSomthing("CitizenDatas2",citizenID,"characters","Position2")))
-		print(NB.IsTempSomthingExist("CitizenDatas2",citizenID,"characters","Position"))
+		print(NB.IsTempSomthingExist("CitizenDatas2",citizenID,"characters","Position3"))
 	end 
 end)
+--]=]

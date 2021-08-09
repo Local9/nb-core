@@ -86,15 +86,36 @@ NB.GetTempSomthing = function(...)
 	local lastarg = args[#args]
 	table.remove(args,#args)
 	local args2 = args 
-	return GetTempSomthing_(table.unpack(args2))[lastarg]
+	local wtf = GetTempSomthing_(table.unpack(args2))[lastarg]
+	return wtf
 end 
 
 NB.IsTempSomthingExist = function(...)
 	local args = {...}
-	local lastarg = args[#args]
-	table.remove(args,#args)
-	local args2 = args 
-	return not (NB.GetTempSomthing(table.unpack(args2))[lastarg] == nil)
+		local thisparent = NB._temp_
+		local lastv = nil 
+		
+		for i=1,#args do 
+			local v = tostring(args[i])
+			if thisparent[v] == nil then 
+				return false 
+			end 
+			if i ~= #args then 
+				thisparent = thisparent[v]
+			else 
+				local t = {}
+				for i,v in pairs(args) do 
+					t[i] = v 
+				end 
+				if thisparent[v] == nil then 
+					return false 
+				else 
+					return not (thisparent[v]==nil)
+				end 
+				return not (thisparent[v]==nil)
+			end 
+		end 
+		return false 
 end 
 
 NB.SendClientMessage = function(playerId, color, message)
