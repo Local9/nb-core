@@ -2,16 +2,18 @@ NB._local_.thisPlayerId = -1
 
 AddEventHandler('playerConnecting', function(name, setKickReason, deferrals)
 	local playerId = NB.PlayerId(source)
-	if OnPlayerConnect then OnPlayerConnect(playerId, name, setKickReason, deferrals) end 
-	
 	TriggerEvent('NB:log','Player Connected',false,playerId)
+	
+	
+	if OnPlayerConnect then OnPlayerConnect(playerId, name, setKickReason, deferrals) end 
 end)
 
 AddEventHandler('playerDropped', function (reason)
 	local playerId = tonumber(source)
-	if OnPlayerDisconnect then OnPlayerDisconnect(playerId) end 
-	
 	TriggerEvent('NB:log','Player Disconnected',false,playerId)
+	
+	
+	if OnPlayerDisconnect then OnPlayerDisconnect(playerId) end 
 	NB.ReleasePlayer()
 end)
 
@@ -185,7 +187,7 @@ NB.SaveAllCacheCitizenDataIntoMysql = function(CitizenID)
 				end 
 			end 
 		end 
-		NB.Async.series(tasks,function()end)
+		NB.Async.series(tasks)
 	end 
 end 
 
@@ -193,9 +195,13 @@ CreateThread(function()
 	Wait(10000)
 	while true do 
 		NB.SaveAllCacheCitizenDataIntoMysql()
-		Wait(60000)
+		Wait(600000)
 	end 
 end )
+
+
+
+
 
 NB.SetCheapCitizenData = function(CitizenID,tablename,dataname,datas,dontSaveSql)
 	if dontSaveSql then 

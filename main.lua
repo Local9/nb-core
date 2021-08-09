@@ -70,13 +70,14 @@ if IsServer() then
 	end 
 
 	function OnPlayerSpawn(playerid)
-		
+		NB.SendClientMessageToAll(-1,GetPlayerName(playerid).."出生了")
 	end 
 	
 	function OnPlayerDisconnect(playerid)
 		local playerData = NB.PlayerData(playerid)
 		local citizenID = playerData.citizenID 
 		NB.SaveAllCacheCitizenDataIntoMysql(citizenID)
+		NB.SendClientMessageToAll(-1,GetPlayerName(playerid).."離開了服務器")
 	end 
 	
 end 
@@ -85,4 +86,5 @@ if IsClient() then
 	function OnPlayerUpdate()
 		
 	end 
+	
 end 
