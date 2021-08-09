@@ -65,7 +65,6 @@ if IsServer() then
 	end 
 
 	function OnPlayerLogin(playerid, license, citizenID)
-		
 		TriggerClientEvent("NB:ReadyToSpawn",playerid) -- 出生，應該跟在上面的建立角色之後，目前先在這裡
 		if OnPlayerSpawn then OnPlayerSpawn(playerid) end 
 	end 
@@ -77,7 +76,7 @@ if IsServer() then
 	function OnPlayerDisconnect(playerid)
 		local playerData = NB.PlayerData(playerid)
 		local citizenID = playerData.citizenID 
-		
+		NB.SaveAllCacheCitizenDataIntoMysql(citizenID)
 	end 
 	
 end 

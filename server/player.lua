@@ -165,19 +165,23 @@ NB.GetExpensiveCitizenData = function(CitizenID,tablename,dataname)
 	return t 
 end 
 
-NB.SaveAllCacheCitizenDataIntoMysql = function()
+NB.SaveAllCacheCitizenDataIntoMysql = function(CitizenID)
 	if NB._cache_ and NB._cache_.CitizenDatas then 
 		local tasks = {}
+		local forcedCitizenID = not CitizenID == nil
 		for citizenid,tablenames in pairs(NB._cache_.CitizenDatas) do 
-			for tablename,datanames in pairs(tablenames) do 
-				for dataname,data in pairs(datanames) do 
-					local task = function(cb)
-						NB.SetExpensiveCitizenData(citizenid,tablename,datanames,data)
-						--print(citizenid,tablename,dataname,data)
-						cb("Async")
-					end
-
-					table.insert(tasks, task)
+			if (forcedCitizenID and citizenid == CitizenID) or (not forcedCitizenID) then 
+				for tablename,datanames in pairs(tablenames) do 
+					for dataname,data in pairs(datanames) do 
+						if not NB.IsCacheSomthingExist(citizenid,tablename,"DontSaveToMysql") then 
+							local task = function(cb)
+									NB.SetExpensiveCitizenData(citizenid,tablename,datanames,data)
+									print(citizenid,tablename,dataname,data)
+								cb("Async")
+							end
+							table.insert(tasks, task)
+						end 
+					end 
 				end 
 			end 
 		end 
@@ -189,14 +193,13 @@ CreateThread(function()
 	Wait(500)
 	while true do 
 		NB.SaveAllCacheCitizenDataIntoMysql()
-		Wait(2000)
+		Wait(60000)
 	end 
 end )
-NB.SetCheapCitizenData = function(CitizenID,tablename,dataname,datas,...)
-	local otherargs = {...}
-	local datas = datas 
-	if #otherargs > 0 then 
-		datas = {datas[1],...}
+
+NB.SetCheapCitizenData = function(CitizenID,tablename,dataname,datas,dontSaveSql)
+	if dontSaveSql then 
+		NB.SetCacheSomething("CitizenDatas",CitizenID,tablename,"DontSaveToMysql",true)
 	end 
 	NB.SetCacheSomething("CitizenDatas",CitizenID,tablename,dataname,datas)
 end 
