@@ -152,64 +152,38 @@ RegisterNetEvent('NB:OnPlayerJoined', function() --called by com.game.session.de
 	return false 
 end)
 
+NB.GetCheapCitizenData = function(CitizenID,tablename,dataname)
+	return NB._temp_.CitizenDatas[CitizenID][tablename][dataname] or NB.GetExpensiveCitizenData(CitizenID,tablename,dataname)
+end 
 
-NB.GetExpensiveCitizenData = function(CitizenID,tablename,dataname,resultcb)
+NB.GetExpensiveCitizenData = function(CitizenID,tablename,dataname)
 	local result = NB.Utils.Remote.mysql_scalar_sync('SELECT '..dataname..' FROM '..tablename..' WHERE CitizenID = @CitizenID', {
 		['@CitizenID'] = CitizenID
 	})
+	local t = json.decode(result)
+	NB.SetTempSomething("CitizenDatas",CitizenID,tablename,dataname,t)
 	return json.decode(result) 
 end 
 
 NB.SetExpensiveCitizenData = function(CitizenID,tablename,dataname,datas,...)
-		local otherargs = {...}
-		local datas = datas 
-		if #otherargs > 0 then 
-			datas = {datas[1],...}
-		end 
-		local covertDatas = function(datas)
-			if datas then 
-				local test_ = {}
-				local datatype = 0
-				if type(datas) == 'table' then 
-					datatype = 1
-					for i,v in pairs(datas) do 
-						table.insert(test_,i)
-					end 
-					for i=1,#test_ do 
-						if test_[i] == i then 
-						else 
-							datatype = 2
-							break 
-						end 
-					end 
-					
-					--return '{' .. table.concat(t_,",").. '}'
-				else 
-					datatype = 0
-					--return datas
-				end 
-				if datatype == 2 then 
-					local t_ = {} 
-					for i,v in pairs(datas) do 
-						table.insert(t_,'"'..i..'"'..":"..v)
-					end 
-					return '{' .. table.concat(t_,",").. '}'
-				elseif datatype == 1 then 
-					local t_ = {} 
-					for i=1,#datas do 
-						table.insert(t_,datas[i])
-					end 
-					return '{' .. table.concat(t_,",").. '}'
-				else 
-					return datas
-				end 
+	local otherargs = {...}
+	local datas = datas 
+	if #otherargs > 0 then 
+		datas = {datas[1],...}
+	end 
+	local covertDatas = function(datas)
+		if datas then 
+			if type(datas) == 'table' then 
+				return json.encode(datas)
+			else 
+				return tostring(datas)
 			end 
 		end 
-		NB.Utils.Remote.mysql_execute('UPDATE '..tablename..' SET '..dataname..' = @'..dataname..' WHERE CitizenID = @CitizenID', {
-			['@CitizenID'] = CitizenID,
-			['@'..dataname..''] = covertDatas(datas)
-		})
-
+	end 
+	NB.Utils.Remote.mysql_execute('UPDATE '..tablename..' SET '..dataname..' = @'..dataname..' WHERE CitizenID = @CitizenID', {
+		['@CitizenID'] = CitizenID,
+		['@'..dataname..''] = covertDatas(datas)
+	})
 end 
 
 NB.UserSomethingSeriousGenerator = function(name,tablename,checkfn)
@@ -260,3 +234,13 @@ NB.RegisterServerCallback("NB:GetLastPosition",function(playerId,cb)
 		--cb(vector3(pos[1], pos[2], pos[3]), pos[4])
 	end 
 end )
+
+--[=[
+CreateThread(function()
+	while true do Wait(1000)
+		--NB.MakeSureTempSomethingExist("CitizenDatas2","xD","xD","xD")
+		NB.SetTempSomething("CitizenDatas2","xD","xD","xD",{1,2,3})
+		print(json.encode(NB.GetTempSomthing("CitizenDatas2","xD","xD","xD")))
+	end 
+end)
+--]=]

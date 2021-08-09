@@ -3,7 +3,60 @@ NB.Threads = com.lua.threads
 NB.RegisterServerCallback = ESX.RegisterServerCallback 
 
 
+NB.SetTempSomething = function(...)
+	local args = {...}
+	local thisparent = NB._temp_
+	local lastv = nil 
+	
+	for i=1,#args-1 do 
+		local v = tostring(args[i])
+		if thisparent[v] == nil then 
+			thisparent[v] = {} 
+		end 
+		if i ~= #args-1 then 
+			thisparent = thisparent[v]
+		else 
+			local t = {}
+			for i,v in pairs(args) do 
+				t[i] = v 
+			end 
+			thisparent[v] = t[#t]
+			return thisparent[v]
+		end 
+	end 
+	return nil 
+end 
 
+NB.MakeSureTempSomethingExist = function(...)
+	local args = {...}
+	local thisparent = NB._temp_
+	local lastv = nil 
+	
+	for i=1,#args do 
+		local v = tostring(args[i])
+		if thisparent[v] == nil then 
+			thisparent[v] = {} 
+		end 
+		if i ~= #args then 
+			thisparent = thisparent[v]
+		else 
+			local t = {}
+			for i,v in pairs(args) do 
+				t[i] = v 
+			end 
+			if thisparent[v] == nil then 
+				thisparent[v] = nil
+			else 
+				return thisparent[v]
+			end 
+			return thisparent[v]
+		end 
+	end 
+	return nil 
+end 
+NB.GetTempSomthing = function(...)
+	return NB.MakeSureTempSomethingExist(...)
+end 
 
 NB.SendClientMessage = function(playerId, color, message)
 	TriggerClientEvent('chat:addMessage',playerId, {
