@@ -157,7 +157,7 @@ NB.GetExpensiveCitizenData = function(CitizenID,tablename,dataname,resultcb)
 	local result = NB.Utils.Remote.mysql_scalar_sync('SELECT '..dataname..' FROM '..tablename..' WHERE CitizenID = @CitizenID', {
 		['@CitizenID'] = CitizenID
 	})
-	return result 
+	return json.decode(result) 
 end 
 
 NB.SetExpensiveCitizenData = function(CitizenID,tablename,dataname,datas,...)
@@ -254,9 +254,8 @@ end )
 NB.RegisterServerCallback("NB:GetLastPosition",function(playerId,cb)
 	local playerData = NB.PlayerData(playerId)
 	local citizenID = playerData.citizenID 
-	local result = NB.GetExpensiveCitizenData(citizenID,'characters','Position')
-	if result then 
-		local pos = json.decode(result)
+	local pos = NB.GetExpensiveCitizenData(citizenID,'characters','Position')
+	if pos then 
 		cb(vector3(pos.x, pos.y, pos.z), pos.heading)
 		--cb(vector3(pos[1], pos[2], pos[3]), pos[4])
 	end 
