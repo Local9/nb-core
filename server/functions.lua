@@ -94,7 +94,7 @@ NB.IsTempSomthingExist = function(...)
 	local lastarg = args[#args]
 	table.remove(args,#args)
 	local args2 = args 
-	return NB.GetTempSomthing(table.unpack(args2))[lastarg]
+	return not (NB.GetTempSomthing(table.unpack(args2))[lastarg] == nil)
 end 
 
 NB.SendClientMessage = function(playerId, color, message)
