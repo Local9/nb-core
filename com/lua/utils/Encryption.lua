@@ -2,7 +2,7 @@
 	-- From http://lua-users.org/wiki/BaseSixtyFour
 	local b='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
 
-	function encode(data)
+	local function encode(data)
 		
 		return ((string.gsub(data,'.', function(x)
 			local r,b='',x:byte()
@@ -16,7 +16,7 @@
 		end)..({ '', '==', '=' })[#data%3+1])
 	end
 
-	function decode(data)
+	local function decode(data)
 		data = string.gsub(data, '[^'..b..'=]', '')
 		return (data:gsub('.', function(x)
 			if (x == '=') then return '' end

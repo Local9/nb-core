@@ -1,4 +1,4 @@
-Threads = {}
+local Threads = {}
 com.lua.threads = Threads
 
 Threads.debuglog = false

@@ -1,4 +1,5 @@
 ESX = {} -- https://github.com/esx-framework/esx-legacy
+
 if IsShared() then 
 	local Charset = {}
 	
