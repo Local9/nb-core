@@ -16,7 +16,6 @@ RegisterNetEvent("NB:ReadyToSpawn",function()
 	
 	NB.Threads.CreateLoop('Save',1000,function()
 		NB.Flow.CheckNativeChange(CheckPedTasks,PlayerPedId(),function(olddata,newdata)
-			--print(olddata,newdata)
 			if OnPlayerUpdate then OnPlayerUpdate() end 
 			NB.Flow.CheckNativeChangeVector(GetEntityCoords,PlayerPedId(),1.0,function(olddata,newdata)
 				local heading = GetEntityHeading(PlayerPedId())
@@ -24,14 +23,13 @@ RegisterNetEvent("NB:ReadyToSpawn",function()
 			end)
 
 			TriggerEvent('skinchanger:getSkin', function(skin)
-				local encodeSkin = json.encode(skin)
-				if (LastSkinDecode~=encodeSkin) then 
-					LastSkinDecode = encodeSkin
-					TriggerServerEvent("NB:SaveCharacterSkin",skin)
-				end 
+				NB.Flow.CheckChange("(name)skinchanger:getSkin",skin,function(d1,d2)
+					TriggerServerEvent("NB:SaveCharacterSkin",d2)
+				end )
 			end)
 		end)
-
+		
+		
 	end)
 	--[=[
 	TriggerEvent('skinchanger:getData', function(components, maxVals)
