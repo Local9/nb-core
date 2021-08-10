@@ -93,8 +93,7 @@ function DB_IsUserExist(license)
 	local result = NB.Utils.Remote.mysql_scalar_sync('SELECT COUNT(*) as count FROM users WHERE license = @license', {
 		['@license'] = license
 	})
-	local r = not not (result > 0)
-	
+	local r = not not (result and result > 0)
 	return r
 end 
 
