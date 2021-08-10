@@ -15,6 +15,7 @@ shared_scripts {
 	'com/lua/**/*.lua',
 	'com/game/*.lua',
 	'com/game/**/*.lua',
+	'com/define.lua',
 	"import.lua"
 }
 
