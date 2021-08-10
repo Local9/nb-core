@@ -20,7 +20,7 @@ if IsServer() then
 		deferrals.defer()
 		Wait(0)
 		local license = NB.GetIdentifier(playerid)
-		print(license)
+		
 		local isLicenseAlreadyInUse = false 
 		deferrals.update(string.format("Hello %s. Validating Your Rockstar License", name))
 		if NB.GetPlayerFromIdentifier(NB.GetIdentifier(playerid)) then 
@@ -47,15 +47,15 @@ if IsServer() then
 	end 
 
 	function OnPlayerRegister(playerid, license, citizenID)
-		NB.Utils.Remote.mysql_execute('INSERT INTO users (License) VALUES (@License)', {
-			['@License'] = license
+		NB.Utils.Remote.mysql_execute('INSERT INTO users (license) VALUES (@license)', {
+			['@license'] = license
 		}, function(result)
 			--下面是新建角色才會執行，目前先省略建立步驟
 			
-			NB.Utils.Remote.mysql_execute('INSERT INTO characters (CitizenID,License,Position) VALUES (@CitizenID,@License,@Position)', {
-				['@CitizenID'] = citizenID,
-				['@License'] = license,
-				['@Position'] = json.encode(DEFAULT_SPAWN_POSITION)
+			NB.Utils.Remote.mysql_execute('INSERT INTO characters (citizen_id,license,position) VALUES (@citizen_id,@license,@position)', {
+				['@citizen_id'] = citizenID,
+				['@license'] = license,
+				['@position'] = json.encode(DEFAULT_SPAWN_POSITION)
 			}, function(result)
 				print("Created a character into database")
 				if OnPlayerLogin then OnPlayerLogin(playerid,citizenID) end 
