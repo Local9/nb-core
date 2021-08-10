@@ -101,7 +101,7 @@ function DB_IsCharacterExist(citizenID)
 	local result = NB.Utils.Remote.mysql_scalar_sync('SELECT COUNT(*) as count FROM characters WHERE citizen_id = @citizen_id', {
 		['@citizen_id'] = citizenID
 	})
-	local r = not not (result > 0)
+	local r = not not (result and result > 0)
 	return r 
 end 
 
