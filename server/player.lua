@@ -170,20 +170,20 @@ end
 NB.SaveAllCacheCitizenDataIntoMysql = function(citizenID)
 	if NB._cache_ and NB._cache_.CitizenDatas then 
 		local tasks = {}
-		local forcedcitizenID = not citizenID == nil
+		local forcedcitizenID = not (citizenID == nil)
 		for citizenidstr,tablenames in pairs(NB._cache_.CitizenDatas) do 
 			if (forcedcitizenID and citizenidstr == citizenID) or (not forcedcitizenID) then 
 				for tablename,datanames in pairs(tablenames) do 
-					for dataname,data in pairs(datanames) do 
-						if not NB.IsCacheSomthingExist(citizenidstr,tablename,"DontSaveToMysql") then 
+					--for dataname,data in pairs(datanames) do 
+						if not NB.IsCacheSomthingExist(citizenidstr,tablename,"DontSaveToDatabase") then 
 							local task = function(cb)
-									NB.SetExpensiveCitizenData(citizenidstr,tablename,datanames,data)
+									NB.SetExpensiveCitizenData(citizenidstr,tablename,datanames)
 									--print(citizenidstr,tablename,dataname,data)
 								cb("Async")
 							end
 							table.insert(tasks, task)
 						end 
-					end 
+					--end 
 				end 
 			end 
 		end 
@@ -205,23 +205,19 @@ end )
 
 NB.SetCheapCitizenData = function(citizenID,tablename,dataname,datas,dontSaveSql)
 	if dontSaveSql then 
-		NB.SetCacheSomething("CitizenDatas",citizenID,tablename,"DontSaveToMysql",true)
+		NB.SetCacheSomething("CitizenDatas",citizenID,tablename,"DontSaveToDatabase",true)
 	end 
 	NB.SetCacheSomething("CitizenDatas",citizenID,tablename,dataname,datas)
 end 
 
 NB.SetExpensiveCitizenData = function(citizenID,tablename,dataname,datas,...)
-	local otherargs = {...}
-	local datas = datas 
-	if #otherargs > 0 then 
-		datas = {datas[1],...}
-	end 
-	local covertDatas = function(datas)
-		if datas then 
-			if type(datas) == 'table' then 
-				return json.encode(datas)
+	
+	local covertDatas = function(cdata)
+		if cdata then 
+			if type(cdata) == 'table' then 
+				return json.encode(cdata)
 			else 
-				return tostring(datas)
+				return tostring(cdata)
 			end 
 		end 
 	end 
@@ -238,6 +234,11 @@ NB.SetExpensiveCitizenData = function(citizenID,tablename,dataname,datas,...)
 		
 		NB.Utils.Remote.mysql_execute('UPDATE '..tablename..' SET '..querys..' WHERE citizen_id = @citizen_id', datadefines)
 	else 
+		local otherargs = {...}
+		local datas = datas 
+		if #otherargs > 0 then 
+			datas = {datas[1],...}
+		end 
 		NB.Utils.Remote.mysql_execute('UPDATE '..tablename..' SET '..dataname..' = @'..dataname..' WHERE citizen_id = @citizen_id', {
 			['@citizen_id'] = citizenID,
 			['@'..dataname..''] = covertDatas(datas)
