@@ -1,4 +1,4 @@
-NB._local_.thisPlayerId = -1
+NB["_LOCAL_"].thisPlayerId = -1
 
 AddEventHandler('playerConnecting', function(name, setKickReason, deferrals)
 	local playerId = NB.PlayerId(source)
@@ -23,9 +23,9 @@ end
 
 NB.UpdatePlayerId = function(playerId)
 	if tonumber(playerId) then 
-		NB._local_.thisPlayerId = tonumber(playerId)
+		NB["_LOCAL_"].thisPlayerId = tonumber(playerId)
 	end 
-	local playerId = NB._local_.thisPlayerId
+	local playerId = NB["_LOCAL_"].thisPlayerId
 	return playerId,NB.GetPlayers(playerId)
 end
 
@@ -155,7 +155,7 @@ RegisterNetEvent('NB:OnPlayerJoined', function() --called by com.game.session.de
 end)
 
 NB.GetCheapCitizenData = function(citizenID,tablename,dataname)
-	return NB.GetCacheSomthing("CitizenDatas",citizenID,tablename,dataname) or NB.GetExpensiveCitizenData(citizenID,tablename,dataname)
+	return NB.GetCacheSomthing("CITIZEN",citizenID,tablename,dataname) or NB.GetExpensiveCitizenData(citizenID,tablename,dataname)
 end 
 
 NB.GetExpensiveCitizenData = function(citizenID,tablename,dataname)
@@ -163,19 +163,19 @@ NB.GetExpensiveCitizenData = function(citizenID,tablename,dataname)
 		['@citizen_id'] = citizenID
 	})
 	local t = json.decodetable(result)
-	NB.SetCacheSomething("CitizenDatas",citizenID,tablename,dataname,t)
+	NB.SetCacheSomething("CITIZEN",citizenID,tablename,dataname,t)
 	return t 
 end 
 
 NB.SaveAllCacheCitizenDataIntoMysql = function(citizenID)
-	if NB._cache_ and NB._cache_.CitizenDatas then 
+	if NB["_CACHE_"] and NB["_CACHE_"].CITIZEN then 
 		local tasks = {}
 		local forcedcitizenID = not (citizenID == nil)
-		for citizenidstr,tablenames in pairs(NB._cache_.CitizenDatas) do 
+		for citizenidstr,tablenames in pairs(NB._cache_.CITIZEN) do 
 			if (forcedcitizenID and citizenidstr == citizenID) or (not forcedcitizenID) then 
 				for tablename,datanames in pairs(tablenames) do 
 					--for dataname,data in pairs(datanames) do 
-						if not NB.IsCacheSomthingExist(citizenidstr,tablename,"DontSaveToDatabase") then 
+						if not NB.IsCacheSomthingExist(citizenidstr,tablename,"DontSaveToDatabase") then --dont save the table slots 
 							local task = function(cb)
 									NB.SetExpensiveCitizenData(citizenidstr,tablename,datanames)
 									--print(citizenidstr,tablename,dataname,data)
@@ -205,9 +205,9 @@ end )
 
 NB.SetCheapCitizenData = function(citizenID,tablename,dataname,datas,dontSaveSql)
 	if dontSaveSql then 
-		NB.SetCacheSomething("CitizenDatas",citizenID,tablename,"DontSaveToDatabase",true)
+		NB.SetCacheSomething("CITIZEN",citizenID,tablename,"DontSaveToDatabase",true)
 	end 
-	NB.SetCacheSomething("CitizenDatas",citizenID,tablename,dataname,datas)
+	NB.SetCacheSomething("CITIZEN",citizenID,tablename,dataname,datas)
 end 
 
 NB.SetExpensiveCitizenData = function(citizenID,tablename,dataname,datas,...)

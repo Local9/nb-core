@@ -2,8 +2,8 @@ function IsServer() return IsDuplicityVersion() end ;function IsClient() return 
 json.decodetable = function(...) local a = json.decode(...) return a end ;
 
 NB = {
-	_cache_ = {},
-	_local_ = {},
+	_CACHE_ = {},
+	_LOCAL_ = {},
 	Datas={},
 	Players={},
 	Utils={},

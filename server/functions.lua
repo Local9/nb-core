@@ -2,10 +2,9 @@ NB.Async = com.lua.utils.Async
 NB.Utils = com.lua.utils
 NB.Threads = com.lua.threads
 NB.RegisterServerCallback = ESX.RegisterServerCallback 
-NB.SetCacheSomething = function(...) return com.lua.utils.Table.SetTableSomething(NB,"_cache_",...) end
-NB.IsCacheSomthingExist = function(...) return com.lua.utils.Table.IsTableSomthingExist(NB,"_cache_",...) end 
-NB.GetCacheSomthing = function(...) return com.lua.utils.Table.GetTableSomthing(NB,"_cache_",...) end  
-NB.GetCacheLength = function(x) return com.lua.utils.Table.GetTableLength(NB._cache_,x) end 
+NB.SetCacheSomething = function(...) return com.lua.utils.Table.SetTableSomething(NB["_CACHE_"],...) end
+NB.IsCacheSomthingExist = function(...) return com.lua.utils.Table.IsTableSomthingExist(NB["_CACHE_"],...) end 
+NB.GetCacheSomthing = function(...) return com.lua.utils.Table.GetTableSomthing(NB["_CACHE_"],...) end  
 
 
 NB.SendClientMessage = function(playerId, color, message)
