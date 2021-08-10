@@ -2,12 +2,12 @@
 local LastTasks = nil 
 local LastSkinDecode = nil 
 local LastCoords = vector3(0.0,0.0,0.0) 
-if DEFAULT_SPAWN_METHOD then 
+if DEFAULT_SPAWN_METHOD then  
 RegisterNetEvent("NB:ReadyToSpawn",function()
 	print("NB:ReadyToSpawn")
 	TriggerEvent('NB:CancelDefaultSpawn')
 	NB.TriggerServerCallback('NB:GetLastPosition',function (coords, heading)
-		local coords,heading = coords,heading or DEFAULT_SPAWN_POSITION
+		local coords,heading = coords,heading or  DEFAULT_SPAWN_POSITION
 		TriggerEvent('skinchanger:loadDefaultModel', true,function()
 			NB.Utils.SpawnManager.Spawn(coords, heading)
 		end )
@@ -41,6 +41,7 @@ RegisterNetEvent("NB:ReadyToSpawn",function()
 	
 end )
 end 
+
 
 
 function printCurrentPedTasks(ped,...)

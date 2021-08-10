@@ -1,5 +1,3 @@
-NB.Utils = com.lua.utils
-NB.Threads = com.lua.threads
 NB.TriggerServerCallback = ESX.TriggerServerCallback 
 
 NB.SpawnPlayerDefault = function()

@@ -1,17 +1,19 @@
-NB._temp_.thisPlayerId = -1
+NB["_LOCAL_"].thisPlayerId = -1
 
 AddEventHandler('playerConnecting', function(name, setKickReason, deferrals)
 	local playerId = NB.PlayerId(source)
-	if OnPlayerConnect then OnPlayerConnect(playerId, name, setKickReason, deferrals) end 
-	
 	TriggerEvent('NB:log','Player Connected',false,playerId)
+	
+	
+	if OnPlayerConnect then OnPlayerConnect(playerId, name, setKickReason, deferrals) end 
 end)
 
 AddEventHandler('playerDropped', function (reason)
-	local playerId = NB.PlayerId(source)
-	if OnPlayerDisconnect then OnPlayerDisconnect(playerId) end 
-	
+	local playerId = tonumber(source)
 	TriggerEvent('NB:log','Player Disconnected',false,playerId)
+	
+	
+	if OnPlayerDisconnect then OnPlayerDisconnect(playerId) end 
 	NB.ReleasePlayer()
 end)
 
@@ -21,9 +23,9 @@ end
 
 NB.UpdatePlayerId = function(playerId)
 	if tonumber(playerId) then 
-		NB._temp_.thisPlayerId = tonumber(playerId)
+		NB["_LOCAL_"].thisPlayerId = tonumber(playerId)
 	end 
-	local playerId = NB._temp_.thisPlayerId
+	local playerId = NB["_LOCAL_"].thisPlayerId
 	return playerId,NB.GetPlayers(playerId)
 end
 
@@ -97,27 +99,27 @@ function DB_IsUserExist(license)
 end 
 
 function DB_IsCharacterExist(citizenID)
-	local result = NB.Utils.Remote.mysql_scalar_sync('SELECT COUNT(*) as count FROM characters WHERE CitizenID = @CitizenID', {
-		['@CitizenID'] = citizenID
+	local result = NB.Utils.Remote.mysql_scalar_sync('SELECT COUNT(*) as count FROM characters WHERE citizen_id = @citizen_id', {
+		['@citizen_id'] = citizenID
 	})
 	local r = not not (result > 0)
 	return r 
 end 
 
 function DB_GetCharacterLicense(citizenID)
-	--'SELECT u.License FROM users u inner join characters s on u.CitizenID = s.CitizenID WHERE u.CitizenID = @CitizenID'
-	local result = NB.Utils.Remote.mysql_scalar_sync('SELECT License FROM characters WHERE CitizenID = @CitizenID', {
-		['@CitizenID'] = citizenID
+	--'SELECT u.license FROM users u inner join characters s on u.citizen_id = s.citizen_id WHERE u.citizen_id = @citizen_id'
+	local result = NB.Utils.Remote.mysql_scalar_sync('SELECT license FROM characters WHERE citizen_id = @citizen_id', {
+		['@citizen_id'] = citizenID
 	})
 	return result and result or nil
 end 
 
 function DB_GetCharactersByLicense(license,idx)
-	local result = NB.Utils.Remote.mysql_execute_sync('SELECT CitizenID FROM characters WHERE License = @License', {
-		['@License'] = license
+	local result = NB.Utils.Remote.mysql_execute_sync('SELECT citizen_id FROM characters WHERE license = @license', {
+		['@license'] = license
 	})
 	if idx then 
-		return result and result[idx] and result[idx].CitizenID or nil
+		return result and result[idx] and result[idx].citizen_id or nil
 	else
 		return result or nil 
 	end 
@@ -131,7 +133,7 @@ RegisterNetEvent('NB:OnPlayerJoined', function() --called by com.game.session.de
 			if not DB_IsUserExist(license) then
 				
 				NB.SendClientMessageToAll(-1,"一個新玩家加入了服務器，正在進行選角")
-				local citizenID = NB.UserSomethingSeriousGenerator('CitizenID','characters',function()return tostring(com.lua.utils.Text.Generator(7) .. com.lua.utils.Math.Generator(9)):upper()end)
+				local citizenID = NB.UserSomethingSeriousGenerator('citizen_id','characters',function()return tostring(com.lua.utils.Text.Generator(7) .. com.lua.utils.Math.Generator(9)):upper()end)
 				NB.SetPlayer(CreatePlayer(playerId, license, citizenID))
 				if OnPlayerRegister then OnPlayerRegister(playerId, license, citizenID) end 
 				return NB.GetPlayers(playerId)
@@ -152,38 +154,97 @@ RegisterNetEvent('NB:OnPlayerJoined', function() --called by com.game.session.de
 	return false 
 end)
 
-NB.GetCheapCitizenData = function(CitizenID,tablename,dataname)
-	return NB.GetTempSomthing("CitizenDatas",CitizenID,tablename,dataname) or NB.GetExpensiveCitizenData(CitizenID,tablename,dataname)
+NB.GetCheapCitizenData = function(citizenID,tablename,dataname)
+	return NB.GetCacheSomthing("CITIZEN",citizenID,tablename,dataname) or NB.GetExpensiveCitizenData(citizenID,tablename,dataname)
 end 
 
-NB.GetExpensiveCitizenData = function(CitizenID,tablename,dataname)
-	local result = NB.Utils.Remote.mysql_scalar_sync('SELECT '..dataname..' FROM '..tablename..' WHERE CitizenID = @CitizenID', {
-		['@CitizenID'] = CitizenID
+NB.GetExpensiveCitizenData = function(citizenID,tablename,dataname)
+	local result = NB.Utils.Remote.mysql_scalar_sync('SELECT '..dataname..' FROM '..tablename..' WHERE citizen_id = @citizen_id', {
+		['@citizen_id'] = citizenID
 	})
-	local t = json.decode(result)
-	NB.SetTempSomething("CitizenDatas",CitizenID,tablename,dataname,t)
-	return json.decode(result) 
+	local t = json.decodetable(result)
+	NB.SetCacheSomething("CITIZEN",citizenID,tablename,dataname,t)
+	return t 
 end 
 
-NB.SetExpensiveCitizenData = function(CitizenID,tablename,dataname,datas,...)
-	local otherargs = {...}
-	local datas = datas 
-	if #otherargs > 0 then 
-		datas = {datas[1],...}
+NB.SaveAllCacheCitizenDataIntoMysql = function(citizenID)
+	if NB["_CACHE_"] and NB["_CACHE_"].CITIZEN then 
+		local tasks = {}
+		local forcedcitizenID = not (citizenID == nil)
+		for citizenidstr,tablenames in pairs(NB["_CACHE_"].CITIZEN) do 
+			if (forcedcitizenID and citizenidstr == citizenID) or (not forcedcitizenID) then 
+				for tablename,datanames in pairs(tablenames) do 
+					--for dataname,data in pairs(datanames) do 
+						if not NB.IsCacheSomthingExist(citizenidstr,tablename,"DontSaveToDatabase") then --dont save the table slots 
+							local task = function(cb)
+									NB.SetExpensiveCitizenData(citizenidstr,tablename,datanames)
+									--print(citizenidstr,tablename,dataname,data)
+								cb("Async")
+							end
+							table.insert(tasks, task)
+						end 
+					--end 
+				end 
+			end 
+		end 
+		NB.Async.series(tasks)
 	end 
-	local covertDatas = function(datas)
-		if datas then 
-			if type(datas) == 'table' then 
-				return json.encode(datas)
+end 
+
+CreateThread(function()
+	Wait(10000)
+	while true do 
+		NB.SaveAllCacheCitizenDataIntoMysql()
+		Wait(600000)
+	end 
+end )
+
+
+
+
+
+NB.SetCheapCitizenData = function(citizenID,tablename,dataname,datas,dontSaveSql)
+	if dontSaveSql then 
+		NB.SetCacheSomething("CITIZEN",citizenID,tablename,"DontSaveToDatabase",true)
+	end 
+	NB.SetCacheSomething("CITIZEN",citizenID,tablename,dataname,datas)
+end 
+
+NB.SetExpensiveCitizenData = function(citizenID,tablename,dataname,datas,...)
+	
+	local covertDatas = function(cdata)
+		if cdata then 
+			if type(cdata) == 'table' then 
+				return json.encode(cdata)
 			else 
-				return tostring(datas)
+				return tostring(cdata)
 			end 
 		end 
 	end 
-	NB.Utils.Remote.mysql_execute('UPDATE '..tablename..' SET '..dataname..' = @'..dataname..' WHERE CitizenID = @CitizenID', {
-		['@CitizenID'] = CitizenID,
-		['@'..dataname..''] = covertDatas(datas)
-	})
+	if type(dataname) == 'table' then 
+		local querys = {}
+		local datadefines = {
+			['@citizen_id'] = citizenID
+		}
+		for dataname_,data_ in pairs(dataname) do 
+			table.insert(querys,dataname_..' = @'..dataname_)
+			datadefines['@'..dataname_..''] = covertDatas(data_)
+		end 
+		querys = table.concat(querys,",")
+		
+		NB.Utils.Remote.mysql_execute('UPDATE '..tablename..' SET '..querys..' WHERE citizen_id = @citizen_id', datadefines)
+	else 
+		local otherargs = {...}
+		local datas = datas 
+		if #otherargs > 0 then 
+			datas = {datas[1],...}
+		end 
+		NB.Utils.Remote.mysql_execute('UPDATE '..tablename..' SET '..dataname..' = @'..dataname..' WHERE citizen_id = @citizen_id', {
+			['@citizen_id'] = citizenID,
+			['@'..dataname..''] = covertDatas(datas)
+		})
+	end 
+	
 end 
 
 NB.UserSomethingSeriousGenerator = function(name,tablename,checkfn)
@@ -207,8 +268,8 @@ RegisterNetEvent('NB:SavePlayerPosition', function(coords,heading)
 		local playerData = NB.PlayerData(tonumber(source))
 		local citizenID = playerData and playerData.citizenID 
 		if citizenID then 
-			NB.SetExpensiveCitizenData(citizenID,'characters','Position',{x=x,y=y,z=z,heading=heading})
-			--TriggerEvent("NB:log","[Citizen:"..citizenID.."] Position Saved")
+			NB.SetCheapCitizenData(citizenID,'characters','position',{x=x,y=y,z=z,heading=heading})
+			--TriggerEvent("NB:log","[Citizen:"..citizenID.."] position Saved")
 		end 
 	end 
 end) 
@@ -218,7 +279,7 @@ RegisterNetEvent("NB:SaveCharacterSkin",function(result)
 	local playerData = NB.PlayerData(playerid)
 	local citizenID = playerData.citizenID 
 	if citizenID and result then 
-		NB.SetExpensiveCitizenData(citizenID,'characters','Skin',result)
+		NB.SetCheapCitizenData(citizenID,'characters','Skin',result)
 		TriggerEvent("NB:log","[Citizen:"..citizenID.."] Skin Saved",true)
 	end 
 end )
@@ -228,23 +289,10 @@ end )
 NB.RegisterServerCallback("NB:GetLastPosition",function(playerId,cb)
 	local playerData = NB.PlayerData(playerId)
 	local citizenID = playerData.citizenID 
-	local pos = NB.GetCheapCitizenData(citizenID,'characters','Position')
+	local pos = NB.GetCheapCitizenData(citizenID,'characters','position')
 	if pos then 
 		cb(vector3(pos.x, pos.y, pos.z), pos.heading)
 		--cb(vector3(pos[1], pos[2], pos[3]), pos[4])
 	end 
 end )
 
---[=[
-CreateThread(function()
-	while true do Wait(1000)
-		local playerData = NB.PlayerData()
-		local citizenID = playerData.citizenID 
-		--NB.MakeSureTempSomethingExist("CitizenDatas2","xD","xD","xD")
-		NB.SetTempSomething("CitizenDatas2",citizenID,"characters","Position",{1,2,3})
-		--NB.SetTempSomething("CitizenDatas2",citizenID,"characters","Position2",{1,2,3})
-		print(json.encode(NB.GetTempSomthing("CitizenDatas2",citizenID,"characters","Position2")))
-		print(NB.IsTempSomthingExist("CitizenDatas2",citizenID,"characters","Position3"))
-	end 
-end)
---]=]

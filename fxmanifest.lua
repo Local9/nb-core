@@ -8,14 +8,14 @@ files {
 lua54 'yes'
 
 shared_scripts {
-	'config.lua',
+	"nbmanifest.lua",
 	"main.lua",
 	"com/init.lua",
 	'com/lua/*.lua',
 	'com/lua/**/*.lua',
 	'com/game/*.lua',
 	'com/game/**/*.lua',
-    "shared.lua",
+	"com/define.lua",
 	"import.lua"
 }
 
@@ -28,8 +28,6 @@ server_scripts{
 	'server/functions.lua',
 	'server/player.lua'
 }
-
-
 
 dependencies {
 	'chat',
