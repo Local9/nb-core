@@ -29,8 +29,6 @@ server_scripts{
 	'server/player.lua'
 }
 
-
-
 dependencies {
 	'chat',
 	'ghmattimysql',

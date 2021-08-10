@@ -1,5 +1,6 @@
 Main(function()
 	print("NB-CORE INITIALISED")
+
 end)
 
 if IsServer() then 
