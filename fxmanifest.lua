@@ -8,14 +8,14 @@ files {
 lua54 'yes'
 
 shared_scripts {
-	"config.lua",
-	"shared.lua",
+	"nbmanifest.lua",
 	"main.lua",
 	"com/init.lua",
 	'com/lua/*.lua',
 	'com/lua/**/*.lua',
 	'com/game/*.lua',
 	'com/game/**/*.lua',
+	"com/define.lua",
 	"import.lua"
 }
 
