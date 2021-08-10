@@ -10,4 +10,3 @@ end
 com.lua.utils.Colour.RGBToHex = function (r, g, b) 
 	return ('%02X%02X%02X'):format(tonumber(r),tonumber(g),tonumber(b))
 end
-
