@@ -33,11 +33,12 @@ RegisterNetEvent("NB:ReadyToSpawn",function()
 	end
 
 	NB.Threads.CreateLoop('Save',1000,function()
-		NB.Flow.CheckNativeChange(CheckPedTasks,PlayerPedId(),function(olddata,newdata)
+		local ped = PlayerPedId()
+		NB.Flow.CheckNativeChange(CheckPedTasks,ped,function(olddata,newdata)
 			
 			if OnPlayerUpdate then print('OnPlayerUpdate') OnPlayerUpdate() end 
-			NB.Flow.CheckNativeChangeVector(GetEntityCoords,PlayerPedId(),1.0,function(oldcoords,newcoords)
-				local heading = GetEntityHeading(PlayerPedId())
+			NB.Flow.CheckNativeChangeVector(GetEntityCoords,ped,1.0,function(oldcoords,newcoords)
+				local heading = GetEntityHeading(ped)
 				TriggerServerEvent('NB:SavePlayerPosition',newcoords,heading)
 			end)
 
