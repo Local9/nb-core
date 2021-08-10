@@ -171,7 +171,7 @@ NB.SaveAllCacheCitizenDataIntoMysql = function(citizenID)
 	if NB["_CACHE_"] and NB["_CACHE_"].CITIZEN then 
 		local tasks = {}
 		local forcedcitizenID = not (citizenID == nil)
-		for citizenidstr,tablenames in pairs(NB._cache_.CITIZEN) do 
+		for citizenidstr,tablenames in pairs(NB["_CACHE_"].CITIZEN) do 
 			if (forcedcitizenID and citizenidstr == citizenID) or (not forcedcitizenID) then 
 				for tablename,datanames in pairs(tablenames) do 
 					--for dataname,data in pairs(datanames) do 
