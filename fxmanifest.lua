@@ -9,7 +9,7 @@ lua54 'yes'
 
 shared_scripts {
 	"nbmanifest.lua",
-	"main.lua",
+	"nb-core.lua",
 	"com/init.lua",
 	'com/lua/*.lua',
 	'com/lua/**/*.lua',
