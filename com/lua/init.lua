@@ -5,6 +5,7 @@ com.lua.threads = {}
 com.lua.utils.Async = {}
 com.lua.utils.Colour = {}
 com.lua.utils.Csv = {}
+com.lua.utils.Debug = {}
 com.lua.utils.Encryption = {}
 com.lua.utils.Flow = {}
 com.lua.utils.Math = {}

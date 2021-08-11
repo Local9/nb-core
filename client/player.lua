@@ -36,7 +36,7 @@ RegisterNetEvent("NB:ReadyToSpawn",function()
 		local ped = PlayerPedId()
 		NB.Flow.CheckNativeChange("(name)checkpedtask",CheckPedTasks,ped,function(olddata,newdata)
 			
-			if OnPlayerUpdate then print('OnPlayerUpdate') OnPlayerUpdate() end 
+			if OnPlayerUpdate then OnPlayerUpdate() end 
 			NB.Flow.CheckNativeChangeVector("(name)checkcoords",GetEntityCoords,ped,1.0,function(oldcoords,newcoords)
 				local heading = GetEntityHeading(ped)
 				TriggerServerEvent('NB:SavePlayerPosition',newcoords,heading)
@@ -49,12 +49,7 @@ RegisterNetEvent("NB:ReadyToSpawn",function()
 			end)
 		end)
 	end)
-	--[=[
-	TriggerEvent('skinchanger:getData', function(components, maxVals)
-		print('Components => ' .. json.encode(components))
-		print('MaxVals => ' .. json.encode(maxVals))
-	end)
-	--]=]
+
 	
 end )
 end 
