@@ -1,4 +1,5 @@
 com.game = {}
-com.game.load = {}
-com.game.license = {}
-
+com.game.Load = {}
+com.game.License = {}
+com.game.Skin = {}
+com.game.PauseMenu = {}

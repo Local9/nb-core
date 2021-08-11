@@ -57,7 +57,7 @@ NB.GetPlayerFromIdentifier = function(identifier)
 	end
 end
 
-NB.GetLicense = com.game.license.GetLicense
+NB.GetLicense = com.game.License.Get
 
 NB.GetIdentifier = NB.GetLicense
 
@@ -127,7 +127,7 @@ end
 RegisterNetEvent('NB:OnPlayerJoined', function() --called by com.game.session.default.lua/CreateThread
 	local playerdata,playerId = NB.PlayerData(source)
 	if not playerdata then
-		local license = com.game.license.GetLicense(playerId)
+		local license = com.game.License.Get(playerId)
 		if license then 
 			if not DB_IsUserExist(license) then
 				

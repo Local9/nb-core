@@ -7,7 +7,9 @@ RegisterNetEvent("NB:ReadyToSpawn",function()
 	TriggerEvent('NB:CancelDefaultSpawn')
 	NB.TriggerServerCallback('NB:GetLastPosition',function (coords, heading)
 		local coords,heading = coords,heading or  DEFAULT_SPAWN_POSITION
-		TriggerEvent('skinchanger:loadDefaultModel', true,function()
+		NB.Skin.LoadDefaultModel( true,function()
+			--NB.Skin.LoadCharacterSkin(json.decodetable('{"hair_1":11,"face":0,"lipstick_1":0,"lipstick_4":0,"beard_4":0,"age_2":0,"skin":0,"beard_2":0,"makeup_3":0,"eyebrows_2":0,"hair_color_1":0,"eyebrows_4":0,"lipstick_2":0,"eyebrows_3":0,"eyebrows_1":0,"hair_2":0,"sex":0,"hair_color_2":0,"makeup_1":0,"makeup_2":0,"age_1":0,"beard_1":0,"beard_3":0,"makeup_4":0,"lipstick_3":0}'))
+		
 			NB.Utils.SpawnManager.Spawn(coords, heading)
 		end )
 		
@@ -41,13 +43,14 @@ RegisterNetEvent("NB:ReadyToSpawn",function()
 				local heading = GetEntityHeading(ped)
 				TriggerServerEvent('NB:SavePlayerPosition',newcoords,heading)
 			end)
-
-			TriggerEvent('skinchanger:getSkin', function(skin)
+			
+			NB.Skin.GetCharacterSkin(function (skin)
 				NB.Flow.CheckChange("(name)skinchanger:getSkin",skin,function(oldskin,newskin)
 					TriggerServerEvent("NB:SaveCharacterSkin",newskin)
 				end )
 			end)
 		end)
+		
 	end)
 
 	
