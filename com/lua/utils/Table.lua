@@ -25,6 +25,13 @@ com.lua.utils.Table.SetTableSomething = function(obj,...)
 	tbl[idx] = value
 end 
 
+com.lua.utils.Table.ClearTableSomething = function(obj,...)
+	if com.lua.utils.Table.IsTableSomthingExist(obj,...) then 
+		local tbl,idx = com.lua.utils.Table.GetLastSlot(obj,...)
+		tbl[idx] = nil
+	end 
+end 
+
 com.lua.utils.Table.MakeSureTableSomethingExist = function(obj,...)
 	local args = {...}
 	local nowreach = obj
