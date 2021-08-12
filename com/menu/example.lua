@@ -2,7 +2,7 @@ if IsClient() then
 CreateThread(function()
 	local elements = {}
 	local Salle = {
-		{label="Apple",pos=vector3(0.0,0.0,0.0)},
+		{label="Apple"},
 		{type="slider",options={"apple","banana","orange"}}
 	}
 	for k,v in pairs(Salle) do
@@ -36,8 +36,8 @@ CreateThread(function()
 			
 		end
 		,
-		function(data, menu)
-			print("result close",json.encode(data))
+		function()
+			print("result close")
 			
 		end
 	)
