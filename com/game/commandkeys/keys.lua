@@ -11,7 +11,7 @@ local RegisterKeyboardCallback = function(name,key,description,fn) RegisterComma
 	end )
 	
 	RegisterKeyboardCallback("MENU_BACK","BACK","",function()
-		if OnMenuKeyInput then OnMenuKeyInput("MENU_CANCEL") end
+		if OnMenuKeyInput then OnMenuKeyInput("MENU_BACK") end
 	end )
 	
 	RegisterKeyboardCallback("MENU_ESCAPE","ESCAPE","",function()

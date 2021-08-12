@@ -1,48 +1,48 @@
-
-
-com.lua.utils.Table.SetTableSomething = function(obj,...)
+com.lua.utils.Table.GetLastSlot = function(obj,...)
 	local args = {...}
-	local thisparent = obj
-	local lastv = nil 
-
-	for i=1,#args-1 do 
-		local v = tostring(args[i])
-		if thisparent[v] == nil then 
-			thisparent[v] = {} 
+	local nowreach = obj
+	local pos_end = #args
+	local value = args[#args]
+	for i=1,pos_end do 
+		local v = args[i]
+		if nowreach[v] == nil then 
+			nowreach[v] = {} 
 		end 
-		if i ~= #args-1 then 
-			thisparent = thisparent[v]
+		if i == pos_end then 
+			return nowreach,v
 		else 
-			local t = {}
-			for i,v in pairs(args) do 
-				t[i] = v 
-			end 
-			thisparent[v] = t[#t]
-			return thisparent[v]
+			nowreach = nowreach[v]
 		end 
 	end 
 	return nil 
 end 
 
+com.lua.utils.Table.SetTableSomething = function(obj,...)
+	local args = {...}
+	local value = args[#args]
+	table.remove(args,#args)
+	local tbl,idx = com.lua.utils.Table.GetLastSlot(obj,table.unpack(args))
+	tbl[idx] = value
+end 
+
 com.lua.utils.Table.MakeSureTableSomethingExist = function(obj,...)
 	local args = {...}
-	local thisparent = obj
-	local lastv = nil 
-	
-	for i=1,#args do 
-		local v = tostring(args[i])
-		if thisparent[v] == nil then 
-			thisparent[v] = {} 
+	local nowreach = obj
+	local pos_end = #args
+	for i=1,pos_end do 
+		local v = args[i]
+		if nowreach[v] == nil then 
+			nowreach[v] = {} 
 		end 
-		if i ~= #args then 
-			thisparent = thisparent[v]
+		if i ~= pos_end then 
+			nowreach = nowreach[v]
 		else 
-			if thisparent[v] == nil then 
-				thisparent[v] = nil
+			if nowreach[v] == nil then 
+				nowreach[v] = nil
 			else 
-				return thisparent[v]
+				return nowreach[v]
 			end 
-			return thisparent[v]
+			return nowreach[v]
 		end 
 	end 
 	return nil 
@@ -50,22 +50,17 @@ end
 
 com.lua.utils.Table.IsTableSomthingExist = function(obj,...)
 	local args = {...}
-	local thisparent = obj
-	local lastv = nil 
-	for i=1,#args do 
-		local v = tostring(args[i])
-		if thisparent[v] == nil then 
-			return false 
-		end 
-		if i ~= #args then 
-			thisparent = thisparent[v]
+	local nowreach = obj
+	local pos_end = #args 
+	for i=1,pos_end do 
+		local v = args[i]
+		if i == pos_end then 
+			return not (nowreach[v]==nil)
 		else 
-			if thisparent[v] == nil then 
+			if nowreach[v] == nil then 
 				return false 
-			else 
-				return not (thisparent[v]==nil)
 			end 
-			return not (thisparent[v]==nil)
+			nowreach = nowreach[v]
 		end 
 	end 
 	return false 
@@ -73,37 +68,30 @@ end
 
 com.lua.utils.Table.GetTableSomthing = function(obj,...)
 	if com.lua.utils.Table.IsTableSomthingExist(obj,...) then 
-		local GetTableSomthing_ = function(...)
-			local args = {...}
-			local thisparent = obj
-			local lastv = nil 
-			
-			for i=1,#args do 
-				local v = tostring(args[i])
-				if thisparent[v] == nil then 
-					thisparent[v] = {} 
-				end 
-				if i ~= #args then 
-					thisparent = thisparent[v]
-				else 
-					if thisparent[v] == nil then 
-						thisparent[v] = nil
-					else 
-						return thisparent[v]
-					end 
-					return thisparent[v]
-				end 
-			end 
-			return nil 
-		end 
-		local args = {...}
-		local lastarg = args[#args]
+		local tbl,idx = com.lua.utils.Table.GetLastSlot(obj,...)
+		return tbl[idx]
+	end  
+	return nil  
+end 
+
+com.lua.utils.Table.InsertTableSomethingTable = function(obj,...)
+	local args = {...}
+	local value = args[#args]
+	table.remove(args,#args)
+	local tbl,idx = com.lua.utils.Table.GetLastSlot(obj,table.unpack(args))
+	table.insert(tbl[idx],value)
+end 
+
+com.lua.utils.Table.RemoveTableSomethingTable = function(obj,...)
+	local args = {...}
+	local index = args[#args]
+	if type(index) == 'number' or (#args>1 and index==nil) then 
 		table.remove(args,#args)
-		local args2 = args 
-		local wtf = GetTableSomthing_(table.unpack(args2))[lastarg]
-		return wtf
+		local tbl,idx = com.lua.utils.Table.GetLastSlot(obj,table.unpack(args))
+		table.remove(tbl[idx],index)
 	else 
-		return nil 
+		local tbl,idx = com.lua.utils.Table.GetLastSlot(obj,table.unpack(args))
+		table.remove(tbl[idx])
 	end 
 end 
 

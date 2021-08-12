@@ -10,10 +10,12 @@ GetPauseMenuSelection = function() if N_0x2e22fefa0100275e() --[[IsSelectionUpda
 NB = {
 	_CACHE_ = {},
 	_LOCAL_ = {},
+	Cache={},
 	Datas={},
 	Players={},
 	Utils={},
 	Threads={}
+	
 }  
 exports('GetSharedObject',function()return NB end)
 

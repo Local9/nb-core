@@ -40,11 +40,6 @@ NB.GetPlayerFromIdentifier = function(identifier)
 	end
 end
 
-NB.GetLicense = com.game.Server.License.Get
-
-NB.GetIdentifier = NB.GetLicense
-
-
 function CreatePlayer(playerId, license,citizenID)
 	local self = {}
 	self.playerId = playerId
@@ -137,7 +132,7 @@ RegisterNetEvent('NB:OnPlayerJoined', function() --called by com.game.session.sp
 end)
 
 NB.GetCheapCitizenData = function(citizenID,tablename,dataname)
-	return NB.GetCacheSomthing("CITIZEN",citizenID,tablename,dataname) or NB.GetExpensiveCitizenData(citizenID,tablename,dataname)
+	return NB.Cache.GetPropSlotValue("CITIZEN",citizenID,tablename,dataname) or NB.GetExpensiveCitizenData(citizenID,tablename,dataname)
 end 
 
 NB.GetExpensiveCitizenData = function(citizenID,tablename,dataname)
@@ -145,7 +140,7 @@ NB.GetExpensiveCitizenData = function(citizenID,tablename,dataname)
 		['@citizen_id'] = citizenID
 	})
 	local t = json.decodetable(result)
-	NB.SetCacheSomething("CITIZEN",citizenID,tablename,dataname,t)
+	NB.Cache.SetPropSlotValue("CITIZEN",citizenID,tablename,dataname,t)
 	return t 
 end 
 
@@ -157,7 +152,7 @@ NB.SaveAllCacheCitizenDataIntoMysql = function(citizenID)
 			if (forcedcitizenID and citizenidstr == citizenID) or (not forcedcitizenID) then 
 				for tablename,datanames in pairs(tablenames) do 
 					--for dataname,data in pairs(datanames) do 
-						if not NB.IsCacheSomthingExist(citizenidstr,tablename,"DontSaveToDatabase") then --dont save the table slots 
+						if not NB.Cache.IsPropValueExist("CITIZEN",citizenidstr,tablename,"DontSaveToDatabase") then --dont save the table slots 
 							local task = function(cb)
 									NB.SetExpensiveCitizenData(citizenidstr,tablename,datanames)
 									--print(citizenidstr,tablename,dataname,data)
@@ -187,9 +182,9 @@ end )
 
 NB.SetCheapCitizenData = function(citizenID,tablename,dataname,datas,dontSaveSql)
 	if dontSaveSql then 
-		NB.SetCacheSomething("CITIZEN",citizenID,tablename,"DontSaveToDatabase",true)
+		NB.Cache.SetPropSlotValue("CITIZEN",citizenID,tablename,"DontSaveToDatabase",true)
 	end 
-	NB.SetCacheSomething("CITIZEN",citizenID,tablename,dataname,datas)
+	NB.Cache.SetPropSlotValue("CITIZEN",citizenID,tablename,dataname,datas)
 end 
 
 NB.SetExpensiveCitizenData = function(citizenID,tablename,dataname,datas,...)
