@@ -1,5 +1,5 @@
 local Skin = {}
-com.game.Skin = Skin 
+com.game.Client.Skin = Skin 
 local _U = function(x) return x end 
 
 Components = {

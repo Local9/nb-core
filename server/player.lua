@@ -1,22 +1,5 @@
 NB["_LOCAL_"].thisPlayerId = -1
 
-AddEventHandler('playerConnecting', function(name, setKickReason, deferrals)
-	local playerId = NB.PlayerId(source)
-	TriggerEvent('NB:log','Player Connected',false,playerId)
-	
-	
-	if OnPlayerConnect then OnPlayerConnect(playerId, name, setKickReason, deferrals) end 
-end)
-
-AddEventHandler('playerDropped', function (reason)
-	local playerId = tonumber(source)
-	TriggerEvent('NB:log','Player Disconnected',false,playerId)
-	
-	
-	if OnPlayerDisconnect then OnPlayerDisconnect(playerId) end 
-	NB.ReleasePlayer()
-end)
-
 NB.GetPlayers = function(id)
 	return not id and NB.Players or NB.Players[id]
 end
@@ -57,7 +40,7 @@ NB.GetPlayerFromIdentifier = function(identifier)
 	end
 end
 
-NB.GetLicense = com.game.License.Get
+NB.GetLicense = com.game.Server.License.Get
 
 NB.GetIdentifier = NB.GetLicense
 
@@ -124,10 +107,10 @@ function DB_GetCharactersByLicense(license,idx)
 	end 
 end 
 
-RegisterNetEvent('NB:OnPlayerJoined', function() --called by com.game.session.default.lua/CreateThread
+RegisterNetEvent('NB:OnPlayerJoined', function() --called by com.game.session.spawn.lua/CreateThread
 	local playerdata,playerId = NB.PlayerData(source)
 	if not playerdata then
-		local license = com.game.License.Get(playerId)
+		local license = com.game.Server.License.Get(playerId)
 		if license then 
 			if not DB_IsUserExist(license) then
 				

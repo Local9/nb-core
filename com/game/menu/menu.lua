@@ -1,3 +1,4 @@
+if IsClient() then 
 local Menu = {}
 com.game.Menu = Menu
 Menu.Opened = false 
@@ -32,4 +33,5 @@ OnMenuKeyInput = function(input)
 			)
 		)
 	end 
+end 
 end 

@@ -1,4 +1,4 @@
-com.game.License.Get = function(playerId)
+com.game.Server.License.Get = function(playerId)
 	local identifiers = GetPlayerIdentifiers(playerId)
 	local license
 
