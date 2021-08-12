@@ -21,6 +21,7 @@ CreateThread(function()
 		},
 		function(data, menu)
 			print("result open",json.encode(data))
+			menu.close()
 		end,
 		function(data, menu)
 			print("result close",json.encode(data))
