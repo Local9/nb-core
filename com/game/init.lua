@@ -8,5 +8,4 @@ end
 if IsClient() then 
 	com.game.Client.Session = {}
 	com.game.Client.Skin = {}
-	com.game.Client.Menu = {}
 end 

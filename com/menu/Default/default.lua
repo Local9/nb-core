@@ -1,7 +1,7 @@
 if IsClient() then 
 local Menu = {_PROPS_={focus={}}}
 local NB_MENU = Menu["_PROPS_"]
-com.game.Menu = Menu
+com.menu.Default = Menu
 
 NB_MENU.ClearPropSlotValue = function(...) return com.lua.utils.Table.ClearTableSomething(Menu["_PROPS_"],...) end
 NB_MENU.SetPropSlotValue = function(...) return com.lua.utils.Table.SetTableSomething(Menu["_PROPS_"],...) end
@@ -10,15 +10,8 @@ NB_MENU.GetPropSlotValue = function(...) return com.lua.utils.Table.GetTableSomt
 NB_MENU.InsertPropSlot = function(...) return com.lua.utils.Table.InsertTableSomethingTable(Menu["_PROPS_"],...) end
 NB_MENU.RemovePropSlotIndex = function(...) return com.lua.utils.Table.RemoveTableSomethingTable(Menu["_PROPS_"],...) end
 
-Menu.Reset = function()
-	NB_MENU.opened = false 
-end 
-
-Menu.Init = function()
-	Menu.Reset()
-end 
-
 Menu.Open = function(namespace,name,data)
+	
 	if NB_MENU.IsPropSlotValueExist("opened",namespace,name) then 
 		Menu.Close(namespace, name);
 	end 
@@ -50,6 +43,10 @@ Menu.Open = function(namespace,name,data)
 	NB_MENU.InsertPropSlot("focus",{namespace=namespace,name=name})
 	NB_MENU.Update();
 end 
+
+CreateThread(function()
+	Menu.Open("1","2",{elements={}})
+end)
 
 NB_MENU.Close = function(namespace, name)
 	for  i=1,#NB_MENU.focus, 1 do 
@@ -85,13 +82,12 @@ NB_MENU.Update = function() -- DRAW FUNCTIONS
 	if currentFocus and #(currentFocus) then
 		local menuData    = NB_MENU.opened[currentFocus.namespace][currentFocus.name];
 		local pos     = NB_MENU.pos[currentFocus.namespace][currentFocus.name];
-		if(#menuData.elements > 0) then 
+		if menuData.elements and (#menuData.elements > 0) then 
 			print(menuData.title)
-			print(menuData.header)
 			print(menuData.description)	
 			for i,v in pairs (menuData.elements) do 
 				if i == pos then 
-					element.selected = true;
+					v.selected = true;
 				end 
 			end 
 		end 
@@ -230,5 +226,103 @@ OnMenuKeyInput = function(input)
 	end 
 end 
 
-Menu.Init()
+local MenuType = 'default'
+local openMenu = function(namespace, name, data)
+
+	 Menu.Open(namespace, name, data);
+end
+
+local closeMenu = function(namespace, name)
+	Menu.Close(namespace, name);
+end
+
+com.menu.framework.RegisterType(MenuType, openMenu, closeMenu)
+Citizen.CreateThread(function()
+	
+
+	RegisterNetEvent('menu_submit')
+	AddEventHandler('menu_submit', function(data, cb)
+		--TriggerEvent('localmessage','menu_submit')
+		local menu = com.menu.framework.GetOpened(MenuType, data._namespace, data._name)
+		
+		if menu.submit ~= nil then
+			menu.submit(data, menu)
+		end
+
+		cb('OK')
+	end)
+	
+	RegisterNetEvent('menu_cancel')
+	AddEventHandler('menu_cancel', function(data, cb)
+		--TriggerEvent('localmessage','menu_cancel')
+		local menu = com.menu.framework.GetOpened(MenuType, data._namespace, data._name)
+		
+		if menu.cancel ~= nil then
+			menu.cancel(data, menu)
+		end
+
+		cb('OK')
+	end)
+
+
+	RegisterNetEvent('menu_change')
+	AddEventHandler('menu_change', function(data, cb)
+		--TriggerEvent('localmessage','menu_change')
+		local menu = com.menu.framework.GetOpened(MenuType, data._namespace, data._name)
+		
+		for i=1, #data.elements, 1 do
+			
+			menu.setElement(i, 'value', data.elements[i].value)
+
+			if data.elements[i].selected then
+				menu.setElement(i, 'selected', true)
+			else
+				menu.setElement(i, 'selected', false)
+			end
+
+		end
+
+		if menu.change ~= nil then
+			menu.change(data, menu)
+		end
+
+		cb('OK')
+	end)
+
+end)
+
+
+
+CreateThread(function()
+	local elements = {}
+	local Salle = {
+		["Apple"] = {label="Apple",pos=vector3(0.0,0.0,0.0)}
+	}
+	for k,v in pairs(Salle) do
+	   table.insert(elements,{
+       label = v.label,
+       pos  = v.pos
+     })
+	end
+
+
+	com.menu.framework.CloseAll()
+
+	com.menu.framework.Open(
+		'default', GetCurrentResourceName(), 'strip',
+		{
+			title  = 'Position Menu',
+			description = "WTF",
+			elements = elements
+		},
+		function(data, menu)
+			print(json.encode(data))
+		end,
+		function(data, menu)
+			print(json.encode(data))
+			menu.close()
+
+		end
+	)
+end)
 end 
