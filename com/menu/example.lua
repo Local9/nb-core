@@ -14,8 +14,8 @@ CreateThread(function()
      })
 	end
 	
-	com.menu.ESXMenuFramework.CloseAll()
-	com.menu.ESXMenuFramework.Open(
+	NB.Menu.CloseAll()
+	NB.Menu.Open(
 		'default', GetCurrentResourceName(), 'strip',
 		{
 			title  = 'Position Menu',

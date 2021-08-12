@@ -49,5 +49,5 @@ com.menu.ESXMenuFramework.CloseAll = ESX.UI.Menu.CloseAll
 com.menu.ESXMenuFramework.GetOpened = ESX.UI.Menu.GetOpened
 com.menu.ESXMenuFramework.GetOpenedMenus = ESX.UI.Menu.GetOpenedMenus
 com.menu.ESXMenuFramework.IsOpen = ESX.UI.Menu.IsOpen
-
+NB.Menu = com.menu.ESXMenuFramework
 end 

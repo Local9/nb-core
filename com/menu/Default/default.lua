@@ -97,21 +97,21 @@ NB_MENU_DEFAULT.submit = function(namespace, name, data)
 		current   = data,
 		elements  = NB_MENU_DEFAULT.opened[namespace][name].elements
 	}
-	local menu = com.menu.ESXMenuFramework.GetOpened(MenuType, data._namespace, data._name)
+	local menu = NB.Menu.GetOpened(MenuType, data._namespace, data._name)
 	if menu.submit ~= nil then
 		menu.submit(data, menu)
 	end
 end 
 NB_MENU_DEFAULT.cancel = function(namespace, name)
 	local data = {_namespace= namespace,_name= name}
-	local menu = com.menu.ESXMenuFramework.GetOpened(MenuType, data._namespace, data._name)
+	local menu = NB.Menu.GetOpened(MenuType, data._namespace, data._name)
 	if menu.cancel ~= nil then
 		menu.cancel(data, menu)
 	end
 end 
 NB_MENU_DEFAULT.change = function(namespace, name, data)
 	local data = {_namespace= namespace,_name= name,current= data,elements= NB_MENU_DEFAULT.opened[namespace][name].elements}
-	local menu = com.menu.ESXMenuFramework.GetOpened(MenuType, data._namespace, data._name)
+	local menu = NB.Menu.GetOpened(MenuType, data._namespace, data._name)
 	for i=1, #data.elements, 1 do
 		menu.setElement(i, 'value', data.elements[i].value)
 		if data.elements[i].selected then
