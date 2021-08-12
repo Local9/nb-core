@@ -15,7 +15,7 @@ end
 local closeMenu = function(namespace, name)
 	NB_MENU_DEFAULT.Close(namespace, name);
 end
-com.menu.framework.RegisterType(MenuType, openMenu, closeMenu)
+com.menu.ESXMenuFramework.RegisterType(MenuType, openMenu, closeMenu)
 NB_MENU_DEFAULT.Open = function(namespace,name,data)
 	if NB_MENU_DEFAULT.IsPropSlotValueExist("opened",namespace,name) then 
 		NB_MENU_DEFAULT.Close(namespace, name);
@@ -97,21 +97,21 @@ NB_MENU_DEFAULT.submit = function(namespace, name, data)
 		current   = data,
 		elements  = NB_MENU_DEFAULT.opened[namespace][name].elements
 	}
-	local menu = com.menu.framework.GetOpened(MenuType, data._namespace, data._name)
+	local menu = com.menu.ESXMenuFramework.GetOpened(MenuType, data._namespace, data._name)
 	if menu.submit ~= nil then
 		menu.submit(data, menu)
 	end
 end 
 NB_MENU_DEFAULT.cancel = function(namespace, name)
 	local data = {_namespace= namespace,_name= name}
-	local menu = com.menu.framework.GetOpened(MenuType, data._namespace, data._name)
+	local menu = com.menu.ESXMenuFramework.GetOpened(MenuType, data._namespace, data._name)
 	if menu.cancel ~= nil then
 		menu.cancel(data, menu)
 	end
 end 
 NB_MENU_DEFAULT.change = function(namespace, name, data)
 	local data = {_namespace= namespace,_name= name,current= data,elements= NB_MENU_DEFAULT.opened[namespace][name].elements}
-	local menu = com.menu.framework.GetOpened(MenuType, data._namespace, data._name)
+	local menu = com.menu.ESXMenuFramework.GetOpened(MenuType, data._namespace, data._name)
 	for i=1, #data.elements, 1 do
 		menu.setElement(i, 'value', data.elements[i].value)
 		if data.elements[i].selected then

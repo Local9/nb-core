@@ -1,6 +1,6 @@
 if IsClient() then
 com.menu = {Client={},Server={},Shared={}}
-com.menu.framework = {}
+com.menu.ESXMenuFramework = {}
 com.menu.default = {}
 
 
@@ -42,12 +42,12 @@ RegisterKeyboardCallback("MENU_RIGHT","RIGHT","",function()
 	if OnMenuKeyInput then OnMenuKeyInput("MENU_RIGHT") end
 end )
 
-com.menu.framework.RegisterType = ESX.UI.Menu.RegisterType
-com.menu.framework.Open = ESX.UI.Menu.Open
-com.menu.framework.Close = ESX.UI.Menu.Close
-com.menu.framework.CloseAll = ESX.UI.Menu.CloseAll
-com.menu.framework.GetOpened = ESX.UI.Menu.GetOpened
-com.menu.framework.GetOpenedMenus = ESX.UI.Menu.GetOpenedMenus
-com.menu.framework.IsOpen = ESX.UI.Menu.IsOpen
+com.menu.ESXMenuFramework.RegisterType = ESX.UI.Menu.RegisterType
+com.menu.ESXMenuFramework.Open = ESX.UI.Menu.Open
+com.menu.ESXMenuFramework.Close = ESX.UI.Menu.Close
+com.menu.ESXMenuFramework.CloseAll = ESX.UI.Menu.CloseAll
+com.menu.ESXMenuFramework.GetOpened = ESX.UI.Menu.GetOpened
+com.menu.ESXMenuFramework.GetOpenedMenus = ESX.UI.Menu.GetOpenedMenus
+com.menu.ESXMenuFramework.IsOpen = ESX.UI.Menu.IsOpen
 
 end 
