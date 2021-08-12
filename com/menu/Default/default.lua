@@ -9,11 +9,20 @@ NB_MENU.IsPropSlotValueExist = function(...) return com.lua.utils.Table.IsTableS
 NB_MENU.GetPropSlotValue = function(...) return com.lua.utils.Table.GetTableSomthing(Menu["_PROPS_"],...) end  
 NB_MENU.InsertPropSlot = function(...) return com.lua.utils.Table.InsertTableSomethingTable(Menu["_PROPS_"],...) end
 NB_MENU.RemovePropSlotIndex = function(...) return com.lua.utils.Table.RemoveTableSomethingTable(Menu["_PROPS_"],...) end
+local MenuType = 'default'
+local openMenu = function(namespace, name, data)
+	NB_MENU.Open(namespace, name, data);
+end
+local closeMenu = function(namespace, name)
+	NB_MENU.Close(namespace, name);
+end
 
-Menu.Open = function(namespace,name,data)
+com.menu.framework.RegisterType(MenuType, openMenu, closeMenu)
+
+NB_MENU.Open = function(namespace,name,data)
 	
 	if NB_MENU.IsPropSlotValueExist("opened",namespace,name) then 
-		Menu.Close(namespace, name);
+		NB_MENU.Close(namespace, name);
 	end 
 	for i=1,#data.elements,1 do 
 		if data.elements[i].type == nil then 
@@ -44,9 +53,7 @@ Menu.Open = function(namespace,name,data)
 	NB_MENU.Update();
 end 
 
-CreateThread(function()
-	Menu.Open("1","2",{elements={}})
-end)
+
 
 NB_MENU.Close = function(namespace, name)
 	for  i=1,#NB_MENU.focus, 1 do 
@@ -83,8 +90,8 @@ NB_MENU.Update = function() -- DRAW FUNCTIONS
 		local menuData    = NB_MENU.opened[currentFocus.namespace][currentFocus.name];
 		local pos     = NB_MENU.pos[currentFocus.namespace][currentFocus.name];
 		if menuData.elements and (#menuData.elements > 0) then 
-			print(menuData.title)
-			print(menuData.description)	
+			--print(menuData.title)
+			--print(menuData.description)	
 			for i,v in pairs (menuData.elements) do 
 				if i == pos then 
 					v.selected = true;
@@ -149,7 +156,7 @@ OnMenuKeyInput = function(input)
 				function()
 					PlaySoundFrontend(-1, "NAV_LEFT_RIGHT", "HUD_FRONTEND_DEFAULT_SOUNDSET", true);
 					NB_MENU.GetCurrentFocusData(function(namespace,name,elementslength,menu,pos,itemdata)
-						if itemdata.type == 'slider' then 
+						if itemdata and itemdata.type and itemdata.type == 'slider' then 
 							if  itemdata.options ~=nil then 
 								if not itemdata.options.pos then itemdata.options.pos = {} end 
 								local length = #itemdata.options
@@ -166,7 +173,7 @@ OnMenuKeyInput = function(input)
 				function()
 					PlaySoundFrontend(-1, "NAV_LEFT_RIGHT", "HUD_FRONTEND_DEFAULT_SOUNDSET", true);
 					NB_MENU.GetCurrentFocusData(function(namespace,name,elementslength,menu,pos,itemdata)
-						if itemdata.type == 'slider' then 
+						if itemdata and itemdata.type and itemdata.type == 'slider' then 
 							if  itemdata.options ~=nil then 
 								if not itemdata.options.pos then itemdata.options.pos = {} end 
 								local length = #itemdata.options
@@ -226,17 +233,7 @@ OnMenuKeyInput = function(input)
 	end 
 end 
 
-local MenuType = 'default'
-local openMenu = function(namespace, name, data)
 
-	 Menu.Open(namespace, name, data);
-end
-
-local closeMenu = function(namespace, name)
-	Menu.Close(namespace, name);
-end
-
-com.menu.framework.RegisterType(MenuType, openMenu, closeMenu)
 Citizen.CreateThread(function()
 	
 
@@ -291,38 +288,4 @@ Citizen.CreateThread(function()
 
 end)
 
-
-
-CreateThread(function()
-	local elements = {}
-	local Salle = {
-		["Apple"] = {label="Apple",pos=vector3(0.0,0.0,0.0)}
-	}
-	for k,v in pairs(Salle) do
-	   table.insert(elements,{
-       label = v.label,
-       pos  = v.pos
-     })
-	end
-
-
-	com.menu.framework.CloseAll()
-
-	com.menu.framework.Open(
-		'default', GetCurrentResourceName(), 'strip',
-		{
-			title  = 'Position Menu',
-			description = "WTF",
-			elements = elements
-		},
-		function(data, menu)
-			print(json.encode(data))
-		end,
-		function(data, menu)
-			print(json.encode(data))
-			menu.close()
-
-		end
-	)
-end)
 end 
