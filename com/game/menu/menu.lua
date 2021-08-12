@@ -23,10 +23,11 @@ Menu.Open = function(namespace,name,data)
 	end 
 	for i=1,#data.elements,1 do 
 		if data.elements[i].type == nil then 
-			data.elements[i].type = 'scaleform';
+			data.elements[i].type = 'default';
 		end 
 	end 
-	data._index     = #NB_MENU.focus;
+	
+	data._index     = #NB_MENU.GetPropSlotValue("focus");
 	data._namespace = namespace;
 	data._name      = name;
 
@@ -37,6 +38,7 @@ Menu.Open = function(namespace,name,data)
 
 	NB_MENU.SetPropSlotValue("opened",namespace,name,data)
 	NB_MENU.SetPropSlotValue("pos",namespace,name,1)
+	
 	for i=1,#data.elements,1 do 
 		if data.elements[i].selected  then 
 			NB_MENU.SetPropSlotValue("pos",namespace,name,i)
@@ -44,8 +46,8 @@ Menu.Open = function(namespace,name,data)
 			data.elements[i].selected = false
 		end 
 	end 
+	NB_MENU.InsertPropSlot("focus",{namespace=namespace,name=name})
 
-	table.insert(NB_MENU.focus,{namespace=namespace,name=name});
 end 
 
 Menu.Close = function()

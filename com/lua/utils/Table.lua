@@ -80,6 +80,9 @@ com.lua.utils.Table.InsertTableSomethingTable = function(obj,...)
 	table.remove(args,#args)
 	local tbl,idx = com.lua.utils.Table.GetLastSlot(obj,table.unpack(args))
 	table.insert(tbl[idx],value)
+	local rtbl = tbl[idx]
+	local rlength = #rtbl 
+	return rtbl,rlength
 end 
 
 com.lua.utils.Table.RemoveTableSomethingTable = function(obj,...)
@@ -93,5 +96,8 @@ com.lua.utils.Table.RemoveTableSomethingTable = function(obj,...)
 		local tbl,idx = com.lua.utils.Table.GetLastSlot(obj,table.unpack(args))
 		table.remove(tbl[idx])
 	end 
+	local rtbl = tbl[idx]
+	local rlength = #rtbl 
+	return rtbl,rlength
 end 
 
