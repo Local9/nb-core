@@ -1,3 +1,4 @@
+if IsServer() then 
 com.game.Server.License.Get = function(playerId)
 	local identifiers = GetPlayerIdentifiers(playerId)
 	local license
@@ -14,3 +15,4 @@ com.game.Server.License.Get = function(playerId)
 	return license
 end 
 
+end 
