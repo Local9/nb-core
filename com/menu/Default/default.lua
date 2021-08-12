@@ -64,6 +64,8 @@ NB_MENU_DEFAULT.GetCurrentFocusData = function(cb)
 		local pos     = NB_MENU_DEFAULT.pos[currentFocus.namespace][currentFocus.name];
 		local itemdata    = menu.elements[pos];
 		if(#menu.elements > 0) then 
+			
+			
 			cb(currentFocus.namespace,currentFocus.name,#menu.elements,menu,pos,itemdata)
 		else 
 			error("menu has no any datas",2)
@@ -83,6 +85,8 @@ NB_MENU_DEFAULT.Update = function() -- DRAW FUNCTIONS
 					v.selected = true;
 				end 
 			end 
+			print(pos)
+			TriggerEvent("NB:MenuUpdate",menuData,pos)
 		end 
 	end 
 end 
@@ -122,11 +126,13 @@ NB_MENU_DEFAULT.change = function(namespace, name, data)
 end 
 OnMenuKeyInput = function(input)
 	NB_MENU_DEFAULT.GetCurrentFocusData(function(namespace,name,elementslength,menu,pos,itemdata)
+
 		switch (input) (
 			case ("MENU_SELECT","MENU_ENTER") (
 				function()
 					PlaySoundFrontend(-1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET", true);
 					NB_MENU_DEFAULT.submit(namespace, name, itemdata);
+					
 				end
 			),
 			case ("MENU_BACK") (
@@ -144,39 +150,44 @@ OnMenuKeyInput = function(input)
 			case ("MENU_LEFT") (
 				function()
 					PlaySoundFrontend(-1, "NAV_LEFT_RIGHT", "HUD_FRONTEND_DEFAULT_SOUNDSET", true);
-					if itemdata and itemdata.type and itemdata.type == 'slider' then 
-						if  itemdata.options ~=nil then 
-							if not itemdata.options.pos then itemdata.options.pos = {} end 
-							local length = #itemdata.options
-							local nextoptionpos = itemdata.options.pos - 1 == 0 and itemdata.options.pos - 2 or itemdata.options.pos - 1
-							itemdata.value = itemdata.options[nextoptionpos/#itemdata.options];
-							NB_MENU_DEFAULT.change(focused.namespace, focused.name, itemdata)
-						end 
-						NB_MENU_DEFAULT.Update();
+					if itemdata.type and itemdata.type == "slider" then 
+						if not itemdata.options then itemdata.options = {} end 
+						if not itemdata.options.pos then itemdata.options.pos = 1 end 
 					end 
+					local length = #itemdata.options
+					itemdata.options.pos = itemdata.options.pos + 1
+					local pos = itemdata.options.pos
+					local nextpos = ((pos)%length)+1
+					itemdata.value = itemdata.options[nextpos];
+					itemdata.options.pos = nextpos
+					
+					NB_MENU_DEFAULT.change(namespace, name, itemdata)
+					NB_MENU_DEFAULT.Update();
 				end
 			),
 			case ("MENU_RIGHT") (
 				function()
 					PlaySoundFrontend(-1, "NAV_LEFT_RIGHT", "HUD_FRONTEND_DEFAULT_SOUNDSET", true);
-					if itemdata and itemdata.type and itemdata.type == 'slider' then 
-						if  itemdata.options ~=nil then 
-							if not itemdata.options.pos then itemdata.options.pos = {} end 
-							local length = #itemdata.options
-							local nextoptionpos = itemdata.options.pos + 1 == 0 and itemdata.options.pos + 2 or itemdata.options.pos + 1
-							itemdata.value = itemdata.options[nextoptionpos/#itemdata.options];
-							NB_MENU_DEFAULT.change(focused.namespace, focused.name, itemdata)
-						end 
-						NB_MENU_DEFAULT.Update();
+					if itemdata.type and itemdata.type == "slider" then 
+						if not itemdata.options then itemdata.options = {} end 
+						if not itemdata.options.pos then itemdata.options.pos = 1 end 
 					end 
+					local length = #itemdata.options
+					local pos = itemdata.options.pos
+					local nextpos = ((pos)%length)+1
+					itemdata.value = itemdata.options[nextpos];
+					itemdata.options.pos = nextpos
+					NB_MENU_DEFAULT.change(namespace, name, itemdata)
+					NB_MENU_DEFAULT.Update();
+					 
 				end
 			),
 			case ("MENU_UP") (
 				function()
 					PlaySoundFrontend(-1, "NAV_UP_DOWN", "HUD_FRONTEND_DEFAULT_SOUNDSET", true);
 					local pos = NB_MENU_DEFAULT.GetPropSlotValue("pos",namespace,name)
-					local nextpos = pos-1 == 0 and pos-2 or pos-1
-					NB_MENU_DEFAULT.SetPropSlotValue("pos",namespace,name,nextpos%elementslength)
+					local nextpos = ((pos)%elementslength)+1
+					NB_MENU_DEFAULT.SetPropSlotValue("pos",namespace,name,nextpos)
 					for i=1,#menu.elements,1 do
 						if(i == NB_MENU_DEFAULT.pos[namespace][name]) then 
 							menu.elements[i].selected = true
@@ -192,8 +203,8 @@ OnMenuKeyInput = function(input)
 				function()
 					PlaySoundFrontend(-1, "NAV_UP_DOWN", "HUD_FRONTEND_DEFAULT_SOUNDSET", true);
 					local pos = NB_MENU_DEFAULT.GetPropSlotValue("pos",namespace,name)
-					local nextpos = pos+1 == 0 and pos+2 or pos+1
-					NB_MENU_DEFAULT.SetPropSlotValue("pos",namespace,name,nextpos%elementslength)
+					local nextpos = ((pos)%elementslength)+1
+					NB_MENU_DEFAULT.SetPropSlotValue("pos",namespace,name,nextpos)
 					for i=1,#menu.elements,1 do
 						if(i == NB_MENU_DEFAULT.pos[namespace][name]) then 
 							menu.elements[i].selected = true
