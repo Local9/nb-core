@@ -35,18 +35,21 @@ CreateThread(function()
 				if pos then 
 					lastpos = pos
 					NB_MENU_PAUSE_MENU.GetCurrentFocusData(function(namespace,name,elementslength,menu,pos_,itemdata)
-						NB_MENU_PAUSE_MENU.SetPropSlotValue("pos",namespace,name,pos)
-						
-						for i=1,#menu.elements,1 do
-							if(i == NB_MENU_PAUSE_MENU.pos[namespace][name]) then 
-								menu.elements[i].selected = true
-							else
-								menu.elements[i].selected = false
+						if pos <= #menu.elements then 
+							NB_MENU_PAUSE_MENU.SetPropSlotValue("pos",namespace,name,pos)
+							
+							for i=1,#menu.elements,1 do
+								if(i == NB_MENU_PAUSE_MENU.pos[namespace][name]) then 
+									menu.elements[i].selected = true
+								else
+									menu.elements[i].selected = false
+								end 
 							end 
-						end 
+							
+							NB_MENU_PAUSE_MENU.change(namespace, name, itemdata)
+							NB_MENU_PAUSE_MENU.Update();
 						
-						NB_MENU_PAUSE_MENU.change(namespace, name, menu.elements)
-						NB_MENU_PAUSE_MENU.Update();
+						end 
 					end)
 				end 
 			end 
@@ -155,7 +158,7 @@ end
 
 
 NB_MENU_PAUSE_MENU.Open = function(namespace,name,data)
-	IsAnyMenuOpen = true
+	
 	if NB_MENU_PAUSE_MENU.IsPropSlotValueExist("opened",namespace,name) then 
 		NB_MENU_PAUSE_MENU.Close(namespace, name);
 	end 
@@ -166,6 +169,7 @@ NB_MENU_PAUSE_MENU.Open = function(namespace,name,data)
 		elseif data.elements[i].type == 'slider' then 
 			if not data.elements[i].options then data.elements[i].options = {} end 
 			if not data.elements[i].options.pos then data.elements[i].options.pos = 1 end 
+			data.elements[i].value = data.elements[i].options[1]
 		end 
 	end 
 	data._index     = #NB_MENU_PAUSE_MENU.focus;
@@ -186,7 +190,9 @@ NB_MENU_PAUSE_MENU.Open = function(namespace,name,data)
 	end 
 	NB_MENU_PAUSE_MENU.InsertPropSlot("focus",{namespace=namespace,name=name})
 	NB_MENU_PAUSE_MENU.Update();
+	
 	TriggerEvent("NB:MenuOpen",data)
+	IsAnyMenuOpen = true
 end 
 NB_MENU_PAUSE_MENU.Close = function(namespace, name)
 	IsAnyMenuOpen = false
@@ -234,11 +240,11 @@ NB_MENU_PAUSE_MENU.Update = function() -- DRAW FUNCTIONS
 		end 
 	end 
 end 
-NB_MENU_PAUSE_MENU.submit = function(namespace, name, data)
+NB_MENU_PAUSE_MENU.submit = function(namespace, name, data_)
 	local data = {
 		_namespace= namespace,
 		_name     = name,
-		current   = data,
+		current   = data_,
 		elements  = NB_MENU_PAUSE_MENU.opened[namespace][name].elements
 	}
 	local menu = NB.Menu.GetOpened(MenuType, data._namespace, data._name)
@@ -253,8 +259,8 @@ NB_MENU_PAUSE_MENU.cancel = function(namespace, name)
 		menu.cancel(data, menu)
 	end
 end 
-NB_MENU_PAUSE_MENU.change = function(namespace, name, data)
-	local data = {_namespace= namespace,_name= name,current= data,elements= NB_MENU_PAUSE_MENU.opened[namespace][name].elements}
+NB_MENU_PAUSE_MENU.change = function(namespace, name, data_)
+	local data = {_namespace= namespace,_name= name,current= data_,elements= NB_MENU_PAUSE_MENU.opened[namespace][name].elements}
 	local menu = NB.Menu.GetOpened(MenuType, data._namespace, data._name)
 	for i=1, #data.elements, 1 do
 		menu.setElement(i, 'value', data.elements[i].value)

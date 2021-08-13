@@ -10,25 +10,28 @@ CreateThread(function()
        label = v.label,
        pos  = v.pos,
 	   type = v.type,
+	   value = v.value,
 	   options = v.options
      })
 	end
 	
 	NB.Menu.CloseAll()
 	NB.Menu.Open(
-		'PauseMenu', GetCurrentResourceName(), 'strip',
+		'Default', GetCurrentResourceName(), 'strip',
 		{
 			title  = 'Position Menu',
 			description = "WTF",
-			elements = elements
+			elements = elements,
+			footer = "HAHAHA"
 		},
 		function(data, menu)
 			print("result open",data.current.value)
 			--menu.close()
+			
 		end,
 		function(data, menu)
-			print("result close",data.current.value)
-			--menu.close()
+			print("result cancel")
+			menu.close()
 		end
 		,
 		function(data, menu)

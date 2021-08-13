@@ -43,8 +43,7 @@ NB.Menu.AcceptedInput["Default"].input = function(input)
 				function()
 					PlaySoundFrontend(-1, "NAV_LEFT_RIGHT", "HUD_FRONTEND_DEFAULT_SOUNDSET", true);
 					if itemdata and itemdata.type and itemdata.type == "slider" then 
-						if not itemdata.options then itemdata.options = {} end 
-						if not itemdata.options.pos then itemdata.options.pos = 1 end 
+						
 						local length = itemdata.options and #itemdata.options or 0 
 						itemdata.options.pos = itemdata.options.pos + 1
 						local pos = itemdata.options.pos
@@ -61,8 +60,7 @@ NB.Menu.AcceptedInput["Default"].input = function(input)
 				function()
 					PlaySoundFrontend(-1, "NAV_LEFT_RIGHT", "HUD_FRONTEND_DEFAULT_SOUNDSET", true);
 					if itemdata and itemdata.type and itemdata.type == "slider" then 
-						if not itemdata.options then itemdata.options = {} end 
-						if not itemdata.options.pos then itemdata.options.pos = 1 end 
+						
 						local length = itemdata.options and #itemdata.options or 0 
 						local pos = itemdata.options.pos
 						local nextpos = ((pos)%length)+1
@@ -127,6 +125,7 @@ NB_MENU_DEFAULT.Open = function(namespace,name,data)
 		elseif data.elements[i].type == 'slider' then 
 			if not data.elements[i].options then data.elements[i].options = {} end 
 			if not data.elements[i].options.pos then data.elements[i].options.pos = 1 end 
+			if not data.elements[i].value then  data.elements[i].value = data.elements[i].options[1] end 
 		end 
 	end 
 	data._index     = #NB_MENU_DEFAULT.focus;
