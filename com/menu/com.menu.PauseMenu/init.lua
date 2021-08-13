@@ -206,7 +206,6 @@ function StartPauseMenu(versionHash)
 		RestartFrontendMenu(versionHash,-1)
 end
 function InitColumnScroll(Param0, Param1, Param2, Param3, Param4, Param5)
-
 	BeginScaleformMovieMethodOnFrontend("INIT_COLUMN_SCROLL");
 	ScaleformMovieMethodAddParamInt(Param0);
 	ScaleformMovieMethodAddParamBool(false);
@@ -219,19 +218,14 @@ function InitColumnScroll(Param0, Param1, Param2, Param3, Param4, Param5)
 	EndScaleformMovieMethod();
 end
 function SetColumnCanJump(Param0, Param1)
-
 	if BeginScaleformMovieMethodOnFrontend("SET_COLUMN_CAN_JUMP") then
-	
 		ScaleformMovieMethodAddParamInt(Param0);
 		ScaleformMovieMethodAddParamBool(not Param1);
 		EndScaleformMovieMethod();
 	end
 end
-
 function SetColumnHighLight(Param0, Param1, Param2)
-
 	if BeginScaleformMovieMethodOnFrontend("SET_COLUMN_HIGHLIGHT") then
-	
 		ScaleformMovieMethodAddParamInt(Param0);
 		ScaleformMovieMethodAddParamInt(Param1);
 		ScaleformMovieMethodAddParamBool(false);
@@ -240,17 +234,13 @@ function SetColumnHighLight(Param0, Param1, Param2)
 	end
 end
 function SetDescription(Param0, Param1, Param2, Param3, Param4)
-
 	if BeginScaleformMovieMethodOnFrontend("SET_DESCRIPTION") then
-	
 		ScaleformMovieMethodAddParamInt(Param0);
 		BeginTextCommandScaleformString(Param1);
 		if Param3 ~= -1 then
-		
 			AddTextComponentInteger(Param3);
 		end
 		if not IsStringNullOrEmpty(Param4) then
-		
 			ScaleformMovieMethodAddParamTextureNameString(Param4);
 		end
 		EndTextCommandScaleformString_2();
@@ -265,12 +255,9 @@ end
 function SetDataSlot(columnid,rowidx,menuid,uniqueid,...)
 	start('SET_DATA_SLOT')
     send(columnid,rowidx,menuid,uniqueid,...)
-	
 end 
 function SetDataSlotEmpty(Param0)
-
 	if BeginScaleformMovieMethodOnFrontend("SET_DATA_SLOT_EMPTY") then
-	
 		ScaleformMovieMethodAddParamInt(Param0);
 		EndScaleformMovieMethod();
 	end
@@ -280,9 +267,7 @@ function DisplayDataSlot(slotid)
     send(slotid)
 end 
 function ShowColumn(columnid, show)
-
 	if BeginScaleformMovieMethodOnFrontend("SHOW_COLUMN") then
-	
 		ScaleformMovieMethodAddParamInt(columnid);
 		ScaleformMovieMethodAddParamBool(show);
 		EndScaleformMovieMethod();
@@ -297,19 +282,14 @@ function SetMenuHeaderTextByIndex(columnid,columntext,columnwidth,uppercase)
 	send(columnid,columntext,columnwidth,uppercase)
 end 
 function SetColumnTitle(Param0, Param1, Param2, Param3)
-
 	if BeginScaleformMovieMethodOnFrontend("SET_COLUMN_TITLE") then
-	
 		ScaleformMovieMethodAddParamInt(Param0);
 		ScaleformMovieMethodAddParamTextureNameString(Param1);
-		
 		if Param2 then 
 		ScaleformMovieMethodAddParamTextureNameString(Param2);
-		
 		end 
 		if Param3 then 
 		ScaleformMovieMethodAddParamTextureNameString(Param3);
-		
 		end 
 		EndScaleformMovieMethod();
 	end
@@ -324,16 +304,11 @@ function SetCurrentColumn(columnid)
 end
 local Var0;
 function SetOrUpdateNormalDataSlot(columnid, rowidx, menuid, uniqueid, defaulttext, Param5, state, Param7, Param8, Param9, Param10, Param11, Param12)
-
-	
-	
 	Var0 = "SET_DATA_SLOT";
 	if Param8 then
-	
 		Var0 = "UPDATE_SLOT";
 	end
 	if BeginScaleformMovieMethodOnFrontend(Var0) then
-	
 		ScaleformMovieMethodAddParamInt(columnid);
 		ScaleformMovieMethodAddParamInt(rowidx);
 		ScaleformMovieMethodAddParamInt(menuid);
@@ -346,73 +321,43 @@ function SetOrUpdateNormalDataSlot(columnid, rowidx, menuid, uniqueid, defaultte
 		ScaleformMovieMethodAddParamInt(0);
 		ScaleformMovieMethodAddParamTextureNameString(Param5);
 		if IsStringNullOrEmpty(Param5) then
-		
 			if Param9 ~= -1 then
-			
 				ScaleformMovieMethodAddParamInt(Param9);
-			
 			elseif Param10 ~= -1 then
-			
 				ScaleformMovieMethodAddParamInt(Param10);
-			
 			else
-			
 				BeginTextCommandScaleformString("STRING");
 				if not IsStringNullOrEmpty(Param11) then
-				
 					ScaleformMovieMethodAddParamTextureNameString(Param11);
-				
 				else
-				
 					ScaleformMovieMethodAddParamTextureNameString("");
 				end
 				EndTextCommandScaleformString();
 			end
-		
 		else
-		
-			
 			if not IsStringNullOrEmpty(Param11) then
-			
 				if Param12 then
-					
 					ScaleformMovieMethodAddParamTextureNameString(Param11);
-				
 				else
-				
 					AddTextComponentSubstringTextLabel(Param11);
 				end
-			
 			elseif Param12 then
-			
 				ScaleformMovieMethodAddParamTextureNameString("");
 			end
-			
 		end
 		if Param9 ~= -1 then
-		
 			AddTextComponentInteger(Param9);
 		end
 		if Param10 ~= -1 then
-		
 			AddTextComponentInteger(Param10);
 		end
 		EndTextCommandScaleformString();
 		if state == 2 then
-		
 			ScaleformMovieMethodAddParamInt(116);
-		
 		else
-		
 			ScaleformMovieMethodAddParamTextureNameString("");
 		end
 		EndScaleformMovieMethod();
 	end
 end
-
-
-
-
 end
-
-

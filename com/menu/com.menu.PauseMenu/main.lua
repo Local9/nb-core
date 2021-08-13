@@ -1,19 +1,19 @@
 if IsClient() then 
-local NB_MENU_PAUSE_MENU = {focus={}}
-com.menu.type['PauseMenu'] = NB_MENU_PAUSE_MENU
-NB.Menu.AcceptedInput["PauseMenu"] = {}
-NB_MENU_PAUSE_MENU.ClearPropSlotValue = function(...) return com.lua.utils.Table.ClearTableSomething(NB_MENU_PAUSE_MENU,...) end
-NB_MENU_PAUSE_MENU.SetPropSlotValue = function(...) return com.lua.utils.Table.SetTableSomething(NB_MENU_PAUSE_MENU,...) end
-NB_MENU_PAUSE_MENU.IsPropSlotValueExist = function(...) return com.lua.utils.Table.IsTableSomthingExist(NB_MENU_PAUSE_MENU,...) end 
-NB_MENU_PAUSE_MENU.GetPropSlotValue = function(...) return com.lua.utils.Table.GetTableSomthing(NB_MENU_PAUSE_MENU,...) end  
-NB_MENU_PAUSE_MENU.InsertPropSlot = function(...) return com.lua.utils.Table.InsertTableSomethingTable(NB_MENU_PAUSE_MENU,...) end
-NB_MENU_PAUSE_MENU.RemovePropSlotIndex = function(...) return com.lua.utils.Table.RemoveTableSomethingTable(NB_MENU_PAUSE_MENU,...) end
+local NB_Pause_Menu = {focus={}}
+com.menu.type['PauseMenu'] = NB_Pause_Menu
+NB.MenuFramework.AcceptedInput["PauseMenu"] = {}
+NB_Pause_Menu.ClearPropSlotValue = function(...) return com.lua.utils.Table.ClearTableSomething(NB_Pause_Menu,...) end
+NB_Pause_Menu.SetPropSlotValue = function(...) return com.lua.utils.Table.SetTableSomething(NB_Pause_Menu,...) end
+NB_Pause_Menu.IsPropSlotValueExist = function(...) return com.lua.utils.Table.IsTableSomthingExist(NB_Pause_Menu,...) end 
+NB_Pause_Menu.GetPropSlotValue = function(...) return com.lua.utils.Table.GetTableSomthing(NB_Pause_Menu,...) end  
+NB_Pause_Menu.InsertPropSlot = function(...) return com.lua.utils.Table.InsertTableSomethingTable(NB_Pause_Menu,...) end
+NB_Pause_Menu.RemovePropSlotIndex = function(...) return com.lua.utils.Table.RemoveTableSomethingTable(NB_Pause_Menu,...) end
 local MenuType = 'PauseMenu'
 local openMenu = function(namespace, name, data)
-	NB_MENU_PAUSE_MENU.Open(namespace, name, data);
+	NB_Pause_Menu.Open(namespace, name, data);
 end
 local closeMenu = function(namespace, name)
-	NB_MENU_PAUSE_MENU.Close(namespace, name);
+	NB_Pause_Menu.Close(namespace, name);
 end
 
 local lastpos = nil
@@ -27,27 +27,27 @@ function GetPos ()
 end 
 
 
-NB.Menu.RegisterType(MenuType, openMenu, closeMenu)
-NB.Menu.AcceptedInput["PauseMenu"].input = function(input)
+NB.MenuFramework.RegisterType(MenuType, openMenu, closeMenu)
+NB.MenuFramework.AcceptedInput["PauseMenu"].input = function(input)
 	
-	NB_MENU_PAUSE_MENU.GetCurrentFocusData(function(namespace,name,elementslength,menu,pos,itemdata)
+	NB_Pause_Menu.GetCurrentFocusData(function(namespace,name,elementslength,menu,pos,itemdata)
 		switch (input) (
 			case ("MENU_SELECT","MENU_ENTER") (
 				function()
 					--PlaySoundFrontend(-1, "SELECT", "HUD_FRONTEND_PAUSE_MENU_SOUNDSET", true);
-					NB_MENU_PAUSE_MENU.submit(namespace, name, itemdata);
+					NB_Pause_Menu.submit(namespace, name, itemdata);
 				end
 			),
 			case ("MENU_BACK") (
 				function()
 					--PlaySoundFrontend(-1, "CANCEL", "HUD_FRONTEND_PAUSE_MENU_SOUNDSET", true);
-					NB_MENU_PAUSE_MENU.cancel(namespace, name);
+					NB_Pause_Menu.cancel(namespace, name);
 				end
 			),
 			case ("MENU_CANCEL") (
 				function()
 					--PlaySoundFrontend(-1, "CANCEL", "HUD_FRONTEND_PAUSE_MENU_SOUNDSET", true);
-					NB_MENU_PAUSE_MENU.cancel(namespace, name);
+					NB_Pause_Menu.cancel(namespace, name);
 				end
 			),
 			case ("MENU_LEFT") (
@@ -62,8 +62,8 @@ NB.Menu.AcceptedInput["PauseMenu"].input = function(input)
 						itemdata.value = itemdata.options[nextpos];
 						itemdata.options.pos = nextpos
 						
-						NB_MENU_PAUSE_MENU.change(namespace, name, itemdata)
-						NB_MENU_PAUSE_MENU.Update();
+						NB_Pause_Menu.change(namespace, name, itemdata)
+						NB_Pause_Menu.Update();
 					end
 				end
 			),
@@ -77,8 +77,8 @@ NB.Menu.AcceptedInput["PauseMenu"].input = function(input)
 						local nextpos = ((pos)%length)+1
 						itemdata.value = itemdata.options[nextpos];
 						itemdata.options.pos = nextpos
-						NB_MENU_PAUSE_MENU.change(namespace, name, itemdata)
-						NB_MENU_PAUSE_MENU.Update();
+						NB_Pause_Menu.change(namespace, name, itemdata)
+						NB_Pause_Menu.Update();
 					end
 				end
 			),
@@ -86,35 +86,35 @@ NB.Menu.AcceptedInput["PauseMenu"].input = function(input)
 			case ("MENU_UP") (
 				function()
 					--PlaySoundFrontend(-1, "NAV_UP_DOWN", "HUD_FRONTEND_PAUSE_MENU_SOUNDSET", true);
-					local pos = NB_MENU_PAUSE_MENU.GetPropSlotValue("pos",namespace,name)
+					local pos = NB_Pause_Menu.GetPropSlotValue("pos",namespace,name)
 					local nextpos = ((pos)%elementslength)+1
-					NB_MENU_PAUSE_MENU.SetPropSlotValue("pos",namespace,name,nextpos)
+					NB_Pause_Menu.SetPropSlotValue("pos",namespace,name,nextpos)
 					for i=1,#menu.elements,1 do
-						if(i == NB_MENU_PAUSE_MENU.pos[namespace][name]) then 
+						if(i == NB_Pause_Menu.pos[namespace][name]) then 
 							menu.elements[i].selected = true
 						else
 							menu.elements[i].selected = false
 						end 
 					end 
-					NB_MENU_PAUSE_MENU.change(namespace, name, itemdata)
-					NB_MENU_PAUSE_MENU.Update();
+					NB_Pause_Menu.change(namespace, name, itemdata)
+					NB_Pause_Menu.Update();
 				end
 			),
 			case ("MENU_DOWN") (
 				function()
 					--PlaySoundFrontend(-1, "NAV_UP_DOWN", "HUD_FRONTEND_PAUSE_MENU_SOUNDSET", true);
-					local pos = NB_MENU_PAUSE_MENU.GetPropSlotValue("pos",namespace,name)
+					local pos = NB_Pause_Menu.GetPropSlotValue("pos",namespace,name)
 					local nextpos = ((pos)%elementslength)+1
-					NB_MENU_PAUSE_MENU.SetPropSlotValue("pos",namespace,name,nextpos)
+					NB_Pause_Menu.SetPropSlotValue("pos",namespace,name,nextpos)
 					for i=1,#menu.elements,1 do
-						if(i == NB_MENU_PAUSE_MENU.pos[namespace][name]) then 
+						if(i == NB_Pause_Menu.pos[namespace][name]) then 
 							menu.elements[i].selected = true
 						else
 							menu.elements[i].selected = false
 						end 
 					end 
-					NB_MENU_PAUSE_MENU.change(namespace, name, itemdata)
-					NB_MENU_PAUSE_MENU.Update();
+					NB_Pause_Menu.change(namespace, name, itemdata)
+					NB_Pause_Menu.Update();
 				end
 			),--]=]
 			default (
@@ -127,10 +127,10 @@ NB.Menu.AcceptedInput["PauseMenu"].input = function(input)
 end 
 
 
-NB_MENU_PAUSE_MENU.Open = function(namespace,name,data)
+NB_Pause_Menu.Open = function(namespace,name,data)
 	
-	if NB_MENU_PAUSE_MENU.IsPropSlotValueExist("opened",namespace,name) then 
-		NB_MENU_PAUSE_MENU.Close(namespace, name);
+	if NB_Pause_Menu.IsPropSlotValueExist("opened",namespace,name) then 
+		NB_Pause_Menu.Close(namespace, name);
 	end 
 	
 	for i=1,#data.elements,1 do 
@@ -142,24 +142,24 @@ NB_MENU_PAUSE_MENU.Open = function(namespace,name,data)
 			data.elements[i].value = data.elements[i].options[1]
 		end 
 	end 
-	data._index     = #NB_MENU_PAUSE_MENU.focus;
+	data._index     = #NB_Pause_Menu.focus;
 	data._namespace = namespace;
 	data._name      = name;
 	for i=1,#data.elements,1 do 
 		data.elements[i]._namespace = namespace;
 		data.elements[i]._name      = name;
 	end 
-	NB_MENU_PAUSE_MENU.SetPropSlotValue("opened",namespace,name,data)
-	NB_MENU_PAUSE_MENU.SetPropSlotValue("pos",namespace,name,1)
+	NB_Pause_Menu.SetPropSlotValue("opened",namespace,name,data)
+	NB_Pause_Menu.SetPropSlotValue("pos",namespace,name,1)
 	for i=1,#data.elements,1 do 
 		if data.elements[i].selected  then 
-			NB_MENU_PAUSE_MENU.SetPropSlotValue("pos",namespace,name,i)
+			NB_Pause_Menu.SetPropSlotValue("pos",namespace,name,i)
 		else
 			data.elements[i].selected = false
 		end 
 	end 
-	NB_MENU_PAUSE_MENU.InsertPropSlot("focus",{namespace=namespace,name=name})
-	NB_MENU_PAUSE_MENU.Update();
+	NB_Pause_Menu.InsertPropSlot("focus",{namespace=namespace,name=name})
+	NB_Pause_Menu.Update();
 	
 	--TriggerEvent("NB:MenuOpen",data)
 	
@@ -195,25 +195,25 @@ NB_MENU_PAUSE_MENU.Open = function(namespace,name,data)
 	
 	
 	NB.Threads.CreateLoopOnce("Menu",333,function(Break)
-		if #NB_MENU_PAUSE_MENU.focus<=0  then Break() end 
+		if #NB_Pause_Menu.focus<=0  then Break() end 
 		if N_0x2e22fefa0100275e() then 
 			local pos = GetPos()
 			if lastpos == nil or lastpos ~= pos then 
 				if pos then 
 					lastpos = pos
-					NB_MENU_PAUSE_MENU.GetCurrentFocusData(function(namespace,name,elementslength,menu,pos_,itemdata)
+					NB_Pause_Menu.GetCurrentFocusData(function(namespace,name,elementslength,menu,pos_,itemdata)
 						if pos <= #menu.elements then 
-							NB_MENU_PAUSE_MENU.SetPropSlotValue("pos",namespace,name,pos)
+							NB_Pause_Menu.SetPropSlotValue("pos",namespace,name,pos)
 							
 							for i=1,#menu.elements,1 do
-								if(i == NB_MENU_PAUSE_MENU.pos[namespace][name]) then 
+								if(i == NB_Pause_Menu.pos[namespace][name]) then 
 									menu.elements[i].selected = true
 								else
 									menu.elements[i].selected = false
 								end 
 							end 
-							NB_MENU_PAUSE_MENU.change(namespace, name, menu.elements[pos])
-							NB_MENU_PAUSE_MENU.Update();
+							NB_Pause_Menu.change(namespace, name, menu.elements[pos])
+							NB_Pause_Menu.Update();
 						
 						end 
 					end)
@@ -222,25 +222,25 @@ NB_MENU_PAUSE_MENU.Open = function(namespace,name,data)
 		end  
 	end)
 end 
-NB_MENU_PAUSE_MENU.Close = function(namespace, name)
-	for  i=1,#NB_MENU_PAUSE_MENU.focus, 1 do 
-		if NB_MENU_PAUSE_MENU.focus[i].namespace == namespace and  NB_MENU_PAUSE_MENU.focus[i].name == name then 
-			table.remove(NB_MENU_PAUSE_MENU.focus,i)
-			NB_MENU_PAUSE_MENU.ClearPropSlotValue('opened',namespace,name)
+NB_Pause_Menu.Close = function(namespace, name)
+	for  i=1,#NB_Pause_Menu.focus, 1 do 
+		if NB_Pause_Menu.focus[i].namespace == namespace and  NB_Pause_Menu.focus[i].name == name then 
+			table.remove(NB_Pause_Menu.focus,i)
+			NB_Pause_Menu.ClearPropSlotValue('opened',namespace,name)
 			break;
 		end 
 	end 
-	NB_MENU_PAUSE_MENU.Update();
+	NB_Pause_Menu.Update();
 	SetFrontendActive(false);
 end 
-NB_MENU_PAUSE_MENU.GetCurrentFocus = function()
-	return NB_MENU_PAUSE_MENU.focus[#NB_MENU_PAUSE_MENU.focus];
+NB_Pause_Menu.GetCurrentFocus = function()
+	return NB_Pause_Menu.focus[#NB_Pause_Menu.focus];
 end 
-NB_MENU_PAUSE_MENU.GetCurrentFocusData = function(cb)
-	local currentFocus = NB_MENU_PAUSE_MENU.GetCurrentFocus();
+NB_Pause_Menu.GetCurrentFocusData = function(cb)
+	local currentFocus = NB_Pause_Menu.GetCurrentFocus();
 	if currentFocus and #(currentFocus) then
-		local menu    = NB_MENU_PAUSE_MENU.opened[currentFocus.namespace][currentFocus.name];
-		local pos     = NB_MENU_PAUSE_MENU.pos[currentFocus.namespace][currentFocus.name];
+		local menu    = NB_Pause_Menu.opened[currentFocus.namespace][currentFocus.name];
+		local pos     = NB_Pause_Menu.pos[currentFocus.namespace][currentFocus.name];
 		local itemdata    = menu.elements[pos];
 		if(#menu.elements > 0) then 
 			
@@ -251,11 +251,11 @@ NB_MENU_PAUSE_MENU.GetCurrentFocusData = function(cb)
 		end 
 	end 
 end 
-NB_MENU_PAUSE_MENU.Update = function() -- DRAW FUNCTIONS
-	local currentFocus             = NB_MENU_PAUSE_MENU.GetCurrentFocus();
+NB_Pause_Menu.Update = function() -- DRAW FUNCTIONS
+	local currentFocus             = NB_Pause_Menu.GetCurrentFocus();
 	if currentFocus and #(currentFocus) then
-		local menuData    = NB_MENU_PAUSE_MENU.opened[currentFocus.namespace][currentFocus.name];
-		local pos     = NB_MENU_PAUSE_MENU.pos[currentFocus.namespace][currentFocus.name];
+		local menuData    = NB_Pause_Menu.opened[currentFocus.namespace][currentFocus.name];
+		local pos     = NB_Pause_Menu.pos[currentFocus.namespace][currentFocus.name];
 		if menuData.elements and (#menuData.elements > 0) then 
 			--print(menuData.title)
 			--print(menuData.description)	
@@ -284,28 +284,28 @@ NB_MENU_PAUSE_MENU.Update = function() -- DRAW FUNCTIONS
 		end 
 	end 
 end 
-NB_MENU_PAUSE_MENU.submit = function(namespace, name, data_)
+NB_Pause_Menu.submit = function(namespace, name, data_)
 	local data = {
 		_namespace= namespace,
 		_name     = name,
 		current   = data_,
-		elements  = NB_MENU_PAUSE_MENU.opened[namespace][name].elements
+		elements  = NB_Pause_Menu.opened[namespace][name].elements
 	}
-	local menu = NB.Menu.GetOpened(MenuType, data._namespace, data._name)
+	local menu = NB.MenuFramework.GetOpened(MenuType, data._namespace, data._name)
 	if menu.submit ~= nil then
 		menu.submit(data, menu)
 	end
 end 
-NB_MENU_PAUSE_MENU.cancel = function(namespace, name)
+NB_Pause_Menu.cancel = function(namespace, name)
 	local data = {_namespace= namespace,_name= name}
-	local menu = NB.Menu.GetOpened(MenuType, data._namespace, data._name)
+	local menu = NB.MenuFramework.GetOpened(MenuType, data._namespace, data._name)
 	if menu.cancel ~= nil then
 		menu.cancel(data, menu)
 	end
 end 
-NB_MENU_PAUSE_MENU.change = function(namespace, name, data_)
-	local data = {_namespace= namespace,_name= name,current= data_,elements= NB_MENU_PAUSE_MENU.opened[namespace][name].elements}
-	local menu = NB.Menu.GetOpened(MenuType, data._namespace, data._name)
+NB_Pause_Menu.change = function(namespace, name, data_)
+	local data = {_namespace= namespace,_name= name,current= data_,elements= NB_Pause_Menu.opened[namespace][name].elements}
+	local menu = NB.MenuFramework.GetOpened(MenuType, data._namespace, data._name)
 	for i=1, #data.elements, 1 do
 		menu.setElement(i, 'value', data.elements[i].value)
 		if data.elements[i].selected then

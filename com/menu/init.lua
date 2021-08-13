@@ -6,13 +6,13 @@ com.menu.type = {}
 local RegisterKeyboardCallback = function(name,key,description,fn) RegisterCommand(name, function() fn() end, false) RegisterKeyMapping(name, IsStringNullOrEmpty(description) and name or description , 'keyboard', key) end 
 
 com.menu.ESXMenuFramework = ESX.UI.Menu
-NB.Menu = com.menu.ESXMenuFramework
+NB.MenuFramework = com.menu.ESXMenuFramework
 
-NB.Menu.AcceptedInput = {}
+NB.MenuFramework.AcceptedInput = {}
 
 local TriggerAcceptedStyleMenuInput = function(input)
 	
-	for i,v in pairs(NB.Menu.AcceptedInput) do 
+	for i,v in pairs(NB.MenuFramework.AcceptedInput) do 
 		if v.input then 
 			v.input(input)  
 		end 
