@@ -15,7 +15,7 @@ end
 local closeMenu = function(namespace, name)
 	NB_MENU_PAUSE_MENU.Close(namespace, name);
 end
-
+NB.Menu.RegisterType(MenuType, openMenu, closeMenu)
 NB.Menu.AcceptedInput["PauseMenu"].input = function(input)
 	
 	NB_MENU_PAUSE_MENU.GetCurrentFocusData(function(namespace,name,elementslength,menu,pos,itemdata)
@@ -115,11 +115,12 @@ NB.Menu.AcceptedInput["PauseMenu"].input = function(input)
 	end)
 end 
 
-NB.Menu.RegisterType(MenuType, openMenu, closeMenu)
+
 NB_MENU_PAUSE_MENU.Open = function(namespace,name,data)
 	if NB_MENU_PAUSE_MENU.IsPropSlotValueExist("opened",namespace,name) then 
 		NB_MENU_PAUSE_MENU.Close(namespace, name);
 	end 
+	
 	for i=1,#data.elements,1 do 
 		if data.elements[i].type == nil then 
 			data.elements[i].type = 'default';
@@ -143,6 +144,7 @@ NB_MENU_PAUSE_MENU.Open = function(namespace,name,data)
 	end 
 	NB_MENU_PAUSE_MENU.InsertPropSlot("focus",{namespace=namespace,name=name})
 	NB_MENU_PAUSE_MENU.Update();
+	TriggerEvent("NB:MenuOpen",data)
 end 
 NB_MENU_PAUSE_MENU.Close = function(namespace, name)
 	for  i=1,#NB_MENU_PAUSE_MENU.focus, 1 do 

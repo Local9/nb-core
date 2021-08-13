@@ -15,6 +15,7 @@ end
 local closeMenu = function(namespace, name)
 	NB_MENU_DEFAULT.Close(namespace, name);
 end
+NB.Menu.RegisterType(MenuType, openMenu, closeMenu)
 
 NB.Menu.AcceptedInput["Default"].input = function(input)
 	
@@ -115,7 +116,7 @@ NB.Menu.AcceptedInput["Default"].input = function(input)
 	end)
 end 
 
-NB.Menu.RegisterType(MenuType, openMenu, closeMenu)
+
 NB_MENU_DEFAULT.Open = function(namespace,name,data)
 	if NB_MENU_DEFAULT.IsPropSlotValueExist("opened",namespace,name) then 
 		NB_MENU_DEFAULT.Close(namespace, name);

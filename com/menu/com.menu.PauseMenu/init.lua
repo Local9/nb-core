@@ -251,7 +251,7 @@ function SetDescription(Param0, Param1, Param2, Param3, Param4)
 		end
 		if not IsStringNullOrEmpty(Param4) then
 		
-			AddTextComponentSubstringPlayerName(Param4);
+			ScaleformMovieMethodAddParamTextureNameString(Param4);
 		end
 		EndTextCommandScaleformString_2();
 		ScaleformMovieMethodAddParamBool(Param2);
@@ -301,15 +301,15 @@ function SetColumnTitle(Param0, Param1, Param2, Param3)
 	if BeginScaleformMovieMethodOnFrontend("SET_COLUMN_TITLE") then
 	
 		ScaleformMovieMethodAddParamInt(Param0);
-		BeginTextCommandScaleformString(Param1);
-		EndTextCommandScaleformString();
+		ScaleformMovieMethodAddParamTextureNameString(Param1);
+		
 		if Param2 then 
-		BeginTextCommandScaleformString(Param2);
-		EndTextCommandScaleformString();
+		ScaleformMovieMethodAddParamTextureNameString(Param2);
+		
 		end 
 		if Param3 then 
-		BeginTextCommandScaleformString(Param3);
-		EndTextCommandScaleformString();
+		ScaleformMovieMethodAddParamTextureNameString(Param3);
+		
 		end 
 		EndScaleformMovieMethod();
 	end
@@ -323,7 +323,7 @@ function SetCurrentColumn(columnid)
 	end
 end
 local Var0;
-function SetOrUpdateNormalDataSlot(Param0, Param1, Param2, Param3, Param4, Param5, Param6, Param7, Param8, Param9, Param10, Param11, Param12)
+function SetOrUpdateNormalDataSlot(columnid, rowidx, menuid, uniqueid, textlabel, Param5, state, Param7, Param8, Param9, Param10, Param11, Param12)
 
 	
 	
@@ -334,22 +334,14 @@ function SetOrUpdateNormalDataSlot(Param0, Param1, Param2, Param3, Param4, Param
 	end
 	if BeginScaleformMovieMethodOnFrontend(Var0) then
 	
-		ScaleformMovieMethodAddParamInt(Param0);
-		ScaleformMovieMethodAddParamInt(Param1);
-		ScaleformMovieMethodAddParamInt(Param2);
-		ScaleformMovieMethodAddParamInt(Param3);
-		ScaleformMovieMethodAddParamInt(Param6);
+		ScaleformMovieMethodAddParamInt(columnid);
+		ScaleformMovieMethodAddParamInt(rowidx);
+		ScaleformMovieMethodAddParamInt(menuid);
+		ScaleformMovieMethodAddParamInt(uniqueid);
+		ScaleformMovieMethodAddParamInt(state);
 		ScaleformMovieMethodAddParamInt(-1);
 		ScaleformMovieMethodAddParamInt(Param7);
-		if not IsStringNullOrEmpty(Param4) then
-		
-			BeginTextCommandScaleformString(Param4);
-			EndTextCommandScaleformString();
-		
-		else
-		
-			AddTextComponentSubstringPlayerName("");
-		end
+		ScaleformMovieMethodAddParamTextureNameString(textlabel);
 		ScaleformMovieMethodAddParamInt(0);
 		ScaleformMovieMethodAddParamInt(0);
 		if IsStringNullOrEmpty(Param5) then
@@ -367,11 +359,11 @@ function SetOrUpdateNormalDataSlot(Param0, Param1, Param2, Param3, Param4, Param
 				BeginTextCommandScaleformString("STRING");
 				if not IsStringNullOrEmpty(Param11) then
 				
-					AddTextComponentSubstringPlayerName(Param11);
+					ScaleformMovieMethodAddParamTextureNameString(Param11);
 				
 				else
 				
-					AddTextComponentSubstringPlayerName("");
+					ScaleformMovieMethodAddParamTextureNameString("");
 				end
 				EndTextCommandScaleformString();
 			end
@@ -382,8 +374,8 @@ function SetOrUpdateNormalDataSlot(Param0, Param1, Param2, Param3, Param4, Param
 			if not IsStringNullOrEmpty(Param11) then
 			
 				if Param12 then
-				
-					AddTextComponentSubstringPlayerName(Param11);
+					
+					ScaleformMovieMethodAddParamTextureNameString(Param11);
 				
 				else
 				
@@ -392,25 +384,26 @@ function SetOrUpdateNormalDataSlot(Param0, Param1, Param2, Param3, Param4, Param
 			
 			elseif Param12 then
 			
-				AddTextComponentSubstringPlayerName("");
+				ScaleformMovieMethodAddParamTextureNameString("");
 			end
-			if Param9 ~= -1 then
 			
-				AddTextComponentInteger(Param9);
-			end
-			if Param10 ~= -1 then
-			
-				AddTextComponentInteger(Param10);
-			end
-			EndTextCommandScaleformString();
 		end
-		if Param6 == 2 then
+		if Param9 ~= -1 then
+		
+			AddTextComponentInteger(Param9);
+		end
+		if Param10 ~= -1 then
+		
+			AddTextComponentInteger(Param10);
+		end
+		EndTextCommandScaleformString();
+		if state == 2 then
 		
 			ScaleformMovieMethodAddParamInt(116);
 		
 		else
 		
-			AddTextComponentSubstringPlayerName("");
+			ScaleformMovieMethodAddParamTextureNameString("");
 		end
 		EndScaleformMovieMethod();
 	end
