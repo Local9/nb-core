@@ -99,9 +99,9 @@ NB_Pause_Menu.Open = function(namespace,name,data)
 	local menudata = data 
 	local Created = false 
 	SetFrontendActive(false);
-	Wait(550)
+	Wait(10)
 	StartPauseMenu(PauseMenu.versionid.FE_MENU_VERSION_MP_CHARACTER_CREATION)
-	Wait(550)
+	Wait(10)
 	SetCurrentColumn(-1)
 	if menudata.style and menudata.style == 0 then 
 		SetDataSlotEmpty(0);
