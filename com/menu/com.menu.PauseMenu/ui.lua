@@ -15,10 +15,17 @@ AddEventHandler("NB:MenuOpen",function(menudata)
 		for i=1,#menudata.elements do 
 			local item = menudata.elements[i]
 			local data_idx = i-1
-			SetOrUpdateNormalDataSlot(0, data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, data_idx, item.label, item.type == 'slider' and item.options[1] or "" , item.type == 'slider' and 0 or 1, 4, Created, -1, -1, 0 , 0);
+			if i == #menudata.elements then 
+				if item.type == 'footer' then 
+				SetOrUpdateNormalDataSlot(0, data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, data_idx, item.label, " " , 2, 1, Created, -1, -1, 0 , 0);
+				else 
+				SetOrUpdateNormalDataSlot(0, data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, data_idx, item.label, item.type == 'slider' and item.value or "" , item.type == 'slider' and 0 or 1, 4, Created, -1, -1, 0 , 0);
+				end 
+			else 
+				SetOrUpdateNormalDataSlot(0, data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, data_idx, item.label, item.type == 'slider' and item.value or "" , item.type == 'slider' and 0 or 1, 4, Created, -1, -1, 0 , 0);
+			end 
 		end 
 		
-		--SetOrUpdateNormalDataSlot(0, #menudata.elements, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, #menudata.elements, "FACE_SAVE", "", 2, 1, Created, -1, -1,0,0);
 		 
 		DisplayDataSlot(0);
 		SetColumnFocus(0, 1, 1);
@@ -32,8 +39,16 @@ AddEventHandler("NB:MenuUpdate",function(menudata,pos)
 	local Created = true 
 	local item = menudata.elements[pos]
 	local data_idx = pos-1
-	SetOrUpdateNormalDataSlot(0, data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, data_idx, item.label, item.type == 'slider' and item.value or "" , item.type == 'slider' and 0 or 1, 4, Created, -1, -1, 0 , 0);
+	if pos == #menudata.elements then 
 	
+		if item.type == 'footer' then 
+		SetOrUpdateNormalDataSlot(0, data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, data_idx, item.label, " " , 2, 1, Created, -1, -1, 0 , 0);
+		else 
+		SetOrUpdateNormalDataSlot(0, data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, data_idx, item.label, item.type == 'slider' and item.value or "" , item.type == 'slider' and 0 or 1, 4, Created, -1, -1, 0 , 0);
+		end 
+	else 
+		SetOrUpdateNormalDataSlot(0, data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, data_idx, item.label, item.type == 'slider' and item.value or "" , item.type == 'slider' and 0 or 1, 4, Created, -1, -1, 0 , 0);
+	end 
 	
 	
 end)

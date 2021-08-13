@@ -3,7 +3,8 @@ CreateThread(function()
 	local elements = {}
 	local Salle = {
 		{label="Apple",value="Apple"},
-		{label="选择水果",type="slider",options={"apple","banana","orange"}}
+		{label="选择水果",type="slider",options={"apple","banana","orange"}},
+		{label="保存",value="Save",type="footer"}
 	}
 	for k,v in pairs(Salle) do
 	   table.insert(elements,{
@@ -17,31 +18,32 @@ CreateThread(function()
 	
 	NB.Menu.CloseAll()
 	NB.Menu.Open(
-		'Default', GetCurrentResourceName(), 'strip',
+		'PauseMenu', GetCurrentResourceName(), 'strip',
 		{
 			title  = 'Position Menu',
-			description = "WTF",
-			elements = elements,
-			footer = "HAHAHA"
+			description = "MENU DESCRIPTION",
+			elements = elements
 		},
 		function(data, menu)
 			print("result open",data.current.value)
 			--menu.close()
-			
+			--NB.Utils.Debug.DrawText("Open",data.current.value)
 		end,
 		function(data, menu)
 			print("result cancel")
+			--NB.Utils.Debug.DrawText("Cancel")
 			menu.close()
 		end
 		,
 		function(data, menu)
 			print("result change",data.current.value)
+			--NB.Utils.Debug.DrawText("Change",data.current.value)
 			
 		end
 		,
 		function()
 			print("result close")
-			
+			--NB.Utils.Debug.DrawText("Close")
 		end
 	)
 end)

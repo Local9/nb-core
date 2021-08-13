@@ -26,36 +26,7 @@ function GetPos ()
 		return nil
 	end 
 end 
-CreateThread(function()
-	while true do 
-		Wait(0)
-		if IsAnyMenuOpen and N_0x2e22fefa0100275e() then 
-			local pos = GetPos()
-			if lastpos == nil or lastpos ~= pos then 
-				if pos then 
-					lastpos = pos
-					NB_MENU_PAUSE_MENU.GetCurrentFocusData(function(namespace,name,elementslength,menu,pos_,itemdata)
-						if pos <= #menu.elements then 
-							NB_MENU_PAUSE_MENU.SetPropSlotValue("pos",namespace,name,pos)
-							
-							for i=1,#menu.elements,1 do
-								if(i == NB_MENU_PAUSE_MENU.pos[namespace][name]) then 
-									menu.elements[i].selected = true
-								else
-									menu.elements[i].selected = false
-								end 
-							end 
-							
-							NB_MENU_PAUSE_MENU.change(namespace, name, itemdata)
-							NB_MENU_PAUSE_MENU.Update();
-						
-						end 
-					end)
-				end 
-			end 
-		end 
-	end
-end)
+
 
 NB.Menu.RegisterType(MenuType, openMenu, closeMenu)
 NB.Menu.AcceptedInput["PauseMenu"].input = function(input)
@@ -193,6 +164,37 @@ NB_MENU_PAUSE_MENU.Open = function(namespace,name,data)
 	
 	TriggerEvent("NB:MenuOpen",data)
 	IsAnyMenuOpen = true
+	CreateThread(function()
+	while true do 
+		Wait(333)
+		if IsAnyMenuOpen and N_0x2e22fefa0100275e() then 
+			local pos = GetPos()
+			if lastpos == nil or lastpos ~= pos then 
+				if pos then 
+					lastpos = pos
+					NB_MENU_PAUSE_MENU.GetCurrentFocusData(function(namespace,name,elementslength,menu,pos_,itemdata)
+						if pos <= #menu.elements then 
+							NB_MENU_PAUSE_MENU.SetPropSlotValue("pos",namespace,name,pos)
+							
+							for i=1,#menu.elements,1 do
+								if(i == NB_MENU_PAUSE_MENU.pos[namespace][name]) then 
+									menu.elements[i].selected = true
+								else
+									menu.elements[i].selected = false
+								end 
+							end 
+							NB_MENU_PAUSE_MENU.change(namespace, name, menu.elements[pos])
+							NB_MENU_PAUSE_MENU.Update();
+						
+						end 
+					end)
+				end 
+			end 
+		else 
+			break
+		end 
+	end
+end)
 end 
 NB_MENU_PAUSE_MENU.Close = function(namespace, name)
 	IsAnyMenuOpen = false
@@ -204,6 +206,7 @@ NB_MENU_PAUSE_MENU.Close = function(namespace, name)
 		end 
 	end 
 	NB_MENU_PAUSE_MENU.Update();
+	SetFrontendActive(false);
 end 
 NB_MENU_PAUSE_MENU.GetCurrentFocus = function()
 	return NB_MENU_PAUSE_MENU.focus[#NB_MENU_PAUSE_MENU.focus];
