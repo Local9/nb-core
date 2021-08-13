@@ -1,14 +1,14 @@
 if IsClient() then 
-
-local NB_MENU_DEFAULT = {_PROPS_={},focus={}}
+local Menu = {_PROPS_={focus={}}}
+local NB_MENU_DEFAULT = Menu._PROPS_
 com.menu.type['Default'] = NB_MENU_DEFAULT
 NB.Menu.AcceptedInput["Default"] = {}
-NB_MENU_DEFAULT.ClearPropSlotValue = function(...) return com.lua.utils.Table.ClearTableSomething(NB_MENU_DEFAULT["_PROPS_"],...) end
-NB_MENU_DEFAULT.SetPropSlotValue = function(...) return com.lua.utils.Table.SetTableSomething(NB_MENU_DEFAULT["_PROPS_"],...) end
-NB_MENU_DEFAULT.IsPropSlotValueExist = function(...) return com.lua.utils.Table.IsTableSomthingExist(NB_MENU_DEFAULT["_PROPS_"],...) end 
-NB_MENU_DEFAULT.GetPropSlotValue = function(...) return com.lua.utils.Table.GetTableSomthing(NB_MENU_DEFAULT["_PROPS_"],...) end  
-NB_MENU_DEFAULT.InsertPropSlot = function(...) return com.lua.utils.Table.InsertTableSomethingTable(NB_MENU_DEFAULT["_PROPS_"],...) end
-NB_MENU_DEFAULT.RemovePropSlotIndex = function(...) return com.lua.utils.Table.RemoveTableSomethingTable(NB_MENU_DEFAULT["_PROPS_"],...) end
+NB_MENU_DEFAULT.ClearPropSlotValue = function(...) return com.lua.utils.Table.ClearTableSomething(Menu["_PROPS_"],...) end
+NB_MENU_DEFAULT.SetPropSlotValue = function(...) return com.lua.utils.Table.SetTableSomething(Menu["_PROPS_"],...) end
+NB_MENU_DEFAULT.IsPropSlotValueExist = function(...) return com.lua.utils.Table.IsTableSomthingExist(Menu["_PROPS_"],...) end 
+NB_MENU_DEFAULT.GetPropSlotValue = function(...) return com.lua.utils.Table.GetTableSomthing(Menu["_PROPS_"],...) end  
+NB_MENU_DEFAULT.InsertPropSlot = function(...) return com.lua.utils.Table.InsertTableSomethingTable(Menu["_PROPS_"],...) end
+NB_MENU_DEFAULT.RemovePropSlotIndex = function(...) return com.lua.utils.Table.RemoveTableSomethingTable(Menu["_PROPS_"],...) end
 local MenuType = 'Default'
 local openMenu = function(namespace, name, data)
 	NB_MENU_DEFAULT.Open(namespace, name, data);
@@ -17,7 +17,7 @@ local closeMenu = function(namespace, name)
 	NB_MENU_DEFAULT.Close(namespace, name);
 end
 
-NB.Menu.AcceptedInput["Default"].OnMenuKeyInput = function(input)
+NB.Menu.AcceptedInput["Default"].input = function(input)
 	
 	NB_MENU_DEFAULT.GetCurrentFocusData(function(namespace,name,elementslength,menu,pos,itemdata)
 		switch (input) (

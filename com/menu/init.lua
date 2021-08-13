@@ -14,7 +14,7 @@ local TriggerAcceptedStyleMenuInput = function(input)
 	
 	for i,v in pairs(NB.Menu.AcceptedInput) do 
 		
-		v.OnMenuKeyInput(input)  
+		v.input(input)  
 	end 
 end 
 
