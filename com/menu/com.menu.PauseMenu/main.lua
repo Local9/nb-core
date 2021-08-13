@@ -29,19 +29,15 @@ NB.MenuFramework.AcceptedInput["PauseMenu"].input = function(input)
 	NB_Pause_Menu.GetCurrentFocusData(function(namespace,name,elementslength,menu,pos,itemdata)
 		switch (input) (
 			case ("MENU_SELECT","MENU_ENTER") (function()
-					--PlaySoundFrontend(-1, "SELECT", "HUD_FRONTEND_PAUSE_MENU_SOUNDSET", true);
 					NB_Pause_Menu.submit(namespace, name, itemdata);
 			end),
 			case ("MENU_BACK") (function()
-					--PlaySoundFrontend(-1, "CANCEL", "HUD_FRONTEND_PAUSE_MENU_SOUNDSET", true);
 					NB_Pause_Menu.cancel(namespace, name);
 			end),
 			case ("MENU_CANCEL") (function()
-					--PlaySoundFrontend(-1, "CANCEL", "HUD_FRONTEND_PAUSE_MENU_SOUNDSET", true);
 					NB_Pause_Menu.cancel(namespace, name);
 			end),
 			case ("MENU_LEFT") (function()
-					--PlaySoundFrontend(-1, "NAV_LEFT_RIGHT", "HUD_FRONTEND_PAUSE_MENU_SOUNDSET", true);
 					if itemdata and itemdata.type and itemdata.type == "slider" then 
 						local length = itemdata.options and #itemdata.options or 0 
 						itemdata.options.pos = itemdata.options.pos + 1
@@ -54,7 +50,6 @@ NB.MenuFramework.AcceptedInput["PauseMenu"].input = function(input)
 					end
 			end),
 			case ("MENU_RIGHT") (function()
-					--PlaySoundFrontend(-1, "NAV_LEFT_RIGHT", "HUD_FRONTEND_PAUSE_MENU_SOUNDSET", true);
 					if itemdata and itemdata.type and itemdata.type == "slider" then 
 						local length = itemdata.options and #itemdata.options or 0 
 						local pos = itemdata.options.pos
@@ -65,43 +60,7 @@ NB.MenuFramework.AcceptedInput["PauseMenu"].input = function(input)
 						NB_Pause_Menu.Update();
 					end
 			end),
-			--[=[
-			case ("MENU_UP") (
-				function()
-					--PlaySoundFrontend(-1, "NAV_UP_DOWN", "HUD_FRONTEND_PAUSE_MENU_SOUNDSET", true);
-					local pos = NB_Pause_Menu.GetPropSlotValue("pos",namespace,name)
-					local nextpos = ((pos)%elementslength)+1
-					NB_Pause_Menu.SetPropSlotValue("pos",namespace,name,nextpos)
-					for i=1,#menu.elements,1 do
-						if(i == NB_Pause_Menu.pos[namespace][name]) then 
-							menu.elements[i].selected = true
-						else
-							menu.elements[i].selected = false
-						end 
-					end 
-					NB_Pause_Menu.change(namespace, name, itemdata)
-					NB_Pause_Menu.Update();
-				end
-			),
-			case ("MENU_DOWN") (
-				function()
-					--PlaySoundFrontend(-1, "NAV_UP_DOWN", "HUD_FRONTEND_PAUSE_MENU_SOUNDSET", true);
-					local pos = NB_Pause_Menu.GetPropSlotValue("pos",namespace,name)
-					local nextpos = ((pos)%elementslength)+1
-					NB_Pause_Menu.SetPropSlotValue("pos",namespace,name,nextpos)
-					for i=1,#menu.elements,1 do
-						if(i == NB_Pause_Menu.pos[namespace][name]) then 
-							menu.elements[i].selected = true
-						else
-							menu.elements[i].selected = false
-						end 
-					end 
-					NB_Pause_Menu.change(namespace, name, itemdata)
-					NB_Pause_Menu.Update();
-				end
-			),--]=]
 			default (function()
-					--error("Menu",2)
 			end)
 		)
 	end)
@@ -137,10 +96,8 @@ NB_Pause_Menu.Open = function(namespace,name,data)
 	end 
 	NB_Pause_Menu.InsertPropSlot("focus",{namespace=namespace,name=name})
 	NB_Pause_Menu.Update();
-	--TriggerEvent("NB:MenuOpen",data)
 	local menudata = data 
 	local Created = false 
-	print(menudata.title)
 	SetFrontendActive(false);
 	Wait(550)
 	StartPauseMenu(PauseMenu.versionid.FE_MENU_VERSION_MP_CHARACTER_CREATION)
@@ -226,14 +183,11 @@ NB_Pause_Menu.Update = function() -- DRAW FUNCTIONS
 		local menuData    = NB_Pause_Menu.opened[currentFocus.namespace][currentFocus.name];
 		local pos     = NB_Pause_Menu.pos[currentFocus.namespace][currentFocus.name];
 		if menuData.elements and (#menuData.elements > 0) then 
-			--print(menuData.title)
-			--print(menuData.description)	
 			for i,v in pairs (menuData.elements) do 
 				if i == pos then 
 					v.selected = true;
 				end 
 			end 
-			--TriggerEvent("NB:MenuUpdate",menuData,pos)
 			local menudata = menuData
 			local Created = true 
 			local item = menudata.elements[pos]
