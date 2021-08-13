@@ -8,7 +8,6 @@ NB_MENU_PAUSE_MENU.IsPropSlotValueExist = function(...) return com.lua.utils.Tab
 NB_MENU_PAUSE_MENU.GetPropSlotValue = function(...) return com.lua.utils.Table.GetTableSomthing(NB_MENU_PAUSE_MENU,...) end  
 NB_MENU_PAUSE_MENU.InsertPropSlot = function(...) return com.lua.utils.Table.InsertTableSomethingTable(NB_MENU_PAUSE_MENU,...) end
 NB_MENU_PAUSE_MENU.RemovePropSlotIndex = function(...) return com.lua.utils.Table.RemoveTableSomethingTable(NB_MENU_PAUSE_MENU,...) end
-local IsAnyMenuOpen = false 
 local MenuType = 'PauseMenu'
 local openMenu = function(namespace, name, data)
 	NB_MENU_PAUSE_MENU.Open(namespace, name, data);
@@ -35,25 +34,25 @@ NB.Menu.AcceptedInput["PauseMenu"].input = function(input)
 		switch (input) (
 			case ("MENU_SELECT","MENU_ENTER") (
 				function()
-					PlaySoundFrontend(-1, "SELECT", "HUD_FRONTEND_PAUSE_MENU_SOUNDSET", true);
+					--PlaySoundFrontend(-1, "SELECT", "HUD_FRONTEND_PAUSE_MENU_SOUNDSET", true);
 					NB_MENU_PAUSE_MENU.submit(namespace, name, itemdata);
 				end
 			),
 			case ("MENU_BACK") (
 				function()
-					PlaySoundFrontend(-1, "CANCEL", "HUD_FRONTEND_PAUSE_MENU_SOUNDSET", true);
+					--PlaySoundFrontend(-1, "CANCEL", "HUD_FRONTEND_PAUSE_MENU_SOUNDSET", true);
 					NB_MENU_PAUSE_MENU.cancel(namespace, name);
 				end
 			),
 			case ("MENU_CANCEL") (
 				function()
-					PlaySoundFrontend(-1, "CANCEL", "HUD_FRONTEND_PAUSE_MENU_SOUNDSET", true);
+					--PlaySoundFrontend(-1, "CANCEL", "HUD_FRONTEND_PAUSE_MENU_SOUNDSET", true);
 					NB_MENU_PAUSE_MENU.cancel(namespace, name);
 				end
 			),
 			case ("MENU_LEFT") (
 				function()
-					PlaySoundFrontend(-1, "NAV_LEFT_RIGHT", "HUD_FRONTEND_PAUSE_MENU_SOUNDSET", true);
+					--PlaySoundFrontend(-1, "NAV_LEFT_RIGHT", "HUD_FRONTEND_PAUSE_MENU_SOUNDSET", true);
 					if itemdata and itemdata.type and itemdata.type == "slider" then 
 						
 						local length = itemdata.options and #itemdata.options or 0 
@@ -70,7 +69,7 @@ NB.Menu.AcceptedInput["PauseMenu"].input = function(input)
 			),
 			case ("MENU_RIGHT") (
 				function()
-					PlaySoundFrontend(-1, "NAV_LEFT_RIGHT", "HUD_FRONTEND_PAUSE_MENU_SOUNDSET", true);
+					--PlaySoundFrontend(-1, "NAV_LEFT_RIGHT", "HUD_FRONTEND_PAUSE_MENU_SOUNDSET", true);
 					if itemdata and itemdata.type and itemdata.type == "slider" then 
 						
 						local length = itemdata.options and #itemdata.options or 0 
@@ -86,7 +85,7 @@ NB.Menu.AcceptedInput["PauseMenu"].input = function(input)
 			--[=[
 			case ("MENU_UP") (
 				function()
-					PlaySoundFrontend(-1, "NAV_UP_DOWN", "HUD_FRONTEND_PAUSE_MENU_SOUNDSET", true);
+					--PlaySoundFrontend(-1, "NAV_UP_DOWN", "HUD_FRONTEND_PAUSE_MENU_SOUNDSET", true);
 					local pos = NB_MENU_PAUSE_MENU.GetPropSlotValue("pos",namespace,name)
 					local nextpos = ((pos)%elementslength)+1
 					NB_MENU_PAUSE_MENU.SetPropSlotValue("pos",namespace,name,nextpos)
@@ -103,7 +102,7 @@ NB.Menu.AcceptedInput["PauseMenu"].input = function(input)
 			),
 			case ("MENU_DOWN") (
 				function()
-					PlaySoundFrontend(-1, "NAV_UP_DOWN", "HUD_FRONTEND_PAUSE_MENU_SOUNDSET", true);
+					--PlaySoundFrontend(-1, "NAV_UP_DOWN", "HUD_FRONTEND_PAUSE_MENU_SOUNDSET", true);
 					local pos = NB_MENU_PAUSE_MENU.GetPropSlotValue("pos",namespace,name)
 					local nextpos = ((pos)%elementslength)+1
 					NB_MENU_PAUSE_MENU.SetPropSlotValue("pos",namespace,name,nextpos)
@@ -163,11 +162,9 @@ NB_MENU_PAUSE_MENU.Open = function(namespace,name,data)
 	NB_MENU_PAUSE_MENU.Update();
 	
 	TriggerEvent("NB:MenuOpen",data)
-	IsAnyMenuOpen = true
-	CreateThread(function()
-	while true do 
-		Wait(333)
-		if IsAnyMenuOpen and N_0x2e22fefa0100275e() then 
+	NB.Threads.CreateLoopOnce("Menu",333,function(Break)
+		if #NB_MENU_PAUSE_MENU.focus<=0  then Break() end 
+		if N_0x2e22fefa0100275e() then 
 			local pos = GetPos()
 			if lastpos == nil or lastpos ~= pos then 
 				if pos then 
@@ -190,14 +187,10 @@ NB_MENU_PAUSE_MENU.Open = function(namespace,name,data)
 					end)
 				end 
 			end 
-		else 
-			break
-		end 
-	end
-end)
+		end  
+	end)
 end 
 NB_MENU_PAUSE_MENU.Close = function(namespace, name)
-	IsAnyMenuOpen = false
 	for  i=1,#NB_MENU_PAUSE_MENU.focus, 1 do 
 		if NB_MENU_PAUSE_MENU.focus[i].namespace == namespace and  NB_MENU_PAUSE_MENU.focus[i].name == name then 
 			table.remove(NB_MENU_PAUSE_MENU.focus,i)
