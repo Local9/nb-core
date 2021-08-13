@@ -13,8 +13,9 @@ NB.Menu.AcceptedInput = {}
 local TriggerAcceptedStyleMenuInput = function(input)
 	
 	for i,v in pairs(NB.Menu.AcceptedInput) do 
-		
-		v.input(input)  
+		if v.input then 
+			v.input(input)  
+		end 
 	end 
 end 
 

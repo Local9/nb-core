@@ -8,6 +8,7 @@ NB_MENU_PAUSE_MENU.IsPropSlotValueExist = function(...) return com.lua.utils.Tab
 NB_MENU_PAUSE_MENU.GetPropSlotValue = function(...) return com.lua.utils.Table.GetTableSomthing(NB_MENU_PAUSE_MENU,...) end  
 NB_MENU_PAUSE_MENU.InsertPropSlot = function(...) return com.lua.utils.Table.InsertTableSomethingTable(NB_MENU_PAUSE_MENU,...) end
 NB_MENU_PAUSE_MENU.RemovePropSlotIndex = function(...) return com.lua.utils.Table.RemoveTableSomethingTable(NB_MENU_PAUSE_MENU,...) end
+local IsAnyMenuOpen = false 
 local MenuType = 'PauseMenu'
 local openMenu = function(namespace, name, data)
 	NB_MENU_PAUSE_MENU.Open(namespace, name, data);
@@ -15,6 +16,44 @@ end
 local closeMenu = function(namespace, name)
 	NB_MENU_PAUSE_MENU.Close(namespace, name);
 end
+
+local lastpos = nil
+function GetPos ()
+	local a,b,c = GetPauseMenuSelectionData()
+	if c ~= -1 then 
+		return c+1 
+	else 
+		return nil
+	end 
+end 
+CreateThread(function()
+	while true do 
+		Wait(0)
+		if IsAnyMenuOpen and N_0x2e22fefa0100275e() then 
+			local pos = GetPos()
+			if lastpos == nil or lastpos ~= pos then 
+				if pos then 
+					lastpos = pos
+					NB_MENU_PAUSE_MENU.GetCurrentFocusData(function(namespace,name,elementslength,menu,pos_,itemdata)
+						NB_MENU_PAUSE_MENU.SetPropSlotValue("pos",namespace,name,pos)
+						
+						for i=1,#menu.elements,1 do
+							if(i == NB_MENU_PAUSE_MENU.pos[namespace][name]) then 
+								menu.elements[i].selected = true
+							else
+								menu.elements[i].selected = false
+							end 
+						end 
+						
+						NB_MENU_PAUSE_MENU.change(namespace, name, menu.elements)
+						NB_MENU_PAUSE_MENU.Update();
+					end)
+				end 
+			end 
+		end 
+	end
+end)
+
 NB.Menu.RegisterType(MenuType, openMenu, closeMenu)
 NB.Menu.AcceptedInput["PauseMenu"].input = function(input)
 	
@@ -42,8 +81,7 @@ NB.Menu.AcceptedInput["PauseMenu"].input = function(input)
 				function()
 					PlaySoundFrontend(-1, "NAV_LEFT_RIGHT", "HUD_FRONTEND_PAUSE_MENU_SOUNDSET", true);
 					if itemdata and itemdata.type and itemdata.type == "slider" then 
-						if not itemdata.options then itemdata.options = {} end 
-						if not itemdata.options.pos then itemdata.options.pos = 1 end 
+						
 						local length = itemdata.options and #itemdata.options or 0 
 						itemdata.options.pos = itemdata.options.pos + 1
 						local pos = itemdata.options.pos
@@ -60,8 +98,7 @@ NB.Menu.AcceptedInput["PauseMenu"].input = function(input)
 				function()
 					PlaySoundFrontend(-1, "NAV_LEFT_RIGHT", "HUD_FRONTEND_PAUSE_MENU_SOUNDSET", true);
 					if itemdata and itemdata.type and itemdata.type == "slider" then 
-						if not itemdata.options then itemdata.options = {} end 
-						if not itemdata.options.pos then itemdata.options.pos = 1 end 
+						
 						local length = itemdata.options and #itemdata.options or 0 
 						local pos = itemdata.options.pos
 						local nextpos = ((pos)%length)+1
@@ -72,6 +109,7 @@ NB.Menu.AcceptedInput["PauseMenu"].input = function(input)
 					end
 				end
 			),
+			--[=[
 			case ("MENU_UP") (
 				function()
 					PlaySoundFrontend(-1, "NAV_UP_DOWN", "HUD_FRONTEND_PAUSE_MENU_SOUNDSET", true);
@@ -105,7 +143,7 @@ NB.Menu.AcceptedInput["PauseMenu"].input = function(input)
 					NB_MENU_PAUSE_MENU.change(namespace, name, itemdata)
 					NB_MENU_PAUSE_MENU.Update();
 				end
-			),
+			),--]=]
 			default (
 				function()
 					--error("Menu",2)
@@ -117,6 +155,7 @@ end
 
 
 NB_MENU_PAUSE_MENU.Open = function(namespace,name,data)
+	IsAnyMenuOpen = true
 	if NB_MENU_PAUSE_MENU.IsPropSlotValueExist("opened",namespace,name) then 
 		NB_MENU_PAUSE_MENU.Close(namespace, name);
 	end 
@@ -124,6 +163,9 @@ NB_MENU_PAUSE_MENU.Open = function(namespace,name,data)
 	for i=1,#data.elements,1 do 
 		if data.elements[i].type == nil then 
 			data.elements[i].type = 'default';
+		elseif data.elements[i].type == 'slider' then 
+			if not data.elements[i].options then data.elements[i].options = {} end 
+			if not data.elements[i].options.pos then data.elements[i].options.pos = 1 end 
 		end 
 	end 
 	data._index     = #NB_MENU_PAUSE_MENU.focus;
@@ -147,6 +189,7 @@ NB_MENU_PAUSE_MENU.Open = function(namespace,name,data)
 	TriggerEvent("NB:MenuOpen",data)
 end 
 NB_MENU_PAUSE_MENU.Close = function(namespace, name)
+	IsAnyMenuOpen = false
 	for  i=1,#NB_MENU_PAUSE_MENU.focus, 1 do 
 		if NB_MENU_PAUSE_MENU.focus[i].namespace == namespace and  NB_MENU_PAUSE_MENU.focus[i].name == name then 
 			table.remove(NB_MENU_PAUSE_MENU.focus,i)

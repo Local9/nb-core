@@ -2,8 +2,8 @@ if IsClient() then
 CreateThread(function()
 	local elements = {}
 	local Salle = {
-		{label="Apple"},
-		{type="slider",options={"apple","banana","orange"}}
+		{label="Apple",value="Apple"},
+		{label="选择水果",type="slider",options={"apple","banana","orange"}}
 	}
 	for k,v in pairs(Salle) do
 	   table.insert(elements,{
@@ -23,16 +23,16 @@ CreateThread(function()
 			elements = elements
 		},
 		function(data, menu)
-			print("result open",json.encode(data))
-			menu.close()
+			print("result open",data.current.value)
+			--menu.close()
 		end,
 		function(data, menu)
-			print("result close",json.encode(data))
-			menu.close()
+			print("result close",data.current.value)
+			--menu.close()
 		end
 		,
 		function(data, menu)
-			print("result change",json.encode(data))
+			print("result change",data.current.value)
 			
 		end
 		,

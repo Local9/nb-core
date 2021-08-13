@@ -124,6 +124,9 @@ NB_MENU_DEFAULT.Open = function(namespace,name,data)
 	for i=1,#data.elements,1 do 
 		if data.elements[i].type == nil then 
 			data.elements[i].type = 'default';
+		elseif data.elements[i].type == 'slider' then 
+			if not data.elements[i].options then data.elements[i].options = {} end 
+			if not data.elements[i].options.pos then data.elements[i].options.pos = 1 end 
 		end 
 	end 
 	data._index     = #NB_MENU_DEFAULT.focus;

@@ -323,7 +323,7 @@ function SetCurrentColumn(columnid)
 	end
 end
 local Var0;
-function SetOrUpdateNormalDataSlot(columnid, rowidx, menuid, uniqueid, textlabel, Param5, state, Param7, Param8, Param9, Param10, Param11, Param12)
+function SetOrUpdateNormalDataSlot(columnid, rowidx, menuid, uniqueid, defaulttext, Param5, state, Param7, Param8, Param9, Param10, Param11, Param12)
 
 	
 	
@@ -341,9 +341,10 @@ function SetOrUpdateNormalDataSlot(columnid, rowidx, menuid, uniqueid, textlabel
 		ScaleformMovieMethodAddParamInt(state);
 		ScaleformMovieMethodAddParamInt(-1);
 		ScaleformMovieMethodAddParamInt(Param7);
-		ScaleformMovieMethodAddParamTextureNameString(textlabel);
+		ScaleformMovieMethodAddParamTextureNameString(defaulttext);
 		ScaleformMovieMethodAddParamInt(0);
 		ScaleformMovieMethodAddParamInt(0);
+		ScaleformMovieMethodAddParamTextureNameString(Param5);
 		if IsStringNullOrEmpty(Param5) then
 		
 			if Param9 ~= -1 then
@@ -370,7 +371,7 @@ function SetOrUpdateNormalDataSlot(columnid, rowidx, menuid, uniqueid, textlabel
 		
 		else
 		
-			BeginTextCommandScaleformString(Param5);
+			
 			if not IsStringNullOrEmpty(Param11) then
 			
 				if Param12 then
