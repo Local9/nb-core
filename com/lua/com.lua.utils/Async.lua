@@ -1,3 +1,4 @@
+print(4)
 local Async = {}
 com.lua.utils.Async = Async
 function Async.parallel(tasks, cb)

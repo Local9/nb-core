@@ -76,11 +76,10 @@ else
 	end)
 	
 	
-	ESX.UI.Menu.RegisterType = function(type, open, close, input)
+	ESX.UI.Menu.RegisterType = function(type, open, close)
 		ESX.UI.Menu.RegisteredTypes[type] = {
 			open   = open,
-			close  = close,
-			input  = input
+			close  = close
 		}
 	end
 
@@ -131,10 +130,6 @@ else
 				end
 			end
 
-		end
-
-		menu.input = function(input)
-			ESX.UI.Menu.RegisteredTypes[type].input(input)
 		end
 
 		menu.refresh = function()

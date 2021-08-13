@@ -1,18 +1,20 @@
 if IsClient() then
 com.menu = {Client={},Server={},Shared={}}
 com.menu.ESXMenuFramework = {}
-com.menu.default = {}
+com.menu.type = {}
+
 local RegisterKeyboardCallback = function(name,key,description,fn) RegisterCommand(name, function() fn() end, false) RegisterKeyMapping(name, IsStringNullOrEmpty(description) and name or description , 'keyboard', key) end 
 
 com.menu.ESXMenuFramework = ESX.UI.Menu
 NB.Menu = com.menu.ESXMenuFramework
 
-local AcceptedStyle = {"default"}
+NB.Menu.AcceptedInput = {}
 
 local TriggerAcceptedStyleMenuInput = function(input)
-	for i=1,#AcceptedStyle do 
-		local type = AcceptedStyle[i]
-		NB.Menu.RegisteredTypes[type].input(input)
+	
+	for i,v in pairs(NB.Menu.AcceptedInput) do 
+		
+		v.OnMenuKeyInput(input)  
 	end 
 end 
 

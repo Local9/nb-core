@@ -16,7 +16,7 @@ CreateThread(function()
 	
 	NB.Menu.CloseAll()
 	NB.Menu.Open(
-		'default', GetCurrentResourceName(), 'strip',
+		'Default', GetCurrentResourceName(), 'strip',
 		{
 			title  = 'Position Menu',
 			description = "WTF",
