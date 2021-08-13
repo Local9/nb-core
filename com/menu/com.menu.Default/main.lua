@@ -16,51 +16,37 @@ local closeMenu = function(namespace, name)
 	NB_Default_Menu.Close(namespace, name);
 end
 NB.MenuFramework.RegisterType(MenuType, openMenu, closeMenu)
-
 NB.MenuFramework.AcceptedInput['DefaultMenu'].input = function(input)
-	
 	NB_Default_Menu.GetCurrentFocusData(function(namespace,name,elementslength,menu,pos,itemdata)
 		switch (input) (
-			case ("MENU_SELECT","MENU_ENTER") (
-				function()
+			case ("MENU_SELECT","MENU_ENTER") (function()
 					PlaySoundFrontend(-1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET", true);
 					NB_Default_Menu.submit(namespace, name, itemdata);
-				end
-			),
-			case ("MENU_BACK") (
-				function()
+			end),
+			case ("MENU_BACK") (function()
 					PlaySoundFrontend(-1, "CANCEL", "HUD_FRONTEND_DEFAULT_SOUNDSET", true);
 					NB_Default_Menu.cancel(namespace, name);
-				end
-			),
-			case ("MENU_CANCEL") (
-				function()
+			end),
+			case ("MENU_CANCEL") (function()
 					PlaySoundFrontend(-1, "CANCEL", "HUD_FRONTEND_DEFAULT_SOUNDSET", true);
 					NB_Default_Menu.cancel(namespace, name);
-				end
-			),
-			case ("MENU_LEFT") (
-				function()
+			end),
+			case ("MENU_LEFT") (function()
 					PlaySoundFrontend(-1, "NAV_LEFT_RIGHT", "HUD_FRONTEND_DEFAULT_SOUNDSET", true);
 					if itemdata and itemdata.type and itemdata.type == "slider" then 
-						
 						local length = itemdata.options and #itemdata.options or 0 
 						itemdata.options.pos = itemdata.options.pos + 1
 						local pos = itemdata.options.pos
 						local nextpos = ((pos)%length)+1
 						itemdata.value = itemdata.options[nextpos];
 						itemdata.options.pos = nextpos
-						
 						NB_Default_Menu.change(namespace, name, itemdata)
 						NB_Default_Menu.Update();
 					end
-				end
-			),
-			case ("MENU_RIGHT") (
-				function()
+			end),
+			case ("MENU_RIGHT") (function()
 					PlaySoundFrontend(-1, "NAV_LEFT_RIGHT", "HUD_FRONTEND_DEFAULT_SOUNDSET", true);
 					if itemdata and itemdata.type and itemdata.type == "slider" then 
-						
 						local length = itemdata.options and #itemdata.options or 0 
 						local pos = itemdata.options.pos
 						local nextpos = ((pos)%length)+1
@@ -69,10 +55,8 @@ NB.MenuFramework.AcceptedInput['DefaultMenu'].input = function(input)
 						NB_Default_Menu.change(namespace, name, itemdata)
 						NB_Default_Menu.Update();
 					end
-				end
-			),
-			case ("MENU_UP") (
-				function()
+			end),
+			case ("MENU_UP") (function()
 					PlaySoundFrontend(-1, "NAV_UP_DOWN", "HUD_FRONTEND_DEFAULT_SOUNDSET", true);
 					local pos = NB_Default_Menu.GetPropSlotValue("pos",namespace,name)
 					local nextpos = ((pos)%elementslength)+1
@@ -86,10 +70,8 @@ NB.MenuFramework.AcceptedInput['DefaultMenu'].input = function(input)
 					end 
 					NB_Default_Menu.change(namespace, name, itemdata)
 					NB_Default_Menu.Update();
-				end
-			),
-			case ("MENU_DOWN") (
-				function()
+			end),
+			case ("MENU_DOWN") (function()
 					PlaySoundFrontend(-1, "NAV_UP_DOWN", "HUD_FRONTEND_DEFAULT_SOUNDSET", true);
 					local pos = NB_Default_Menu.GetPropSlotValue("pos",namespace,name)
 					local nextpos = ((pos)%elementslength)+1
@@ -103,18 +85,13 @@ NB.MenuFramework.AcceptedInput['DefaultMenu'].input = function(input)
 					end 
 					NB_Default_Menu.change(namespace, name, itemdata)
 					NB_Default_Menu.Update();
-				end
-			),
-			default (
-				function()
+				end),
+			default (function()
 					--error("Menu",2)
-				end 
-			)
+			end)
 		)
 	end)
 end 
-
-
 NB_Default_Menu.Open = function(namespace,name,data)
 	if NB_Default_Menu.IsPropSlotValueExist("opened",namespace,name) then 
 		NB_Default_Menu.Close(namespace, name);
@@ -167,8 +144,6 @@ NB_Default_Menu.GetCurrentFocusData = function(cb)
 		local pos     = NB_Default_Menu.pos[currentFocus.namespace][currentFocus.name];
 		local itemdata    = menu.elements[pos];
 		if(#menu.elements > 0) then 
-			
-			
 			cb(currentFocus.namespace,currentFocus.name,#menu.elements,menu,pos,itemdata)
 		else 
 			error("menu has no any datas",2)
@@ -226,5 +201,4 @@ NB_Default_Menu.change = function(namespace, name, data)
 		menu.change(data, menu)
 	end
 end 
-
 end 
