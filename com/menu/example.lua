@@ -4,7 +4,17 @@ CreateThread(function()
 	local Salle = {
 		{label="Apple",value="Apple"},
 		{label="选择水果",type="slider",options={"apple","banana","orange"}},
-		{label="保存",value="Save",type="footer"}
+		{label="保存",value="Save",type="footer"},
+		{label="Apple123",value="Apple123"},
+		{label="Apple123",value="Apple123"},
+		{label="Apple123",value="Apple123"},
+		{label="Apple123",value="Apple123"},
+		{label="Apple123",value="Apple123"},
+		{label="Apple123",value="Apple123"},
+		{label="Apple123",value="Apple123"},
+		{label="Apple123",value="Apple123"},
+		{label="Apple123",value="Apple123"},
+		{label="Apple123",value="Apple123"},
 	}
 	for k,v in pairs(Salle) do
 	   table.insert(elements,{
@@ -22,6 +32,7 @@ CreateThread(function()
 		{
 			title  = 'Position Menu',
 			description = "MENU DESCRIPTION",
+			style = 0,
 			elements = elements
 		},
 		function(data, menu)

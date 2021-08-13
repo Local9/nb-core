@@ -161,7 +161,39 @@ NB_MENU_PAUSE_MENU.Open = function(namespace,name,data)
 	NB_MENU_PAUSE_MENU.InsertPropSlot("focus",{namespace=namespace,name=name})
 	NB_MENU_PAUSE_MENU.Update();
 	
-	TriggerEvent("NB:MenuOpen",data)
+	--TriggerEvent("NB:MenuOpen",data)
+	
+	local menudata = data 
+	local Created = false 
+	print(menudata.title)
+	SetFrontendActive(false);
+	Wait(550)
+	StartPauseMenu(PauseMenu.versionid.FE_MENU_VERSION_MP_CHARACTER_CREATION)
+	Wait(550)
+	SetCurrentColumn(-1)
+	if menudata.style and menudata.style == 0 then 
+		SetDataSlotEmpty(0);
+		SetColumnTitle(0,menudata.title,menudata.description or "","");
+		for i=1,#menudata.elements do 
+			local item = menudata.elements[i]
+			local data_idx = i-1
+			if i == #menudata.elements then 
+				if item.type == 'footer' then 
+				SetOrUpdateNormalDataSlot(0, data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, data_idx, item.label, " " , 2, 1, Created, -1, -1, 0 , 0);
+				else 
+				SetOrUpdateNormalDataSlot(0, data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, data_idx, item.label, item.type == 'slider' and item.value or "" , item.type == 'slider' and 0 or 1, 4, Created, -1, -1, 0 , 0);
+				end 
+			else 
+				SetOrUpdateNormalDataSlot(0, data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, data_idx, item.label, item.type == 'slider' and item.value or "" , item.type == 'slider' and 0 or 1, 4, Created, -1, -1, 0 , 0);
+			end 
+		end 
+		DisplayDataSlot(0);
+		SetColumnFocus(0, 1, 1);
+		SetColumnCanJump(0, 1);
+		ShowColumn(0,true);
+	end 
+	
+	
 	NB.Threads.CreateLoopOnce("Menu",333,function(Break)
 		if #NB_MENU_PAUSE_MENU.focus<=0  then Break() end 
 		if N_0x2e22fefa0100275e() then 
@@ -232,7 +264,23 @@ NB_MENU_PAUSE_MENU.Update = function() -- DRAW FUNCTIONS
 					v.selected = true;
 				end 
 			end 
-			TriggerEvent("NB:MenuUpdate",menuData,pos)
+			--TriggerEvent("NB:MenuUpdate",menuData,pos)
+			local menudata = menuData
+			local Created = true 
+			local item = menudata.elements[pos]
+			local data_idx = pos-1
+			
+			if menudata.style and menudata.style == 0 then 
+				if pos == #menudata.elements then 
+					if item.type == 'footer' then 
+					SetOrUpdateNormalDataSlot(0, data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, data_idx, item.label, " " , 2, 1, Created, -1, -1, 0 , 0);
+					else 
+					SetOrUpdateNormalDataSlot(0, data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, data_idx, item.label, item.type == 'slider' and item.value or "" , item.type == 'slider' and 0 or 1, 4, Created, -1, -1, 0 , 0);
+					end 
+				else 
+					SetOrUpdateNormalDataSlot(0, data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, data_idx, item.label, item.type == 'slider' and item.value or "" , item.type == 'slider' and 0 or 1, 4, Created, -1, -1, 0 , 0);
+				end 
+			end 
 		end 
 	end 
 end 
