@@ -17,4 +17,5 @@ if IsServer() then
 end 
 if IsClient() then 
 	NB.Skin = com.game.Client.Skin
+	NB.GetHashString = GetHashString
 end 

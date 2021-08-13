@@ -108,7 +108,7 @@ NB.Menu.AcceptedInput["Default"].input = function(input)
 			),
 			default (
 				function()
-					error("Menu",2)
+					--error("Menu",2)
 				end 
 			)
 		)

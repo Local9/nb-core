@@ -5,6 +5,7 @@ switch = setmetatable({},{__call=function(a,b)case=setmetatable({},{__call=funct
 json.decodetable = function(...) local a = json.decode(...) return a end ;
 IsStringNullOrEmpty = function(str) return (str == nil or str == "") end 
 StringCopy = function(fromlabel) if IsStringNullOrEmpty(fromlabel) then return "" else local a = GetLabelText(fromlabel) if a and a~= 'NULL' then return GetLabelText(fromlabel) else local b = GetStreetNameFromHashKey(fromlabel) return b end end end 
+GetHashString = StringCopy
 GetPauseMenuSelection = function() if N_0x2e22fefa0100275e() --[[IsSelectionUpdated]] then return GetPauseMenuSelectionData() end end
 
 NB = {
