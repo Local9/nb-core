@@ -4,6 +4,7 @@ com.menu.ESXMenuFramework = {}
 com.menu.type = {}
 
 local RegisterKeyboardCallback = function(name,key,description,fn) RegisterCommand(name, function() fn() end, false) RegisterKeyMapping(name, IsStringNullOrEmpty(description) and name or description , 'keyboard', key) end 
+local RegisterMouseButtonCallback = function(name,key,description,fn) RegisterCommand(name, function() fn() end, false) RegisterKeyMapping(name, IsStringNullOrEmpty(description) and name or description , 'MOUSE_BUTTON', key) end 
 
 com.menu.ESXMenuFramework = ESX.UI.Menu
 NB.MenuFramework = com.menu.ESXMenuFramework
@@ -18,7 +19,12 @@ local TriggerAcceptedStyleMenuInput = function(input)
 		end 
 	end 
 end 
-
+RegisterMouseButtonCallback("+MOUSE_LEFT","MOUSE_LEFT","Left Click",function()
+	TriggerAcceptedStyleMenuInput("MENU_MOUSE_LEFT_PRESSED")
+end)
+RegisterMouseButtonCallback("-MOUSE_LEFT","MOUSE_LEFT","Left Click Release",function()
+	TriggerAcceptedStyleMenuInput("MENU_MOUSE_LEFT_RELEASED")
+end)
 RegisterKeyboardCallback("MENU_SELECT","SPACE","MENU SELECT",function()
 	TriggerAcceptedStyleMenuInput("MENU_SELECT")
 end )

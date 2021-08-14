@@ -18,7 +18,7 @@ Debug.DrawText2D = function(...)
 
 	BeginTextCommandDisplayText('STRING')
 	AddTextComponentSubstringPlayerName(text)
-	EndTextCommandDisplayText(0.8, 0.8)
+	EndTextCommandDisplayText(0.2, 0.8)
 	
 	ClearDrawOrigin()
 

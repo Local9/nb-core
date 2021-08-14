@@ -196,7 +196,7 @@ local send = function (...)
     end 
 	EndScaleformMovieMethod()
 end
-function StartPauseMenu(versionHash)
+function PauseMenu.StartPauseMenu(versionHash)
 	if GetCurrentFrontendMenuVersion() ~= versionHash then
 		SetFrontendActive(false);
 	end
@@ -205,74 +205,181 @@ function StartPauseMenu(versionHash)
 	Wait(500)
 	RestartFrontendMenu(versionHash,-1)
 end
-function InitColumnScroll(Param0, Param1, Param2, Param3, Param4, Param5)
+function PauseMenu.InitColumnScroll(Param0, Param1, Param2, Param3, Param4, Param5)
 	if start("INIT_COLUMN_SCROLL") then 
 		send(Param0,false,Param1,Param2,Param3,true,Param4,Param5);
 	end 
 end
-function SetColumnCanJump(Param0, Param1)
+function PauseMenu.SetColumnCanJump(Param0, Param1)
 	if start("SET_COLUMN_CAN_JUMP") then
 		send(Param0,not Param1);
 	end
 end
-function SetColumnHighLight(Param0, Param1, Param2)
+function PauseMenu.SetColumnHighLight(Param0, Param1, Param2)
 	if start("SET_COLUMN_HIGHLIGHT") then
 		send(Param0,Param1,false,Param2);
 	end
 end
-function SetDescription(columnid, desc, isflashing)
+function PauseMenu.SetDescription(columnid, desc, isflashing)
 	if start("SET_DESCRIPTION") then
 		send(columnid, desc, isflashing)
 	end
 end
 
-function SetDataSlot(columnid,rowidx,menuid,uniqueid,...)
+function PauseMenu.SetDataSlot(columnid,rowidx,menuid,uniqueid,...)
 	if start('SET_DATA_SLOT') then
 		send(columnid,rowidx,menuid,uniqueid,...)
 	end 
 end 
-function SetDataSlotEmpty(columnid)
+function PauseMenu.SetDataSlotEmpty(columnid)
 	if start("SET_DATA_SLOT_EMPTY") then
 		send (columnid);
 	end
 end
-function DisplayDataSlot(slotid)
+function PauseMenu.DisplayDataSlot(slotid)
 	if start('DISPLAY_DATA_SLOT') then 
 		send(slotid)
 	end 
 end 
-function ShowColumn(columnid, show)
+function PauseMenu.ShowColumn(columnid, show)
 	if start("SHOW_COLUMN") then
 		send(columnid,show);
 	end
 end
-function SetColumnFocus(columnid,heighlightidx,uniqueid,menustate)
+function PauseMenu.SetColumnFocus(columnid,heighlightidx,uniqueid,menustate)
 	if start('SET_COLUMN_FOCUS') then 
 		send(columnid,heighlightidx,uniqueid,menustate)
 	end 
 end 
-function SetMenuHeaderTextByIndex(columnid,columntext,columnwidth,uppercase)
+function PauseMenu.SetMenuHeaderTextByIndex(columnid,columntext,columnwidth,uppercase)
 	if start('SET_MENU_HEADER_TEXT_BY_INDEX') then 
 		send(columnid,columntext,columnwidth,uppercase)
 	end 
 end 
-function SetColumnTitle(columnid, title, desc1, desc2)
+function PauseMenu.SetColumnTitle(columnid, title, desc1, desc2)
 	if start("SET_COLUMN_TITLE") then
 		send(columnid, title, desc1, desc2)
 	end
 end
-function SetCurrentColumn(columnid)
+function PauseMenu.SetCurrentColumn(columnid)
 	for i=0,7 do
-		ShowColumn(i, false);
+		PauseMenu.ShowColumn(i, false);
 	end
 	if columnid >= 0 then
-		ShowColumn(columnid, true);
+		PauseMenu.ShowColumn(columnid, true);
 	end
+	
 end
-function SetOrUpdateNormalDataSlot(columnid, rowidx, menuid, uniqueid, labeltext, option, optionstyle, selectablestyle, update)
+function PauseMenu.SetOrUpdateNormalDataSlot(columnid, rowidx, menuid, uniqueid, labeltext, option, optionstyle, selectablestyle, update)
 	local method = update and "UPDATE_SLOT" or "SET_DATA_SLOT";
 	if start(method) then
 		send(columnid,rowidx,menuid,uniqueid,optionstyle,-1,selectablestyle,labeltext,0,0,option,optionstyle==2 and 116 or "")
 	end
 end
+function PauseMenu.SetXYData(columnid, rowidx, menuid, uniqueid, labeltextY, labeltextX, labeltextNY, labeltextNX, inputX, inputY, isXY, update, unk)
+	local method = update and "UPDATE_SLOT" or "SET_DATA_SLOT";
+	if start(method) then
+		send(columnid,rowidx, menuid, uniqueid, 0,0,1,labeltextY, labeltextX, labeltextNY, labeltextNX, inputX, inputY, isXY and 0 or 1, unk);
+	end
+end
+
+function PauseMenu.SetBarData(columnid, rowidx, menuid, uniqueid, int, str, rstr, color, nowvalue, maxvalue, editable, update)
+	local method = update and "UPDATE_SLOT" or "SET_DATA_SLOT";
+	if BeginScaleformMovieMethodOnFrontend(method) then
+		ScaleformMovieMethodAddParamInt(columnid);
+		ScaleformMovieMethodAddParamInt(rowidx);
+		ScaleformMovieMethodAddParamInt(menuid);
+		ScaleformMovieMethodAddParamInt(uniqueid);
+		ScaleformMovieMethodAddParamInt(int);
+		ScaleformMovieMethodAddParamInt(0);
+		ScaleformMovieMethodAddParamInt(IF(editable, 1, 0));
+		ScaleformMovieMethodAddParamTextureNameString(str);
+		ScaleformMovieMethodAddParamTextureNameString(rstr);
+		ScaleformMovieMethodAddParamInt(color);
+		ScaleformMovieMethodAddParamInt(nowvalue);
+		ScaleformMovieMethodAddParamInt(maxvalue);
+		EndScaleformMovieMethod();
+	end
+end
+
+function PauseMenu.SetColorData(Param0, Param1, Param2, Param3, Param4)
+
+	if BeginScaleformMovieMethodOnFrontend("SET_DATA_SLOT") then
+	
+		ScaleformMovieMethodAddParamInt(Param0);
+		ScaleformMovieMethodAddParamInt(Param1);
+		ScaleformMovieMethodAddParamInt(Param2);
+		ScaleformMovieMethodAddParamInt(Param3);
+		ScaleformMovieMethodAddParamInt(Param4);
+		EndScaleformMovieMethod();
+	end
+end
+function PauseMenu.SetColorValue(Param0, Param1, Param2, Param3, Param4, Param5, Param6)
+
+	if BeginScaleformMovieMethodOnFrontend("SET_COLUMN_TITLE") then
+	
+		ScaleformMovieMethodAddParamInt(Param0);
+		ScaleformMovieMethodAddParamTextureNameString(Param1);
+		BeginTextCommandScaleformString(Param2);
+		if Param4 ~= -1 then
+		
+			AddTextComponentInteger(Param4);
+		end
+		if Param5 ~= -1 then
+		
+			AddTextComponentInteger(Param5);
+		end
+		EndTextCommandScaleformString();
+		ScaleformMovieMethodAddParamFloat(Param3);
+		ScaleformMovieMethodAddParamBool(Param6);
+		EndScaleformMovieMethod();
+	end
+end
+
+function PauseMenu.GetValueFromKeyboard(needY)
+
+	local Var0;
+	local fVar1;
+	local fVar2;
+	local fVar3;
+	local fVar4;
+	local fVar5;
+	local fVar6;
+	local fVar7;
+	local fVar8;
+	local fVar9;
+	local fVar10;
+	local fVar11;
+	local	function ratioX(x)
+		x = (x * (1.777778 / GetAspectRatio(0)));
+		return x;
+	end
+	Var0 =  GetPauseMenuCursorPosition() ;
+	Var1 = 0.08 ;
+	Var2 = (Var0.x + ratioX(0.073 ));
+	Var1 = ratioX(Var1);
+	Var3 = (Var0.y + 0.54 );
+	Var4 = (Var2 + Var1);
+	Var5 = (Var3 + 0.14 );
+	Var10 = (GetControlNormal(2, 239) + 0.005 );
+	Var11 = GetControlNormal(2, 240);
+	
+	if (((Var10 >= Var2  and  Var10 <= Var4)  and  Var11 >= Var3)  and  Var11 <= Var5) then
+	
+		Var6 = (Var10 - Var2);
+		Var7 = (Var11 - Var3);
+		Var8 = ((Var6 / Var1) * 100 );
+		
+		Var9 = (not needY and 50.0) or ((Var7 / 0.14 ) * 100 );
+		
+		SetMouseCursorSprite(5);
+		if IsDisabledControlPressed(2, 237) then
+		
+			return Var8,Var9;
+			
+		end
+	end
+	return nil,nil;
+end
+
 end

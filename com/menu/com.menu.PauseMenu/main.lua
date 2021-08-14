@@ -45,6 +45,15 @@ NB.MenuFramework.AcceptedInput["PauseMenu"].input = function(input)
 						local nextpos = ((pos)%length)+1
 						itemdata.value = itemdata.options[nextpos];
 						itemdata.options.pos = nextpos
+						if itemdata.description then 
+							if PauseMenu.CurrentColumndId then 
+							PauseMenu.SetDescription(PauseMenu.CurrentColumndId,itemdata.description,false)
+							end 
+						else  
+							if PauseMenu.CurrentColumndId then 
+							PauseMenu.SetDescription(PauseMenu.CurrentColumndId,"",false)
+							end 
+						end 
 						NB_Pause_Menu.change(namespace, name, itemdata)
 						NB_Pause_Menu.Update();
 					end
@@ -56,6 +65,15 @@ NB.MenuFramework.AcceptedInput["PauseMenu"].input = function(input)
 						local nextpos = ((pos)%length)+1
 						itemdata.value = itemdata.options[nextpos];
 						itemdata.options.pos = nextpos
+						if itemdata.description then 
+							if PauseMenu.CurrentColumndId then 
+							PauseMenu.SetDescription(PauseMenu.CurrentColumndId,itemdata.description,false)
+							end 
+						else 
+							if PauseMenu.CurrentColumndId then 
+							PauseMenu.SetDescription(PauseMenu.CurrentColumndId,"",false)
+							end 
+						end
 						NB_Pause_Menu.change(namespace, name, itemdata)
 						NB_Pause_Menu.Update();
 					end
@@ -81,6 +99,7 @@ NB_Pause_Menu.Open = function(namespace,name,data)
 	data._index     = #NB_Pause_Menu.focus;
 	data._namespace = namespace;
 	data._name      = name;
+	data._style	    = data.style or "default"
 	for i=1,#data.elements,1 do 
 		data.elements[i]._namespace = namespace;
 		data.elements[i]._name      = name;
@@ -97,36 +116,119 @@ NB_Pause_Menu.Open = function(namespace,name,data)
 	NB_Pause_Menu.InsertPropSlot("focus",{namespace=namespace,name=name})
 	NB_Pause_Menu.Update();
 	local menudata = data 
-	local Created = false 
+	local Created = not (PauseMenu.CurrentColumndId == nil )
 	SetFrontendActive(false);
-	Wait(10)
-	StartPauseMenu(PauseMenu.versionid.FE_MENU_VERSION_MP_CHARACTER_CREATION)
-	Wait(10)
-	SetCurrentColumn(-1)
-	if menudata.style and menudata.style == 0 then 
-		SetDataSlotEmpty(0);
-		SetColumnTitle(0,menudata.title,menudata.description or "","");
+	Wait(1)
+	PauseMenu.StartPauseMenu(PauseMenu.versionid.FE_MENU_VERSION_MP_CHARACTER_CREATION)
+	Wait(1)
+	--PauseMenu.SetCurrentColumn(-1)
+	local columnid = 0
+	if menudata._style == "scroll" then 
+		columnid = 1
+	elseif menudata._style == "stats" then 
+		columnid = 6
+	end 
+	PauseMenu.CurrentColumndId = columnid
+	if columnid then 
+		PauseMenu.SetDataSlotEmpty(columnid);
+		PauseMenu.SetColumnTitle(columnid,menudata.title,menudata.description or "","");
+		PauseMenu.SetColorValue(columnid,menudata.title,"FACE_SEX",5.0,1,1,true);
+		local data_idx = 0
 		for i=1,#menudata.elements do 
 			local item = menudata.elements[i]
-			local data_idx = i-1
+			
 			if i == #menudata.elements then 
 				if item.type == 'footer' then 
-				SetOrUpdateNormalDataSlot(0, data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, data_idx, item.label, " " , 2, 1, Created, -1, -1, 0 , 0);
+					if columnid == 6 then 
+						PauseMenu.SetBarData(6,data_idx,PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION,data_idx,0,"ABC","",116,5,100,true,not not menudata.elements[i].customsetteropened)
+						menudata.elements[i].customsetteropened = true 
+					else 
+						PauseMenu.SetOrUpdateNormalDataSlot(columnid, data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, data_idx, item.label, " " , 2, 1, Created, -1, -1, 0 , 0);
+					end 
 				else 
-				SetOrUpdateNormalDataSlot(0, data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, data_idx, item.label, item.type == 'slider' and item.value or "" , item.type == 'slider' and 0 or 1, 4, Created, -1, -1, 0 , 0);
+					if columnid == 6 then 
+						
+						
+						PauseMenu.SetBarData(6,data_idx,PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION,data_idx,0,"ABC","",116,5,100,true,not not menudata.elements[i].customsetteropened)
+						
+						menudata.elements[i].customsetteropened = true 
+					else 
+					PauseMenu.SetOrUpdateNormalDataSlot(columnid, data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, data_idx, item.label, item.type == 'slider' and item.value or "" , item.type == 'slider' and 0 or 1, 4, Created, -1, -1, 0 , 0);
+					end 
 				end 
+
 			else 
-				SetOrUpdateNormalDataSlot(0, data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, data_idx, item.label, item.type == 'slider' and item.value or "" , item.type == 'slider' and 0 or 1, 4, Created, -1, -1, 0 , 0);
+				if columnid == 6 then 
+					PauseMenu.SetBarData(6,data_idx,PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION,data_idx,0,"ABC","",116,5,80,true,not not menudata.elements[i].customsetteropened)
+					
+					menudata.elements[i].customsetteropened = true 
+					
+				else 
+					PauseMenu.SetOrUpdateNormalDataSlot(columnid, data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, data_idx, item.label, item.type == 'slider' and item.value or "" , item.type == 'slider' and 0 or 1, 4, Created, -1, -1, 0 , 0);
+				end 
+			end 
+			data_idx = data_idx + 1
+		end 
+		
+		
+		PauseMenu.DisplayDataSlot(columnid);
+		PauseMenu.SetColumnFocus(columnid, 1, 1);
+		PauseMenu.SetColumnCanJump(columnid, 1);
+		--PauseMenu.ShowColumn(columnid,true);
+		PauseMenu.SetCurrentColumn(columnid)
+		
+		if #menudata.elements>7 then 
+			if columnid == 6 then
+			
+			else
+			PauseMenu.InitColumnScroll(columnid, 1, 1, 1, 0, 0)
 			end 
 		end 
-		DisplayDataSlot(0);
-		SetColumnFocus(0, 1, 1);
-		SetColumnCanJump(0, 1);
-		ShowColumn(0,true);
-		SetDescription(0,"test",false)
 	end 
-	NB.Threads.CreateLoopOnce("Menu",333,function(Break)
-		
+	
+	NB.Threads.CreateLoopOnce("Menu",10,function(Break)
+		if IsUsingKeyboard(2) then 
+			if N_0x3d9acb1eb139e702() then
+			SetMouseCursorSprite(1);
+			elseif N_0xde03620f8703a9df() > -1 then
+			else
+				SetMouseCursorSprite(1);
+			end
+			NB_Pause_Menu.GetCurrentFocusData(function(namespace,name,elementslength,menu,pos_,itemdata)
+				if menu.elements[pos_].type == "custom" then 
+					if menu.elements[pos_].setter=="XY" or menu.elements[pos_].setter=="X" then 
+						if IsDisabledControlPressed(2, 237) then
+						local a,b = PauseMenu.GetValueFromKeyboard(menu.elements[pos_].setter=="XY")
+							if a and b then 
+							menu.elements[pos_].nowpos = {a,b}
+							end 
+						end 
+						if menu.elements[pos_].customsetteropened and menu.elements[pos_].nowpos then 
+							--PauseMenu.ShowColumn(3,true);
+							
+							PauseMenu.SetXYData(3,0,PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION,0,"a","b","c","d",menu.elements[pos_].nowpos[1],menu.elements[pos_].nowpos[2],menu.elements[pos_].setter=="XY",menu.elements[pos_].customsetteropened,true)
+							--PauseMenu.DisplayDataSlot(3);
+						end 
+					elseif menu.elements[pos_].setter=="COLOR" then 
+						if menu.elements[pos_].customsetteropened then 
+								PauseMenu.SetColorValue(7,"wtf","FACE_SEX",5.0,1,1,true);
+								PauseMenu.ShowColumn(7,true);
+								for i=0,GetNumHairColors() do 
+									PauseMenu.SetColorData(7,i,GetPedHairRgbColor(i))
+								end 
+								PauseMenu.DisplayDataSlot(7);
+						end 
+					end 
+					
+				end 
+			end)
+			
+			
+		else 
+			Var0 = (GetControlValue(2, 197) - 127);
+			Var1 = (GetControlValue(2, 198) - 127);
+			SetMouseCursorVisibleInMenus(false);
+		end 
 		if #NB_Pause_Menu.focus<=0  then Break() end 
 		if N_0x2e22fefa0100275e() then 
 			local pos = GetPos()
@@ -143,6 +245,37 @@ NB_Pause_Menu.Open = function(namespace,name,data)
 									menu.elements[i].selected = false
 								end 
 							end 
+							if menu.elements[pos].type == "custom" then 
+								print(menu.elements[pos].setter)
+								if menu.elements[pos].setter=="XY" or menu.elements[pos].setter=="X" then 
+									if not menu.elements[pos].customsetteropened then 
+										PauseMenu.ShowColumn(3,true);
+										local a,b = PauseMenu.GetValueFromKeyboard(menu.elements[pos].setter=="XY")
+										if a and b then 
+										menu.elements[pos].nowpos = {a,b}
+										end 
+										PauseMenu.SetXYData(3,0,PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION,0,"a","b","c","d",a,b,menu.elements[pos].setter=="XY",menu.elements[pos].customsetteropened,true)
+										PauseMenu.DisplayDataSlot(3);
+										menu.elements[pos].customsetteropened = true 
+									end 
+								elseif menu.elements[pos].setter=="COLOR" then 
+									PauseMenu.SetColorValue(7,"wtf","FACE_SEX",5.0,1,1,true);
+									PauseMenu.ShowColumn(7,true);
+									for i=0,GetNumHairColors() do 
+										PauseMenu.SetColorData(7,i,GetPedHairRgbColor(i))
+									end 
+									PauseMenu.DisplayDataSlot(7);
+								end
+							end 
+							if menu.elements[pos].description then 
+								if PauseMenu.CurrentColumndId then 
+								PauseMenu.SetDescription(PauseMenu.CurrentColumndId,menu.elements[pos].description,false)
+								end 
+							else 
+								if PauseMenu.CurrentColumndId then 
+								PauseMenu.SetDescription(PauseMenu.CurrentColumndId,"",false)
+								end 
+							end
 							NB_Pause_Menu.change(namespace, name, menu.elements[pos])
 							NB_Pause_Menu.Update();
 						end 
@@ -191,18 +324,20 @@ NB_Pause_Menu.Update = function() -- DRAW FUNCTIONS
 				end 
 			end 
 			local menudata = menuData
-			local Created = true 
+			local Created = not (PauseMenu.CurrentColumndId == nil )
 			local item = menudata.elements[pos]
 			local data_idx = pos-1
-			if menudata.style and menudata.style == 0 then 
+			local columnid = PauseMenu.CurrentColumndId
+			
+			if columnid then 
 				if pos == #menudata.elements then 
 					if item.type == 'footer' then 
-					SetOrUpdateNormalDataSlot(0, data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, data_idx, item.label, " " , 2, 1, Created, -1, -1, 0 , 0);
+					PauseMenu.SetOrUpdateNormalDataSlot(columnid, data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, data_idx, item.label, " " , 2, 1, Created, -1, -1, 0 , 0);
 					else 
-					SetOrUpdateNormalDataSlot(0, data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, data_idx, item.label, item.type == 'slider' and item.value or "" , item.type == 'slider' and 0 or 1, 4, Created, -1, -1, 0 , 0);
+					PauseMenu.SetOrUpdateNormalDataSlot(columnid, data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, data_idx, item.label, item.type == 'slider' and item.value or "" , item.type == 'slider' and 0 or 1, 4, Created, -1, -1, 0 , 0);
 					end 
 				else 
-					SetOrUpdateNormalDataSlot(0, data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, data_idx, item.label, item.type == 'slider' and item.value or "" , item.type == 'slider' and 0 or 1, 4, Created, -1, -1, 0 , 0);
+					PauseMenu.SetOrUpdateNormalDataSlot(columnid, data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, data_idx, item.label, item.type == 'slider' and item.value or "" , item.type == 'slider' and 0 or 1, 4, Created, -1, -1, 0 , 0);
 				end 
 			end 
 		end 
