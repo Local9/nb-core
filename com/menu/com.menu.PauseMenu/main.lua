@@ -83,6 +83,34 @@ NB.MenuFramework.AcceptedInput["PauseMenu"].input = function(input)
 		)
 	end)
 end 
+
+local OpenLoop = function(Break)
+	if IsUsingKeyboard(2) then 
+		if N_0x3d9acb1eb139e702() then
+		SetMouseCursorSprite(1);
+		elseif N_0xde03620f8703a9df() > -1 then
+		else
+			SetMouseCursorSprite(1);
+		end
+	else 
+		SetMouseCursorVisibleInMenus(false);
+	end 
+	
+	if N_0x2e22fefa0100275e() then 
+		local pos = GetPos()
+		if pos then 
+			local currentFocus = NB_Pause_Menu.GetCurrentFocus();
+			if currentFocus and #(currentFocus) then
+				local menu    = NB_Pause_Menu.opened[currentFocus.namespace][currentFocus.name];
+				NB_Pause_Menu.SetPropSlotValue("pos",currentFocus.namespace,currentFocus.name,pos)
+				NB_Pause_Menu.change(currentFocus.namespace, currentFocus.name, menu.elements[pos])
+				NB_Pause_Menu.Update();
+			end
+		end 
+	end  
+	if #NB_Pause_Menu.focus<=0  then Break() end 
+end 
+		
 NB_Pause_Menu.Open = function(namespace,name,data)
 	PauseMenu.StartPauseMenu(PauseMenu.versionid.FE_MENU_VERSION_MP_CHARACTER_CREATION)
 	if NB_Pause_Menu.IsPropSlotValueExist("opened",namespace,name) then 
@@ -153,48 +181,7 @@ NB_Pause_Menu.Open = function(namespace,name,data)
 	end 
 	
 	NB.Threads.CreateLoopOnce("Menu",10,function(Break)
-		if IsUsingKeyboard(2) then 
-			if N_0x3d9acb1eb139e702() then
-			SetMouseCursorSprite(1);
-			elseif N_0xde03620f8703a9df() > -1 then
-			else
-				SetMouseCursorSprite(1);
-			end
-		else 
-			SetMouseCursorVisibleInMenus(false);
-		end 
-		if #NB_Pause_Menu.focus<=0  then Break() end 
-		if N_0x2e22fefa0100275e() then 
-			local pos = GetPos()
-			if pos then 
-				NB_Pause_Menu.GetCurrentFocusData(function(namespace,name,elementslength,menu,pos_,itemdata)
-					NB_Pause_Menu.SetPropSlotValue("pos",namespace,name,pos)
-					NB_Pause_Menu.GetCurrentFocusData(function(namespace,name,elementslength,menu,pos_,itemdata)
-						if pos <= #menu.elements then 
-							
-							for i=1,#menu.elements,1 do
-								if(i == pos) then 
-									menu.elements[i].selected = true
-								else
-									menu.elements[i].selected = false
-								end 
-							end 
-							if menu.elements[pos].description then 
-								if PauseMenu.CurrentColumndId then 
-								PauseMenu.SetDescription(PauseMenu.CurrentColumndId,menu.elements[pos].description,false)
-								end 
-							else 
-								if PauseMenu.CurrentColumndId then 
-								PauseMenu.SetDescription(PauseMenu.CurrentColumndId,"",false)
-								end 
-							end
-							NB_Pause_Menu.change(namespace, name, menu.elements[pos])
-							NB_Pause_Menu.Update();
-						end 
-					end)
-				end)
-			end 
-		end  
+		OpenLoop(Break)
 	end)
 end 
 NB_Pause_Menu.Close = function(namespace, name)
@@ -233,13 +220,23 @@ NB_Pause_Menu.Update = function() -- DRAW FUNCTIONS
 			for i,v in pairs (menuData.elements) do 
 				if i == pos then 
 					v.selected = true;
+				else 
+					v.selected = false;
 				end 
 			end 
 			local menudata = menuData
 			local item = menudata.elements[pos]
+			if item.description then 
+				if PauseMenu.CurrentColumndId then 
+				PauseMenu.SetDescription(PauseMenu.CurrentColumndId,item.description,false)
+				end 
+			else 
+				if PauseMenu.CurrentColumndId then 
+				PauseMenu.SetDescription(PauseMenu.CurrentColumndId,"",false)
+				end 
+			end
 			local data_idx = pos-1
 			local columnid = PauseMenu.CurrentColumndId
-			
 			if columnid then 
 				if pos == #menudata.elements then 
 					if item.type == 'footer' then 
