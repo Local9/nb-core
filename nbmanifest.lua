@@ -9,6 +9,7 @@ GetHashString = StringCopy
 GetPauseMenuSelection = function() if N_0x2e22fefa0100275e() --[[IsSelectionUpdated]] then return GetPauseMenuSelectionData() end end
 IF = function(x,a,b) return x and a or b end 
 
+
 NB = {
 	_CACHE_ = {},
 	_LOCAL_ = {},

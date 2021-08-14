@@ -350,8 +350,17 @@ function PauseMenu.SetColorValue(Param0, Param1, Param2, Param3, Param4, Param5,
 		EndScaleformMovieMethod();
 	end
 end
+function PauseMenu.SetColorLevel(Param0, Param1)
 
-function PauseMenu.GetValueFromKeyboard(needY)
+	if BeginScaleformMovieMethodOnFrontend("SET_COLUMN_HIGHLIGHT") then
+	
+		ScaleformMovieMethodAddParamInt(Param0);
+		ScaleformMovieMethodAddParamInt(Param1);
+		EndScaleformMovieMethod();
+	end
+end
+
+function PauseMenu.GetValueFromKeyboard(BX,BY,needY)
 
 	local Var0;
 	local fVar1;
@@ -365,31 +374,44 @@ function PauseMenu.GetValueFromKeyboard(needY)
 	local fVar9;
 	local fVar10;
 	local fVar11;
-	local	function ratioX(x)
+	local function ratioX(x)
 		x = (x * (1.777778 / GetAspectRatio(0)));
 		return x;
 	end
-	Var0 =  GetPauseMenuCursorPosition() ;
-	Var1 = 0.08 ;
-	Var2 = (Var0.x + ratioX(0.073 ));
-	Var1 = ratioX(Var1);
-	Var3 = (Var0.y + 0.54 );
-	Var4 = (Var2 + Var1);
-	Var5 = (Var3 + 0.14 );
-	Var10 = (GetControlNormal(2, 239) + 0.005 );
-	Var11 = GetControlNormal(2, 240);
+	Var0 = GetPauseMenuCursorPosition() ;
+	width = 0.08 ;
+	height = 0.14
+	minX = (Var0.x + ratioX(0.073));
+	width = ratioX(width);
+	minY = (Var0.y + 0.54);
+	maxX = (minX + width);
+	maxY = (minY + height);
+	nowX = (GetControlNormal(2, 239) + 0.005 );
+	nowY = GetControlNormal(2, 240);
 	
-	if (((Var10 >= Var2  and  Var10 <= Var4)  and  Var11 >= Var3)  and  Var11 <= Var5) then
-	
-		Var6 = (Var10 - Var2);
-		Var7 = (Var11 - Var3);
-		Var8 = ((Var6 / Var1) * 100 );
+	if (((nowX >= minX  and  nowX <= maxX)  and  nowY >= minY)  and  nowY <= maxY) then
+		--[=[
+		SetScriptGfxDrawBehindPausemenu(true)
+		DrawRect(
+			minX+(maxX-minX)/2 --[[ number ]], 
+			minY+(maxY-minY)/2 --[[ number ]], 
+			(maxX-minX) --[[ number ]], 
+			(maxY-minY) --[[ number ]], 
+			255 --[[ integer ]], 
+			255 --[[ integer ]], 
+			255 --[[ integer ]], 
+			255 --[[ integer ]]
+		)
+		SetScriptGfxDrawBehindPausemenu(false)
+		--]=]
+		Var6 = (nowX - minX);
+		Var7 = (nowY - minY);
+		Var8 = ((Var6 / width) * 100 );
 		
 		Var9 = (not needY and 50.0) or ((Var7 / 0.14 ) * 100 );
 		
 		SetMouseCursorSprite(5);
 		if IsDisabledControlPressed(2, 237) then
-		
 			return Var8,Var9;
 			
 		end

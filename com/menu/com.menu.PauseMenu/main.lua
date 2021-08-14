@@ -38,13 +38,14 @@ NB.MenuFramework.AcceptedInput["PauseMenu"].input = function(input)
 					NB_Pause_Menu.cancel(namespace, name);
 			end),
 			case ("MENU_LEFT") (function()
+				
 					if itemdata and itemdata.type and itemdata.type == "slider" then 
+						print(json.encode(itemdata.options))
 						local length = itemdata.options and #itemdata.options or 0 
-						itemdata.options.pos = itemdata.options.pos + 1
-						local pos = itemdata.options.pos
-						local nextpos = ((pos)%length)+1
-						itemdata.value = itemdata.options[nextpos];
-						itemdata.options.pos = nextpos
+						itemdata.value = itemdata.value - 1
+						if itemdata.value == 0 then 
+							itemdata.value = length
+						end 
 						if itemdata.description then 
 							if PauseMenu.CurrentColumndId then 
 							PauseMenu.SetDescription(PauseMenu.CurrentColumndId,itemdata.description,false)
@@ -60,11 +61,12 @@ NB.MenuFramework.AcceptedInput["PauseMenu"].input = function(input)
 			end),
 			case ("MENU_RIGHT") (function()
 					if itemdata and itemdata.type and itemdata.type == "slider" then 
+						
 						local length = itemdata.options and #itemdata.options or 0 
-						local pos = itemdata.options.pos
-						local nextpos = ((pos)%length)+1
-						itemdata.value = itemdata.options[nextpos];
-						itemdata.options.pos = nextpos
+						itemdata.value = itemdata.value + 1
+						if itemdata.value > length then 
+							itemdata.value = itemdata.value % length
+						end 
 						if itemdata.description then 
 							if PauseMenu.CurrentColumndId then 
 							PauseMenu.SetDescription(PauseMenu.CurrentColumndId,itemdata.description,false)
@@ -108,8 +110,11 @@ local OpenLoop = function(Break)
 			end
 		end 
 	end  
+	
+	
 	if IsDisabledControlPressed(2, 237) then
 		local a,b = PauseMenu.GetValueFromKeyboard(PauseMenu.SelectedItem.setter=="XY")
+		
 		if a and b then 
 			PauseMenu.SelectedItem.tunedpos = {a,b}
 			if PauseMenu.SelectedItem.tunedpos then 
@@ -133,8 +138,7 @@ NB_Pause_Menu.Open = function(namespace,name,data)
 			data.elements[i].type = 'default';
 		elseif data.elements[i].type == 'slider' then 
 			if not data.elements[i].options then data.elements[i].options = {} end 
-			if not data.elements[i].options.pos then data.elements[i].options.pos = 1 end 
-			data.elements[i].value = data.elements[i].options[1]
+			data.elements[i].value = 1
 		end 
 	end 
 	data._index     = #NB_Pause_Menu.focus;
@@ -157,6 +161,8 @@ NB_Pause_Menu.Open = function(namespace,name,data)
 	
 	local columnid = 0
 	if data._style == "scroll" then 
+		columnid = 1
+	elseif data._style == "scroll_color" then 
 		columnid = 6
 	end 
 	PauseMenu.CurrentColumndId = columnid
@@ -171,10 +177,10 @@ NB_Pause_Menu.Open = function(namespace,name,data)
 					if item.type == 'footer' then 
 						PauseMenu.SetOrUpdateNormalDataSlot(columnid, data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, data_idx, item.label, " " , 2, 1, (not (PauseMenu.CurrentColumndId == nil)));
 					else 
-						PauseMenu.SetOrUpdateNormalDataSlot(columnid, data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, data_idx, item.label, item.type == 'slider' and item.value or "" , item.type == 'slider' and 0 or 1, 4, (not (PauseMenu.CurrentColumndId == nil))); 
+						PauseMenu.SetOrUpdateNormalDataSlot(columnid, data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, data_idx, item.label, item.type == 'slider' and tostring(item.value) or (item.options and tostring(item.options[item.value])) , item.type == 'slider' and 0 or 1, 4, (not (PauseMenu.CurrentColumndId == nil))); 
 					end 
 				else 
-					PauseMenu.SetOrUpdateNormalDataSlot(columnid, data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, data_idx, item.label, item.type == 'slider' and item.value or "" , item.type == 'slider' and 0 or 1, 4, (not (PauseMenu.CurrentColumndId == nil)));
+					PauseMenu.SetOrUpdateNormalDataSlot(columnid, data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, data_idx, item.label, item.type == 'slider' and tostring(item.value) or (item.options and tostring(item.options[item.value])) , item.type == 'slider' and 0 or 1, 4, (not (PauseMenu.CurrentColumndId == nil)));
 				end 
 				data_idx = data_idx + 1
 			end 
@@ -261,10 +267,10 @@ NB_Pause_Menu.Update = function() -- DRAW FUNCTIONS
 						if selecteditem.type == 'footer' then 
 							PauseMenu.SetOrUpdateNormalDataSlot(columnid, data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, data_idx, selecteditem.label, " " , 2, 1, (not (PauseMenu.CurrentColumndId == nil)));
 						else 
-							PauseMenu.SetOrUpdateNormalDataSlot(columnid, data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, data_idx, selecteditem.label, selecteditem.type == 'slider' and selecteditem.value or "" , selecteditem.type == 'slider' and 0 or 1, 4, (not (PauseMenu.CurrentColumndId == nil)));
+							PauseMenu.SetOrUpdateNormalDataSlot(columnid, data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, data_idx, selecteditem.label, selecteditem.type == 'slider' and tostring(selecteditem.value) or (selecteditem.options and tostring(selecteditem.options[selecteditem.value])) , selecteditem.type == 'slider' and 0 or 1, 4, (not (PauseMenu.CurrentColumndId == nil)));
 						end 
 					else 
-						PauseMenu.SetOrUpdateNormalDataSlot(columnid, data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, data_idx, selecteditem.label, selecteditem.type == 'slider' and selecteditem.value or "" , selecteditem.type == 'slider' and 0 or 1, 4, (not (PauseMenu.CurrentColumndId == nil)));
+						PauseMenu.SetOrUpdateNormalDataSlot(columnid, data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, data_idx, selecteditem.label, selecteditem.type == 'slider' and tostring(selecteditem.value) or (selecteditem.options and tostring(selecteditem.options[selecteditem.value])) , selecteditem.type == 'slider' and 0 or 1, 4, (not (PauseMenu.CurrentColumndId == nil)));
 					end 
 					if columnid == 1 then 
 						if selecteditem.setter == "X" or selecteditem.setter == "XY" then 
@@ -278,6 +284,35 @@ NB_Pause_Menu.Update = function() -- DRAW FUNCTIONS
 								PauseMenu.SetXYData(3,0,PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION,0,"a","b","c","d",selecteditem.tunedpos[1],selecteditem.tunedpos[2],selecteditem.setter=="XY",selecteditem.tunedpos~=nil,false)
 							end 
 							PauseMenu.DisplayDataSlot(3);
+						end 
+					end 
+					if columnid == 6 then 
+						if selecteditem.setter == "COLOR" or selecteditem.setter == "COLOUR" then 
+							--[=[
+							PauseMenu.SetDataSlotEmpty(3);
+							PauseMenu.ShowColumn(3,true);
+							if not selecteditem.tunedpos then 
+								PauseMenu.SetXYData(3,0,PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION,0,"a","b","c","d",50.0,50.0,selecteditem.setter=="XY",selecteditem.tunedpos~=nil,false)
+								
+								selecteditem.tunedpos = vector3(50.0,50.0,0.0)
+							else 
+								PauseMenu.SetXYData(3,0,PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION,0,"a","b","c","d",selecteditem.tunedpos[1],selecteditem.tunedpos[2],selecteditem.setter=="XY",selecteditem.tunedpos~=nil,false)
+							end 
+							PauseMenu.DisplayDataSlot(3);
+							--]=]
+							if not selecteditem.tunedcolor then 
+								--PauseMenu.SetColorValue(7,"wtf","FACE_SEX",5.0,1,1,true);
+								PauseMenu.SetColorLevel(7,1)
+								selecteditem.tunedcolor = 1
+							else 
+								--PauseMenu.SetColorValue(7,"wtf","FACE_SEX",5.0,selecteditem.tunedcolor,1,true);
+								PauseMenu.SetColorLevel(7,selecteditem.tunedcolor)
+							end 
+							PauseMenu.ShowColumn(7,true);
+							for i=0,GetNumHairColors() do 
+								PauseMenu.SetColorData(7,i,GetPedHairRgbColor(i))
+							end 
+							PauseMenu.DisplayDataSlot(7);
 						end 
 					end 
 				end 

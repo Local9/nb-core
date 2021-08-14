@@ -4,7 +4,7 @@ com.menu.ESXMenuFramework = {}
 com.menu.type = {}
 
 local RegisterKeyboardCallback = function(name,key,description,fn) RegisterCommand(name, function() fn() end, false) RegisterKeyMapping(name, IsStringNullOrEmpty(description) and name or description , 'keyboard', key) end 
-local RegisterMouseButtonCallback = function(name,key,description,fn) RegisterCommand(name, function() fn() end, false) RegisterKeyMapping(name, IsStringNullOrEmpty(description) and name or description , 'MOUSE_BUTTON', key) end 
+local RegisterMouseButtonCallback = function(name,key,description,fn) RegisterCommand(name, function() fn() end, false) RegisterKeyMapping(name, IsStringNullOrEmpty(description) and name or description , 'MOUSE_WHEEL', key) end 
 
 com.menu.ESXMenuFramework = ESX.UI.Menu
 NB.MenuFramework = com.menu.ESXMenuFramework
@@ -19,11 +19,12 @@ local TriggerAcceptedStyleMenuInput = function(input)
 		end 
 	end 
 end 
-RegisterMouseButtonCallback("+MOUSE_LEFT","MOUSE_LEFT","Left Click",function()
-	TriggerAcceptedStyleMenuInput("MENU_MOUSE_LEFT_PRESSED")
+RegisterMouseButtonCallback("MENU_WHEEL_UP","IOM_WHEEL_UP","Wheel UP",function()
+print(1)
+	TriggerAcceptedStyleMenuInput("MENU_WHEEL_UP")
 end)
-RegisterMouseButtonCallback("-MOUSE_LEFT","MOUSE_LEFT","Left Click Release",function()
-	TriggerAcceptedStyleMenuInput("MENU_MOUSE_LEFT_RELEASED")
+RegisterMouseButtonCallback("MENU_WHEEL_DOWN","IOM_WHEEL_DOWN","Wheel DOWN",function()
+	TriggerAcceptedStyleMenuInput("MENU_WHEEL_DOWN")
 end)
 RegisterKeyboardCallback("MENU_SELECT","SPACE","MENU SELECT",function()
 	TriggerAcceptedStyleMenuInput("MENU_SELECT")
