@@ -84,6 +84,7 @@ NB.MenuFramework.AcceptedInput["PauseMenu"].input = function(input)
 	end)
 end 
 NB_Pause_Menu.Open = function(namespace,name,data)
+	
 	if NB_Pause_Menu.IsPropSlotValueExist("opened",namespace,name) then 
 		NB_Pause_Menu.Close(namespace, name);
 	end 
@@ -116,10 +117,9 @@ NB_Pause_Menu.Open = function(namespace,name,data)
 	NB_Pause_Menu.InsertPropSlot("focus",{namespace=namespace,name=name})
 	NB_Pause_Menu.Update();
 	local menudata = data 
-	SetFrontendActive(false);
-	Wait(1)
 	PauseMenu.StartPauseMenu(PauseMenu.versionid.FE_MENU_VERSION_MP_CHARACTER_CREATION)
-	Wait(1)
+	
+	
 	--PauseMenu.SetCurrentColumn(-1)
 	local columnid = 0
 	if menudata._style == "scroll" then 
@@ -150,7 +150,6 @@ NB_Pause_Menu.Open = function(namespace,name,data)
 		PauseMenu.SetColumnCanJump(columnid, 1);
 		--PauseMenu.ShowColumn(columnid,true);
 		PauseMenu.SetCurrentColumn(columnid)
-		
 		if #menudata.elements>7 then 
 			if columnid == 1 then 
 				PauseMenu.InitColumnScroll(columnid, 1, 1, 1, 0, 0)

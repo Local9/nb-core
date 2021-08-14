@@ -197,13 +197,27 @@ local send = function (...)
 	EndScaleformMovieMethod()
 end
 function PauseMenu.StartPauseMenu(versionHash)
-	if GetCurrentFrontendMenuVersion() ~= versionHash then
+	if (IsPauseMenuActive()  or  IsPauseMenuRestarting()) then
+		if GetCurrentFrontendMenuVersion() ~= 1399975061 then
+			SetFrontendActive(false)
+		end
+	else
 		SetFrontendActive(false);
+		ActivateFrontendMenu(1399975061, false, -1);
+		
 	end
-	SetFrontendActive(false);
-	ActivateFrontendMenu(versionHash, false, -1);
-	Wait(500)
-	RestartFrontendMenu(versionHash,-1)
+	Wait(333)
+	if (IsPauseMenuActive()  or  IsPauseMenuRestarting()) then
+		if GetCurrentFrontendMenuVersion() ~= 1399975061 then
+			SetFrontendActive(false)
+		end
+	else
+		SetFrontendActive(false);
+		ActivateFrontendMenu(1399975061, false, -1);
+		
+	end
+	Wait(333)
+	PauseMenu.SetCurrentColumn(-1)
 end
 function PauseMenu.InitColumnScroll(Param0, Param1, Param2, Param3, Param4, Param5)
 	if start("INIT_COLUMN_SCROLL") then 
