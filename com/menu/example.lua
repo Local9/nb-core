@@ -4,36 +4,26 @@ CreateThread(function()
 	local Salle = {
 		{label="Apple",value="Apple"},
 		{label="选择水果",type="slider",options={"apple","banana","orange"}},
+		{label="Apple123",value="Apple123"},
+		{label="Apple123",value="Apple123"},
+		{label="Apple123",value="Apple123"},
+		{label="Apple123",value="Apple123"},
+		{label="Apple123",value="Apple123"},
+		{label="Apple123",value="Apple123"},
+		{label="Apple123",value="Apple123"},
+		{label="Apple123",value="Apple123"},
+		{label="Apple123",value="Apple123"},
+		{label="Apple123",value="Apple123"},
 		{label="保存",value="Save",type="footer"},
-		{label="Apple123",value="Apple123"},
-		{label="Apple123",value="Apple123"},
-		{label="Apple123",value="Apple123"},
-		{label="Apple123",value="Apple123"},
-		{label="Apple123",value="Apple123"},
-		{label="Apple123",value="Apple123"},
-		{label="Apple123",value="Apple123"},
-		{label="Apple123",value="Apple123"},
-		{label="Apple123",value="Apple123"},
-		{label="Apple123",value="Apple123"},
 	}
-	for k,v in pairs(Salle) do
-	   table.insert(elements,{
-       label = v.label,
-       pos  = v.pos,
-	   type = v.type,
-	   value = v.value,
-	   options = v.options
-     })
-	end
-	
 	NB.MenuFramework.CloseAll()
 	NB.MenuFramework.Open(
-		'DefaultMenu', GetCurrentResourceName(), 'strip',
+		'PauseMenu', GetCurrentResourceName(), 'strip',
 		{
 			title  = 'Position Menu',
 			description = "MENU DESCRIPTION",
 			style = 0,
-			elements = elements
+			elements = Salle
 		},
 		function(data, menu)
 			print("result open",data.current.value)

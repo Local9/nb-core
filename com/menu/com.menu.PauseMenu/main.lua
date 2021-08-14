@@ -123,8 +123,10 @@ NB_Pause_Menu.Open = function(namespace,name,data)
 		SetColumnFocus(0, 1, 1);
 		SetColumnCanJump(0, 1);
 		ShowColumn(0,true);
+		SetDescription(0,"test",false)
 	end 
 	NB.Threads.CreateLoopOnce("Menu",333,function(Break)
+		
 		if #NB_Pause_Menu.focus<=0  then Break() end 
 		if N_0x2e22fefa0100275e() then 
 			local pos = GetPos()
