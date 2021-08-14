@@ -22,7 +22,7 @@ CreateThread(function()
 		{
 			title  = 'Position Menu',
 			description = "MENU DESCRIPTION",
-			style = "scroll", -- 0: list menu  |  1: link-pad rolling list menu  |  2:  bar menu 142561   | 3:  pad menu   | 4: skillpoint menu  | 5:skilldata menu | 6: link-color-list menu |  7:color menu 
+			style = "default", -- 0: list menu  |  1: link-pad rolling list menu  |  2:  bar menu 142561   | 3:  pad menu   | 4: skillpoint menu  | 5:skilldata menu | 6: link-color-list menu |  7:color menu 
 			elements = Salle
 		},
 		function(data, menu)
