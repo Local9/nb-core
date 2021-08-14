@@ -21,7 +21,7 @@ function GetPos ()
 	if c ~= -1 then 
 		return c+1 
 	else 
-		return nil
+		return 1
 	end 
 end 
 NB.MenuFramework.RegisterType(MenuType, openMenu, closeMenu)
@@ -84,7 +84,7 @@ NB.MenuFramework.AcceptedInput["PauseMenu"].input = function(input)
 	end)
 end 
 NB_Pause_Menu.Open = function(namespace,name,data)
-	
+	PauseMenu.StartPauseMenu(PauseMenu.versionid.FE_MENU_VERSION_MP_CHARACTER_CREATION)
 	if NB_Pause_Menu.IsPropSlotValueExist("opened",namespace,name) then 
 		NB_Pause_Menu.Close(namespace, name);
 	end 
@@ -116,23 +116,18 @@ NB_Pause_Menu.Open = function(namespace,name,data)
 	end 
 	NB_Pause_Menu.InsertPropSlot("focus",{namespace=namespace,name=name})
 	NB_Pause_Menu.Update();
-	local menudata = data 
-	PauseMenu.StartPauseMenu(PauseMenu.versionid.FE_MENU_VERSION_MP_CHARACTER_CREATION)
-	
-	
-	--PauseMenu.SetCurrentColumn(-1)
 	local columnid = 0
-	if menudata._style == "scroll" then 
+	if data._style == "scroll" then 
 		columnid = 1
 	end 
 	PauseMenu.CurrentColumndId = columnid
 	if columnid then 
 		PauseMenu.SetDataSlotEmpty(columnid);
-		PauseMenu.SetColumnTitle(columnid,menudata.title,menudata.description or "","");
+		PauseMenu.SetColumnTitle(columnid,data.title,data.description or "","");
 		local data_idx = 0
-		for i=1,#menudata.elements do 
-			local item = menudata.elements[i]
-			if i == #menudata.elements then 
+		for i=1,#data.elements do 
+			local item = data.elements[i]
+			if i == #data.elements then 
 				if item.type == 'footer' then 
 					PauseMenu.SetOrUpdateNormalDataSlot(columnid, data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, data_idx, item.label, " " , 2, 1, (not PauseMenu.CurrentColumndId == nil), -1, -1, 0 , 0);
 				else 
@@ -150,7 +145,7 @@ NB_Pause_Menu.Open = function(namespace,name,data)
 		PauseMenu.SetColumnCanJump(columnid, 1);
 		--PauseMenu.ShowColumn(columnid,true);
 		PauseMenu.SetCurrentColumn(columnid)
-		if #menudata.elements>7 then 
+		if #data.elements>7 then 
 			if columnid == 1 then 
 				PauseMenu.InitColumnScroll(columnid, 1, 1, 1, 0, 0)
 			end 
@@ -171,36 +166,30 @@ NB_Pause_Menu.Open = function(namespace,name,data)
 		if #NB_Pause_Menu.focus<=0  then Break() end 
 		if N_0x2e22fefa0100275e() then 
 			local pos = GetPos()
-			--if lastpos == nil or lastpos ~= pos then 
-				if pos then 
-					lastpos = pos
-					NB_Pause_Menu.GetCurrentFocusData(function(namespace,name,elementslength,menu,pos_,itemdata)
-						if pos <= #menu.elements then 
-							NB_Pause_Menu.SetPropSlotValue("pos",namespace,name,pos)
-							for i=1,#menu.elements,1 do
-								if(i == NB_Pause_Menu.pos[namespace][name]) then 
-									menu.elements[i].selected = true
-								else
-									menu.elements[i].selected = false
-								end 
+			if pos then 
+				NB_Pause_Menu.GetCurrentFocusData(function(namespace,name,elementslength,menu,pos_,itemdata)
+					if pos <= #menu.elements then 
+						for i=1,#menu.elements,1 do
+							if(i == pos) then 
+								menu.elements[i].selected = true
+							else
+								menu.elements[i].selected = false
 							end 
-							
-							if menu.elements[pos].description then 
-								if PauseMenu.CurrentColumndId then 
-								PauseMenu.SetDescription(PauseMenu.CurrentColumndId,menu.elements[pos].description,false)
-								end 
-							else 
-								if PauseMenu.CurrentColumndId then 
-								PauseMenu.SetDescription(PauseMenu.CurrentColumndId,"",false)
-								end 
-							end
-							NB_Pause_Menu.change(namespace, name, menu.elements[pos])
-							NB_Pause_Menu.Update();
 						end 
-					end)
-					
-				end 
-			--end 
+						if menu.elements[pos].description then 
+							if PauseMenu.CurrentColumndId then 
+							PauseMenu.SetDescription(PauseMenu.CurrentColumndId,menu.elements[pos].description,false)
+							end 
+						else 
+							if PauseMenu.CurrentColumndId then 
+							PauseMenu.SetDescription(PauseMenu.CurrentColumndId,"",false)
+							end 
+						end
+						NB_Pause_Menu.change(namespace, name, menu.elements[pos])
+						NB_Pause_Menu.Update();
+					end 
+				end)
+			end 
 		end  
 	end)
 end 
