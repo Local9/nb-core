@@ -4,16 +4,16 @@ CreateThread(function()
 	local Salle = {
 		{label="Apple",value="Apple"},
 		{label="选择水果",type="slider",options={"apple","banana","orange"},description="select your favour"},
-		{label="Apple123",value="Apple123",description="good health",type="custom",setter="X"},
-		{label="Apple123",value="Apple123",type="custom",setter="XY"},
+		{label="Apple123",value="Apple123",description="good health",setter="X"},
+		{label="Apple123",value="Apple123",setter="XY"},
 		{label="Apple123",value="Apple123"},
 		{label="Apple123",value="Apple123"},
 		{label="Apple123",value="Apple123"},
 		{label="Apple123",value="Apple123"},
 		{label="Apple123",value="Apple123"},
-		{label="Apple123",value="Apple123",setter="COLOR"},
-		{label="Apple1234",value="Apple1234",type="custom",setter="COLOR"},
-		{label="Apple123",value="Apple123",type="custom",setter="XY"},
+		{label="Apple123",value="Apple123"},
+		{label="Apple1234",value="Apple1234",setter="COLOUR"},
+		{label="Apple123",value="Apple123",setter="XY"},
 		{label="保存",value="Save",type="footer"},
 	}
 	NB.MenuFramework.CloseAll()

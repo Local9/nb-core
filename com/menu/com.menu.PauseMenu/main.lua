@@ -108,7 +108,7 @@ local OpenLoop = function(Break)
 			end
 		end 
 	end  
-	if #NB_Pause_Menu.focus<=0  then Break() end 
+	if #NB_Pause_Menu.focus<=0  then print('break') Break() end 
 end 
 		
 NB_Pause_Menu.Open = function(namespace,name,data)
@@ -142,43 +142,46 @@ NB_Pause_Menu.Open = function(namespace,name,data)
 			data.elements[i].selected = false
 		end 
 	end 
-	NB_Pause_Menu.InsertPropSlot("focus",{namespace=namespace,name=name})
-	NB_Pause_Menu.Update();
+	
 	local columnid = 0
 	if data._style == "scroll" then 
 		columnid = 1
 	end 
 	PauseMenu.CurrentColumndId = columnid
-	if columnid then 
-		PauseMenu.SetDataSlotEmpty(columnid);
-		PauseMenu.SetColumnTitle(columnid,data.title,data.description or "","");
-		local data_idx = 0
-		for i=1,#data.elements do 
-			local item = data.elements[i]
-			if i == #data.elements then 
-				if item.type == 'footer' then 
-					PauseMenu.SetOrUpdateNormalDataSlot(columnid, data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, data_idx, item.label, " " , 2, 1, (not (PauseMenu.CurrentColumndId == nil)));
+	if columnid then --Build Menu 
+		if columnid == 0 or columnid == 1 then 
+			PauseMenu.SetDataSlotEmpty(columnid);
+			PauseMenu.SetColumnTitle(columnid,data.title,data.description or "","");
+			local data_idx = 0
+			for i=1,#data.elements do 
+				local item = data.elements[i]
+				if i == #data.elements then 
+					if item.type == 'footer' then 
+						PauseMenu.SetOrUpdateNormalDataSlot(columnid, data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, data_idx, item.label, " " , 2, 1, (not (PauseMenu.CurrentColumndId == nil)));
+					else 
+						PauseMenu.SetOrUpdateNormalDataSlot(columnid, data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, data_idx, item.label, item.type == 'slider' and item.value or "" , item.type == 'slider' and 0 or 1, 4, (not (PauseMenu.CurrentColumndId == nil))); 
+					end 
 				else 
-					PauseMenu.SetOrUpdateNormalDataSlot(columnid, data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, data_idx, item.label, item.type == 'slider' and item.value or "" , item.type == 'slider' and 0 or 1, 4, (not (PauseMenu.CurrentColumndId == nil))); 
+					PauseMenu.SetOrUpdateNormalDataSlot(columnid, data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, data_idx, item.label, item.type == 'slider' and item.value or "" , item.type == 'slider' and 0 or 1, 4, (not (PauseMenu.CurrentColumndId == nil)));
 				end 
-			else 
-				PauseMenu.SetOrUpdateNormalDataSlot(columnid, data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, data_idx, item.label, item.type == 'slider' and item.value or "" , item.type == 'slider' and 0 or 1, 4, (not (PauseMenu.CurrentColumndId == nil)));
+				data_idx = data_idx + 1
 			end 
-			data_idx = data_idx + 1
-		end 
-		
-		
-		PauseMenu.DisplayDataSlot(columnid);
-		PauseMenu.SetColumnFocus(columnid, 1, 1);
-		PauseMenu.SetColumnCanJump(columnid, 1);
-		--PauseMenu.ShowColumn(columnid,true);
-		PauseMenu.SetCurrentColumn(columnid)
-		if #data.elements>7 then 
-			if columnid == 1 then 
-				PauseMenu.InitColumnScroll(columnid, 1, 1, 1, 0, 0)
+			PauseMenu.DisplayDataSlot(columnid);
+			PauseMenu.SetColumnFocus(columnid, 1, 1);
+			PauseMenu.SetColumnCanJump(columnid, 1);
+			--PauseMenu.ShowColumn(columnid,true);
+			PauseMenu.SetCurrentColumn(columnid)
+			if #data.elements>7 then 
+				if columnid == 1 then 
+					PauseMenu.InitColumnScroll(columnid, 1, 1, 1, 0, 0)
+				end 
 			end 
 		end 
+		
 	end 
+	
+	NB_Pause_Menu.InsertPropSlot("focus",{namespace=namespace,name=name})
+	NB_Pause_Menu.Update();
 	
 	NB.Threads.CreateLoopOnce("Menu",10,function(Break)
 		OpenLoop(Break)
@@ -224,28 +227,38 @@ NB_Pause_Menu.Update = function() -- DRAW FUNCTIONS
 					v.selected = false;
 				end 
 			end 
-			local menudata = menuData
-			local item = menudata.elements[pos]
-			if item.description then 
+			
+			
+			
+			local selecteditem = menuData.elements[pos]
+			if selecteditem.description then 
 				if PauseMenu.CurrentColumndId then 
-				PauseMenu.SetDescription(PauseMenu.CurrentColumndId,item.description,false)
+				PauseMenu.SetDescription(PauseMenu.CurrentColumndId,selecteditem.description,false)
 				end 
 			else 
 				if PauseMenu.CurrentColumndId then 
 				PauseMenu.SetDescription(PauseMenu.CurrentColumndId,"",false)
 				end 
 			end
+			
+			if selecteditem.setter == "X" or selecteditem.setter == "XY" then 
+				
+			else 
+				
+			end 
 			local data_idx = pos-1
 			local columnid = PauseMenu.CurrentColumndId
-			if columnid then 
-				if pos == #menudata.elements then 
-					if item.type == 'footer' then 
-					PauseMenu.SetOrUpdateNormalDataSlot(columnid, data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, data_idx, item.label, " " , 2, 1, (not (PauseMenu.CurrentColumndId == nil)));
+			if columnid then
+				if columnid == 0 or columnid == 1 then 
+					if pos == #menuData.elements then 
+						if selecteditem.type == 'footer' then 
+							PauseMenu.SetOrUpdateNormalDataSlot(columnid, data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, data_idx, selecteditem.label, " " , 2, 1, (not (PauseMenu.CurrentColumndId == nil)));
+						else 
+							PauseMenu.SetOrUpdateNormalDataSlot(columnid, data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, data_idx, selecteditem.label, selecteditem.type == 'slider' and selecteditem.value or "" , selecteditem.type == 'slider' and 0 or 1, 4, (not (PauseMenu.CurrentColumndId == nil)));
+						end 
 					else 
-					PauseMenu.SetOrUpdateNormalDataSlot(columnid, data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, data_idx, item.label, item.type == 'slider' and item.value or "" , item.type == 'slider' and 0 or 1, 4, (not (PauseMenu.CurrentColumndId == nil)));
+						PauseMenu.SetOrUpdateNormalDataSlot(columnid, data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, data_idx, selecteditem.label, selecteditem.type == 'slider' and selecteditem.value or "" , selecteditem.type == 'slider' and 0 or 1, 4, (not (PauseMenu.CurrentColumndId == nil)));
 					end 
-				else 
-					PauseMenu.SetOrUpdateNormalDataSlot(columnid, data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, data_idx, item.label, item.type == 'slider' and item.value or "" , item.type == 'slider' and 0 or 1, 4, (not (PauseMenu.CurrentColumndId == nil)));
 				end 
 			end 
 		end 
