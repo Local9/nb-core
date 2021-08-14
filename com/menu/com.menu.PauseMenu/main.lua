@@ -120,9 +120,7 @@ local OpenLoop = function(Break)
 		end 
 	end 
 	
-	
-	
-	if #NB_Pause_Menu.focus<=0  then print('break') Break() end 
+	if #NB_Pause_Menu.focus<=0  then Break() end 
 end 
 		
 NB_Pause_Menu.Open = function(namespace,name,data)
@@ -159,11 +157,11 @@ NB_Pause_Menu.Open = function(namespace,name,data)
 	
 	local columnid = 0
 	if data._style == "scroll" then 
-		columnid = 1
+		columnid = 6
 	end 
 	PauseMenu.CurrentColumndId = columnid
 	if columnid then --Build Menu 
-		if columnid == 0 or columnid == 1 then 
+		if columnid == 0 or columnid == 1 or columnid == 6 then 
 			PauseMenu.SetDataSlotEmpty(columnid);
 			PauseMenu.SetColumnTitle(columnid,data.title,data.description or "","");
 			local data_idx = 0
@@ -186,7 +184,7 @@ NB_Pause_Menu.Open = function(namespace,name,data)
 			--PauseMenu.ShowColumn(columnid,true);
 			PauseMenu.SetCurrentColumn(columnid)
 			if #data.elements>7 then 
-				if columnid == 1 then 
+				if columnid == 1 or columnid == 6 then 
 					PauseMenu.InitColumnScroll(columnid, 1, 1, 1, 0, 0)
 				end 
 			end 
@@ -241,9 +239,7 @@ NB_Pause_Menu.Update = function() -- DRAW FUNCTIONS
 					v.selected = false;
 				end 
 			end 
-			
-			
-			
+
 			local selecteditem = menuData.elements[pos]
 			PauseMenu.SelectedItem = selecteditem
 			if selecteditem.description then 
@@ -260,7 +256,7 @@ NB_Pause_Menu.Update = function() -- DRAW FUNCTIONS
 			local data_idx = pos-1
 			local columnid = PauseMenu.CurrentColumndId
 			if columnid then
-				if columnid == 0 or columnid == 1 then 
+				if columnid == 0 or columnid == 1 or columnid == 6 then 
 					if pos == #menuData.elements then 
 						if selecteditem.type == 'footer' then 
 							PauseMenu.SetOrUpdateNormalDataSlot(columnid, data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, data_idx, selecteditem.label, " " , 2, 1, (not (PauseMenu.CurrentColumndId == nil)));
@@ -270,12 +266,9 @@ NB_Pause_Menu.Update = function() -- DRAW FUNCTIONS
 					else 
 						PauseMenu.SetOrUpdateNormalDataSlot(columnid, data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, data_idx, selecteditem.label, selecteditem.type == 'slider' and selecteditem.value or "" , selecteditem.type == 'slider' and 0 or 1, 4, (not (PauseMenu.CurrentColumndId == nil)));
 					end 
-					
-					
 					if columnid == 1 then 
 						if selecteditem.setter == "X" or selecteditem.setter == "XY" then 
 							PauseMenu.SetDataSlotEmpty(3);
-							print('SetDataSlotEmpty')
 							PauseMenu.ShowColumn(3,true);
 							if not selecteditem.tunedpos then 
 								PauseMenu.SetXYData(3,0,PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION,0,"a","b","c","d",50.0,50.0,selecteditem.setter=="XY",selecteditem.tunedpos~=nil,false)
