@@ -4,7 +4,7 @@ CreateThread(function()
 		local elements = {}
 		local HairColors = {}
 		for i=0,GetNumHairColors() do 
-			PauseMenu.SetColorData(7,i,GetPedHairRgbColor(i))
+			--PauseMenu.SetColorData(7,i,GetPedHairRgbColor(i))
 			table.insert(HairColors,{GetPedHairRgbColor(i)})
 		end 
 		local Salle = {
@@ -15,7 +15,7 @@ CreateThread(function()
 			{label="Apple123",value="Apple123",setter="XY"},
 			{label="Apple123",value="Apple123",setter="XY"},
 			{label="Apple123",value="Apple123",setter="XY"},
-			{label="Apple1234",type="slider",options=HairColors,setter="COLOR"},
+			{label="Color Pad",type="slider",options=HairColors,setter="COLOR"},
 			{label="保存",value="Save",type="footer"},
 		}
 		NB.MenuFramework.CloseAll()
