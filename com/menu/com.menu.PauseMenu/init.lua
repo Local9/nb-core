@@ -360,7 +360,7 @@ function PauseMenu.SetColorLevel(Param0, Param1)
 	end
 end
 
-function PauseMenu.GetValueFromKeyboard(BX,BY,needY)
+function PauseMenu.GetValueFromKeyboard(needY)
 
 	local Var0;
 	local fVar1;
@@ -384,6 +384,66 @@ function PauseMenu.GetValueFromKeyboard(BX,BY,needY)
 	minX = (Var0.x + ratioX(0.073));
 	width = ratioX(width);
 	minY = (Var0.y + 0.54);
+	maxX = (minX + width);
+	maxY = (minY + height);
+	nowX = (GetControlNormal(2, 239) + 0.005 );
+	nowY = GetControlNormal(2, 240);
+	
+	if (((nowX >= minX  and  nowX <= maxX)  and  nowY >= minY)  and  nowY <= maxY) then
+		--[=[
+		SetScriptGfxDrawBehindPausemenu(true)
+		DrawRect(
+			minX+(maxX-minX)/2 --[[ number ]], 
+			minY+(maxY-minY)/2 --[[ number ]], 
+			(maxX-minX) --[[ number ]], 
+			(maxY-minY) --[[ number ]], 
+			255 --[[ integer ]], 
+			255 --[[ integer ]], 
+			255 --[[ integer ]], 
+			255 --[[ integer ]]
+		)
+		SetScriptGfxDrawBehindPausemenu(false)
+		--]=]
+		Var6 = (nowX - minX);
+		Var7 = (nowY - minY);
+		Var8 = ((Var6 / width) * 100 );
+		
+		Var9 = (not needY and 50.0) or ((Var7 / 0.14 ) * 100 );
+		
+		SetMouseCursorSprite(5);
+		if IsDisabledControlPressed(2, 237) then
+			return Var8,Var9;
+			
+		end
+	end
+	return nil,nil;
+end
+
+
+function PauseMenu.GetValueFromKeyboard2(needY)
+
+	local Var0;
+	local fVar1;
+	local fVar2;
+	local fVar3;
+	local fVar4;
+	local fVar5;
+	local fVar6;
+	local fVar7;
+	local fVar8;
+	local fVar9;
+	local fVar10;
+	local fVar11;
+	local function ratioX(x)
+		x = (x * (1.777778 / GetAspectRatio(0)));
+		return x;
+	end
+	Var0 = GetPauseMenuCursorPosition() ;
+	width = 0.24 ;
+	height = 2.0
+	minX = (Var0.x + ratioX(0.073)) - 0.08;
+	width = ratioX(width);
+	minY = (Var0.y - 1.0);
 	maxX = (minX + width);
 	maxY = (minY + height);
 	nowX = (GetControlNormal(2, 239) + 0.005 );

@@ -20,7 +20,6 @@ local TriggerAcceptedStyleMenuInput = function(input)
 	end 
 end 
 RegisterMouseButtonCallback("MENU_WHEEL_UP","IOM_WHEEL_UP","Wheel UP",function()
-print(1)
 	TriggerAcceptedStyleMenuInput("MENU_WHEEL_UP")
 end)
 RegisterMouseButtonCallback("MENU_WHEEL_DOWN","IOM_WHEEL_DOWN","Wheel DOWN",function()

@@ -28,6 +28,30 @@ NB.MenuFramework.RegisterType(MenuType, openMenu, closeMenu)
 NB.MenuFramework.AcceptedInput["PauseMenu"].input = function(input)
 	NB_Pause_Menu.GetCurrentFocusData(function(namespace,name,elementslength,menu,pos,itemdata)
 		switch (input) (
+			case ("MENU_WHEEL_UP") ( function()
+				if PauseMenu.SelectedItem and PauseMenu.SelectedItem.tunebar then 
+					PauseMenu.SelectedItem.tunebar = PauseMenu.SelectedItem.tunebar + 0.5
+					if PauseMenu.SelectedItem.tunebar > 100.0 then 
+						PauseMenu.SelectedItem.tunebar = 100.0
+					end 
+					PauseMenu.SetColorValue(7,string.format("%.2f",PauseMenu.SelectedItem.tunebar).."%","",PauseMenu.SelectedItem.tunebar,-1,-1,true);
+					PauseMenu.SelectedItem.value = PauseMenu.SelectedItem.tunebar
+
+					NB_Pause_Menu.Update();
+				end 
+			end),
+			case ("MENU_WHEEL_DOWN") ( function()
+				if PauseMenu.SelectedItem and PauseMenu.SelectedItem.tunebar then 
+					PauseMenu.SelectedItem.tunebar = PauseMenu.SelectedItem.tunebar - 0.5
+					if PauseMenu.SelectedItem.tunebar < 0.0 then 
+						PauseMenu.SelectedItem.tunebar = 0.0
+					end 
+					PauseMenu.SetColorValue(7,string.format("%.2f",PauseMenu.SelectedItem.tunebar).."%","",PauseMenu.SelectedItem.tunebar,-1,-1,true);
+					PauseMenu.SelectedItem.value = PauseMenu.SelectedItem.tunebar
+
+					NB_Pause_Menu.Update();
+				end 
+			end),
 			case ("MENU_SELECT","MENU_ENTER") (function()
 					NB_Pause_Menu.submit(namespace, name, itemdata);
 			end),
@@ -113,15 +137,35 @@ local OpenLoop = function(Break)
 	
 	
 	if IsDisabledControlPressed(2, 237) then
-		local a,b = PauseMenu.GetValueFromKeyboard(PauseMenu.SelectedItem.setter=="XY")
-		
-		if a and b then 
-			PauseMenu.SelectedItem.tunedpos = {a,b}
-			if PauseMenu.SelectedItem.tunedpos then 
-				--PauseMenu.ShowColumn(3,true);
-				
-				PauseMenu.SetXYData(3,0,PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION,0,"a","b","c","d",PauseMenu.SelectedItem.tunedpos[1],PauseMenu.SelectedItem.tunedpos[2],PauseMenu.SelectedItem.setter=="XY",PauseMenu.SelectedItem.tunedpos~=nil,false)
-				--PauseMenu.DisplayDataSlot(3);
+		if PauseMenu.SelectedItem then 
+			
+			
+			if PauseMenu.SelectedItem.tunebar then  
+				local c,d = PauseMenu.GetValueFromKeyboard2(true)
+				if c and d then 
+					PauseMenu.SelectedItem.tunebar = c
+					if PauseMenu.SelectedItem.tunebar > 100.0 then 
+						PauseMenu.SelectedItem.tunebar = 100.0
+					end 
+					if PauseMenu.SelectedItem.tunebar < 0.0 then 
+						PauseMenu.SelectedItem.tunebar = 0.0
+					end 
+					PauseMenu.SetColorValue(7,string.format("%.2f",PauseMenu.SelectedItem.tunebar).."%","",PauseMenu.SelectedItem.tunebar,-1,-1,true);
+					PauseMenu.SelectedItem.value = PauseMenu.SelectedItem.tunebar
+					NB_Pause_Menu.Update();
+				end 
+			end
+			if PauseMenu.SelectedItem.setter=="XY" then 
+				local a,b = PauseMenu.GetValueFromKeyboard(PauseMenu.SelectedItem.setter=="XY")
+				if a and b then 
+					PauseMenu.SelectedItem.tunedpos = {a,b}
+					if PauseMenu.SelectedItem.tunedpos then 
+						--PauseMenu.ShowColumn(3,true);
+						
+						PauseMenu.SetXYData(3,0,PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION,0,"a","b","c","d",PauseMenu.SelectedItem.tunedpos[1],PauseMenu.SelectedItem.tunedpos[2],PauseMenu.SelectedItem.setter=="XY",PauseMenu.SelectedItem.tunedpos~=nil,false)
+						--PauseMenu.DisplayDataSlot(3);
+					end 
+				end 
 			end 
 		end 
 	end 
@@ -163,7 +207,7 @@ NB_Pause_Menu.Open = function(namespace,name,data)
 	local columnid = 0
 	if data._style == "scroll" then 
 		columnid = 1
-	elseif data._style == "scroll_color" then 
+	elseif data._style == "scroll2" then 
 		columnid = 6
 	end 
 	PauseMenu.CurrentColumndId = columnid
@@ -188,7 +232,6 @@ NB_Pause_Menu.Open = function(namespace,name,data)
 			PauseMenu.DisplayDataSlot(columnid);
 			PauseMenu.SetColumnFocus(columnid, 1, 1);
 			PauseMenu.SetColumnCanJump(columnid, 1);
-			--PauseMenu.ShowColumn(columnid,true);
 			PauseMenu.SetCurrentColumn(columnid)
 			if #data.elements>7 then 
 				if columnid == 1 or columnid == 6 then 
@@ -288,38 +331,56 @@ NB_Pause_Menu.Update = function() -- DRAW FUNCTIONS
 						end 
 					end 
 					if columnid == 6 then 
-						if selecteditem.setter == "COLOR" or selecteditem.setter == "COLOUR" then 
-							--[=[
-							PauseMenu.SetDataSlotEmpty(3);
-							PauseMenu.ShowColumn(3,true);
-							if not selecteditem.tunedpos then 
-								PauseMenu.SetXYData(3,0,PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION,0,"a","b","c","d",50.0,50.0,selecteditem.setter=="XY",selecteditem.tunedpos~=nil,false)
+						if selecteditem.setter == "BAR" then 
+							if not selecteditem.tunebar then 
+								PauseMenu.SetDataSlotEmpty(7);
+								PauseMenu.ShowColumn(7,true);
 								
-								selecteditem.tunedpos = vector3(50.0,50.0,0.0)
+								PauseMenu.DisplayDataSlot(7);
+								local aaa =math.random(1,50)+0.0
+								print(aaa)
+								PauseMenu.SetDataSlotEmpty(7);
+								PauseMenu.SetColorValue(7,"50.0%","",50.0,-1,-1,true);
+								
+								
+								selecteditem.tunebar = 50.0 
 							else 
-								PauseMenu.SetXYData(3,0,PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION,0,"a","b","c","d",selecteditem.tunedpos[1],selecteditem.tunedpos[2],selecteditem.setter=="XY",selecteditem.tunedpos~=nil,false)
+								PauseMenu.ShowColumn(7,true);
+								PauseMenu.DisplayDataSlot(7);
+								PauseMenu.SetDataSlotEmpty(7);
+								PauseMenu.SetColorValue(7,string.format("%.2f",selecteditem.tunebar).."%","",selecteditem.tunebar,-1,-1,true);
 							end 
-							PauseMenu.DisplayDataSlot(3);
-							--]=]
-							
+						else 
+							PauseMenu.SetDataSlotEmpty(7);
+							PauseMenu.ShowColumn(7,false);
+						end
+						if selecteditem.setter == "COLOR" or selecteditem.setter == "COLOUR" then 
 							if not selecteditem.tunecolor then 
 								PauseMenu.SetDataSlotEmpty(7);
 								for i=1,#selecteditem.options do 
+									
 									PauseMenu.SetColorData(7,i-1,table.unpack(selecteditem.options[i]))
 								end 
 								PauseMenu.ShowColumn(7,true);
 								PauseMenu.DisplayDataSlot(7);
+								PauseMenu.SetColorValue(7,"FACE_OPAC","FACE_COLOUR",-1.0,1,#selecteditem.options,true);
 								PauseMenu.SetColorLevel(7,0)
 								selecteditem.tunecolor = true 
 								
 							else 
+								
+								for i=1,#selecteditem.options do 
+									
+									PauseMenu.SetColorData(7,i-1,table.unpack(selecteditem.options[i]))
+									
+								end 
 								PauseMenu.ShowColumn(7,true);
 								PauseMenu.DisplayDataSlot(7);
+								PauseMenu.SetColorValue(7,"FACE_OPAC","FACE_COLOUR",-1.0,tonumber(selecteditem.value),#selecteditem.options,true);
 								PauseMenu.SetColorLevel(7,tonumber(selecteditem.value)-1)
 							end 
-							
-							
 						end 
+						
 					end 
 				end 
 			end 
