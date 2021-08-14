@@ -129,12 +129,12 @@ NB_Pause_Menu.Open = function(namespace,name,data)
 			local item = data.elements[i]
 			if i == #data.elements then 
 				if item.type == 'footer' then 
-					PauseMenu.SetOrUpdateNormalDataSlot(columnid, data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, data_idx, item.label, " " , 2, 1, (not PauseMenu.CurrentColumndId == nil), -1, -1, 0 , 0);
+					PauseMenu.SetOrUpdateNormalDataSlot(columnid, data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, data_idx, item.label, " " , 2, 1, (not (PauseMenu.CurrentColumndId == nil)));
 				else 
-					PauseMenu.SetOrUpdateNormalDataSlot(columnid, data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, data_idx, item.label, item.type == 'slider' and item.value or "" , item.type == 'slider' and 0 or 1, 4, (not PauseMenu.CurrentColumndId == nil), -1, -1, 0 , 0); 
+					PauseMenu.SetOrUpdateNormalDataSlot(columnid, data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, data_idx, item.label, item.type == 'slider' and item.value or "" , item.type == 'slider' and 0 or 1, 4, (not (PauseMenu.CurrentColumndId == nil))); 
 				end 
 			else 
-				PauseMenu.SetOrUpdateNormalDataSlot(columnid, data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, data_idx, item.label, item.type == 'slider' and item.value or "" , item.type == 'slider' and 0 or 1, 4, (not PauseMenu.CurrentColumndId == nil), -1, -1, 0 , 0);
+				PauseMenu.SetOrUpdateNormalDataSlot(columnid, data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, data_idx, item.label, item.type == 'slider' and item.value or "" , item.type == 'slider' and 0 or 1, 4, (not (PauseMenu.CurrentColumndId == nil)));
 			end 
 			data_idx = data_idx + 1
 		end 
@@ -168,26 +168,30 @@ NB_Pause_Menu.Open = function(namespace,name,data)
 			local pos = GetPos()
 			if pos then 
 				NB_Pause_Menu.GetCurrentFocusData(function(namespace,name,elementslength,menu,pos_,itemdata)
-					if pos <= #menu.elements then 
-						for i=1,#menu.elements,1 do
-							if(i == pos) then 
-								menu.elements[i].selected = true
-							else
-								menu.elements[i].selected = false
+					NB_Pause_Menu.SetPropSlotValue("pos",namespace,name,pos)
+					NB_Pause_Menu.GetCurrentFocusData(function(namespace,name,elementslength,menu,pos_,itemdata)
+						if pos <= #menu.elements then 
+							
+							for i=1,#menu.elements,1 do
+								if(i == pos) then 
+									menu.elements[i].selected = true
+								else
+									menu.elements[i].selected = false
+								end 
 							end 
+							if menu.elements[pos].description then 
+								if PauseMenu.CurrentColumndId then 
+								PauseMenu.SetDescription(PauseMenu.CurrentColumndId,menu.elements[pos].description,false)
+								end 
+							else 
+								if PauseMenu.CurrentColumndId then 
+								PauseMenu.SetDescription(PauseMenu.CurrentColumndId,"",false)
+								end 
+							end
+							NB_Pause_Menu.change(namespace, name, menu.elements[pos])
+							NB_Pause_Menu.Update();
 						end 
-						if menu.elements[pos].description then 
-							if PauseMenu.CurrentColumndId then 
-							PauseMenu.SetDescription(PauseMenu.CurrentColumndId,menu.elements[pos].description,false)
-							end 
-						else 
-							if PauseMenu.CurrentColumndId then 
-							PauseMenu.SetDescription(PauseMenu.CurrentColumndId,"",false)
-							end 
-						end
-						NB_Pause_Menu.change(namespace, name, menu.elements[pos])
-						NB_Pause_Menu.Update();
-					end 
+					end)
 				end)
 			end 
 		end  
@@ -239,12 +243,12 @@ NB_Pause_Menu.Update = function() -- DRAW FUNCTIONS
 			if columnid then 
 				if pos == #menudata.elements then 
 					if item.type == 'footer' then 
-					PauseMenu.SetOrUpdateNormalDataSlot(columnid, data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, data_idx, item.label, " " , 2, 1, (not PauseMenu.CurrentColumndId == nil), -1, -1, 0 , 0);
+					PauseMenu.SetOrUpdateNormalDataSlot(columnid, data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, data_idx, item.label, " " , 2, 1, (not (PauseMenu.CurrentColumndId == nil)));
 					else 
-					PauseMenu.SetOrUpdateNormalDataSlot(columnid, data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, data_idx, item.label, item.type == 'slider' and item.value or "" , item.type == 'slider' and 0 or 1, 4, (not PauseMenu.CurrentColumndId == nil), -1, -1, 0 , 0);
+					PauseMenu.SetOrUpdateNormalDataSlot(columnid, data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, data_idx, item.label, item.type == 'slider' and item.value or "" , item.type == 'slider' and 0 or 1, 4, (not (PauseMenu.CurrentColumndId == nil)));
 					end 
 				else 
-					PauseMenu.SetOrUpdateNormalDataSlot(columnid, data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, data_idx, item.label, item.type == 'slider' and item.value or "" , item.type == 'slider' and 0 or 1, 4, (not PauseMenu.CurrentColumndId == nil), -1, -1, 0 , 0);
+					PauseMenu.SetOrUpdateNormalDataSlot(columnid, data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, data_idx, item.label, item.type == 'slider' and item.value or "" , item.type == 'slider' and 0 or 1, 4, (not (PauseMenu.CurrentColumndId == nil)));
 				end 
 			end 
 		end 
