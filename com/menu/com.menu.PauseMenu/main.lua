@@ -29,28 +29,10 @@ NB.MenuFramework.AcceptedInput["PauseMenu"].input = function(input)
 	NB_Pause_Menu.GetCurrentFocusData(function(namespace,name,elementslength,menu,pos,itemdata)
 		switch (input) (
 			case ("MENU_WHEEL_UP") ( function()
-				if PauseMenu.SelectedItem and PauseMenu.SelectedItem.tunebar then 
-					PauseMenu.SelectedItem.tunebar = PauseMenu.SelectedItem.tunebar + 0.5
-					if PauseMenu.SelectedItem.tunebar > 100.0 then 
-						PauseMenu.SelectedItem.tunebar = 100.0
-					end 
-					PauseMenu.SetColorValue(7,string.format("%.2f",PauseMenu.SelectedItem.tunebar).."%","",PauseMenu.SelectedItem.tunebar,-1,-1,true);
-					PauseMenu.SelectedItem.value = PauseMenu.SelectedItem.tunebar
-
-					NB_Pause_Menu.Update();
-				end 
+				
 			end),
 			case ("MENU_WHEEL_DOWN") ( function()
-				if PauseMenu.SelectedItem and PauseMenu.SelectedItem.tunebar then 
-					PauseMenu.SelectedItem.tunebar = PauseMenu.SelectedItem.tunebar - 0.5
-					if PauseMenu.SelectedItem.tunebar < 0.0 then 
-						PauseMenu.SelectedItem.tunebar = 0.0
-					end 
-					PauseMenu.SetColorValue(7,string.format("%.2f",PauseMenu.SelectedItem.tunebar).."%","",PauseMenu.SelectedItem.tunebar,-1,-1,true);
-					PauseMenu.SelectedItem.value = PauseMenu.SelectedItem.tunebar
-
-					NB_Pause_Menu.Update();
-				end 
+				
 			end),
 			case ("MENU_SELECT","MENU_ENTER") (function()
 					NB_Pause_Menu.submit(namespace, name, itemdata);
@@ -64,7 +46,6 @@ NB.MenuFramework.AcceptedInput["PauseMenu"].input = function(input)
 			case ("MENU_LEFT") (function()
 				
 					if itemdata and itemdata.type and itemdata.type == "slider" then 
-						print(json.encode(itemdata.options))
 						local length = itemdata.options and #itemdata.options or 0 
 						itemdata.value = itemdata.value - 1
 						if itemdata.value == 0 then 
@@ -81,6 +62,7 @@ NB.MenuFramework.AcceptedInput["PauseMenu"].input = function(input)
 						end 
 						NB_Pause_Menu.change(namespace, name, itemdata)
 						NB_Pause_Menu.Update();
+
 					end
 			end),
 			case ("MENU_RIGHT") (function()
@@ -91,6 +73,7 @@ NB.MenuFramework.AcceptedInput["PauseMenu"].input = function(input)
 						if itemdata.value > length then 
 							itemdata.value = itemdata.value % length
 						end 
+						
 						if itemdata.description then 
 							if PauseMenu.CurrentColumndId then 
 							PauseMenu.SetDescription(PauseMenu.CurrentColumndId,itemdata.description,false)
@@ -102,6 +85,7 @@ NB.MenuFramework.AcceptedInput["PauseMenu"].input = function(input)
 						end
 						NB_Pause_Menu.change(namespace, name, itemdata)
 						NB_Pause_Menu.Update();
+						
 					end
 			end),
 			default (function()
@@ -138,9 +122,30 @@ local OpenLoop = function(Break)
 	
 	if IsDisabledControlPressed(2, 237) then
 		if PauseMenu.SelectedItem then 
-			
-			local c,d = PauseMenu.GetValueFromKeyboard2(true)
+			if PauseMenu.SelectedItem.tunecolor then  
+				local c,d = PauseMenu.GetValueFromKeyboard2(true)
+				if c and d then 
+					local percent = 0.0
+					for i=1,#PauseMenu.SelectedItem.options do 
+						percent = c
+						if percent > 100 then 
+							percent = 100
+						end 
+						if percent < 0.0 then 
+							percent = 0.0
+						end 
+						PauseMenu.SetColorData(7,i-1,table.unpack(PauseMenu.SelectedItem.options[i]))
+					end 
+					PauseMenu.SelectedItem.tunecolor = math.ceil(#PauseMenu.SelectedItem.options*0.01*percent)
+					if PauseMenu.SelectedItem.tunecolor <= 0 then PauseMenu.SelectedItem.tunecolor = 1 end 
+					if PauseMenu.SelectedItem.tunecolor > #PauseMenu.SelectedItem.options  then PauseMenu.SelectedItem.tunecolor = #PauseMenu.SelectedItem.options end 
+					PauseMenu.SelectedItem.value = PauseMenu.SelectedItem.tunecolor
+					NB_Pause_Menu.change(PauseMenu.SelectedItem._namespace, PauseMenu.SelectedItem._name, PauseMenu.SelectedItem)
+					NB_Pause_Menu.Update();
+				end 
+			end 
 			if PauseMenu.SelectedItem.tunebar then  
+				local c,d = PauseMenu.GetValueFromKeyboard2(true)
 				if c and d then 
 					PauseMenu.SelectedItem.tunebar = c
 					if PauseMenu.SelectedItem.tunebar > 100.0 then 
@@ -150,19 +155,31 @@ local OpenLoop = function(Break)
 						PauseMenu.SelectedItem.tunebar = 0.0
 					end 
 					PauseMenu.SetColorValue(7,string.format("%.2f",PauseMenu.SelectedItem.tunebar).."%","",PauseMenu.SelectedItem.tunebar,-1,-1,true);
-					PauseMenu.SelectedItem.value = PauseMenu.SelectedItem.tunebar
+					
+					if PauseMenu.SelectedItem.setter then 
+						if PauseMenu.SelectedItem.setter == "BAR" then 
+							PauseMenu.SelectedItem.getter.value = PauseMenu.SelectedItem.tunebar
+						end 
+					end 
 					NB_Pause_Menu.Update();
 				end 
 			end
 			if PauseMenu.SelectedItem.setter=="XY" then 
 				local a,b = PauseMenu.GetValueFromKeyboard(PauseMenu.SelectedItem.setter=="XY")
 				if a and b then 
-					PauseMenu.SelectedItem.tunedpos = {a,b}
+					PauseMenu.SelectedItem.tunedpos = vector3(a,b,0.0)
 					if PauseMenu.SelectedItem.tunedpos then 
 						--PauseMenu.ShowColumn(3,true);
 						
-						PauseMenu.SetXYData(3,0,PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION,0,"a","b","c","d",PauseMenu.SelectedItem.tunedpos[1],PauseMenu.SelectedItem.tunedpos[2],PauseMenu.SelectedItem.setter=="XY",PauseMenu.SelectedItem.tunedpos~=nil,false)
+						PauseMenu.SetXYData(3,0,PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION,0,"a","b","c","d",PauseMenu.SelectedItem.tunedpos.x,PauseMenu.SelectedItem.tunedpos.y,PauseMenu.SelectedItem.setter=="XY",PauseMenu.SelectedItem.tunedpos~=nil,false)
 						--PauseMenu.DisplayDataSlot(3);
+						if PauseMenu.SelectedItem.setter then 
+							if PauseMenu.SelectedItem.setter == "XY" or PauseMenu.SelectedItem.setter == "X" then 
+								PauseMenu.SelectedItem.getter.value = PauseMenu.SelectedItem.tunedpos
+								
+							end 
+						end 
+						NB_Pause_Menu.Update();
 					end 
 				end 
 			end 
@@ -183,6 +200,9 @@ NB_Pause_Menu.Open = function(namespace,name,data)
 		elseif data.elements[i].type == 'slider' then 
 			if not data.elements[i].options then data.elements[i].options = {} end 
 			data.elements[i].value = 1
+		end 
+		if data.elements[i].setter then 
+			if not data.elements[i].getter then data.elements[i].getter = {} end 
 		end 
 	end 
 	data._index     = #NB_Pause_Menu.focus;
@@ -324,7 +344,7 @@ NB_Pause_Menu.Update = function() -- DRAW FUNCTIONS
 								
 								selecteditem.tunedpos = vector3(50.0,50.0,0.0)
 							else 
-								PauseMenu.SetXYData(3,0,PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION,0,"a","b","c","d",selecteditem.tunedpos[1],selecteditem.tunedpos[2],selecteditem.setter=="XY",selecteditem.tunedpos~=nil,false)
+								PauseMenu.SetXYData(3,0,PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION,0,"a","b","c","d",selecteditem.tunedpos.x,selecteditem.tunedpos.y,selecteditem.setter=="XY",selecteditem.tunedpos~=nil,false)
 							end 
 							PauseMenu.DisplayDataSlot(3);
 						end 
@@ -336,8 +356,6 @@ NB_Pause_Menu.Update = function() -- DRAW FUNCTIONS
 								PauseMenu.ShowColumn(7,true);
 								
 								PauseMenu.DisplayDataSlot(7);
-								local aaa =math.random(1,50)+0.0
-								print(aaa)
 								PauseMenu.SetDataSlotEmpty(7);
 								PauseMenu.SetColorValue(7,"50.0%","",50.0,-1,-1,true);
 								
@@ -364,19 +382,16 @@ NB_Pause_Menu.Update = function() -- DRAW FUNCTIONS
 								PauseMenu.DisplayDataSlot(7);
 								PauseMenu.SetColorValue(7,"FACE_OPAC","FACE_COLOUR",-1.0,1,#selecteditem.options,true);
 								PauseMenu.SetColorLevel(7,0)
-								selecteditem.tunecolor = true 
-								
+								selecteditem.tunecolor = 1
 							else 
-								
 								for i=1,#selecteditem.options do 
 									
 									PauseMenu.SetColorData(7,i-1,table.unpack(selecteditem.options[i]))
-									
 								end 
 								PauseMenu.ShowColumn(7,true);
 								PauseMenu.DisplayDataSlot(7);
-								PauseMenu.SetColorValue(7,"FACE_OPAC","FACE_COLOUR",-1.0,tonumber(selecteditem.value),#selecteditem.options,true);
-								PauseMenu.SetColorLevel(7,tonumber(selecteditem.value)-1)
+								PauseMenu.SetColorValue(7,"FACE_OPAC","FACE_COLOUR",-1.0,tonumber(selecteditem.tunecolor),#selecteditem.options,true);
+								PauseMenu.SetColorLevel(7,tonumber(selecteditem.tunecolor)-1)
 							end 
 						end 
 						
