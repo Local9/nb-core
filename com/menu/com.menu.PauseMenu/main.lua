@@ -140,6 +140,12 @@ local OpenLoop = function(Break)
 					if PauseMenu.SelectedItem.tunecolor <= 0 then PauseMenu.SelectedItem.tunecolor = 1 end 
 					if PauseMenu.SelectedItem.tunecolor > #PauseMenu.SelectedItem.options  then PauseMenu.SelectedItem.tunecolor = #PauseMenu.SelectedItem.options end 
 					PauseMenu.SelectedItem.value = PauseMenu.SelectedItem.tunecolor
+					
+					if PauseMenu.SelectedItem.setter then 
+						if PauseMenu.SelectedItem.setter == "COLOR" or PauseMenu.SelectedItem.setter == "COLOUR"  then 
+							PauseMenu.SelectedItem.getter.value = PauseMenu.SelectedItem.tunecolor
+						end 
+					end 
 					NB_Pause_Menu.change(PauseMenu.SelectedItem._namespace, PauseMenu.SelectedItem._name, PauseMenu.SelectedItem)
 					NB_Pause_Menu.Update();
 				end 
