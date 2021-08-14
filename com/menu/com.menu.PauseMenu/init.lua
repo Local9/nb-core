@@ -292,6 +292,7 @@ function PauseMenu.SetOrUpdateNormalDataSlot(columnid, rowidx, menuid, uniqueid,
 end
 function PauseMenu.SetXYData(columnid, rowidx, menuid, uniqueid, labeltextY, labeltextX, labeltextNY, labeltextNX, inputX, inputY, isXY, update, unk)
 	local method = update and "UPDATE_SLOT" or "SET_DATA_SLOT";
+	
 	if start(method) then
 		send(columnid,rowidx, menuid, uniqueid, 0,0,1,labeltextY, labeltextX, labeltextNY, labeltextNX, inputX, inputY, isXY and 0 or 1, unk);
 	end

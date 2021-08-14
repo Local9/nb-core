@@ -108,6 +108,20 @@ local OpenLoop = function(Break)
 			end
 		end 
 	end  
+	if IsDisabledControlPressed(2, 237) then
+		local a,b = PauseMenu.GetValueFromKeyboard(PauseMenu.SelectedItem.setter=="XY")
+		if a and b then 
+			PauseMenu.SelectedItem.tunedpos = {a,b}
+			if PauseMenu.SelectedItem.tunedpos then 
+				--PauseMenu.ShowColumn(3,true);
+				PauseMenu.SetXYData(3,0,PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION,0,"a","b","c","d",PauseMenu.SelectedItem.tunedpos[1],PauseMenu.SelectedItem.tunedpos[2],PauseMenu.SelectedItem.setter=="XY",PauseMenu.SelectedItem.tunedpos~=nil,false)
+				--PauseMenu.DisplayDataSlot(3);
+			end 
+		end 
+	end 
+	
+	
+	
 	if #NB_Pause_Menu.focus<=0  then print('break') Break() end 
 end 
 		
@@ -231,6 +245,7 @@ NB_Pause_Menu.Update = function() -- DRAW FUNCTIONS
 			
 			
 			local selecteditem = menuData.elements[pos]
+			PauseMenu.SelectedItem = selecteditem
 			if selecteditem.description then 
 				if PauseMenu.CurrentColumndId then 
 				PauseMenu.SetDescription(PauseMenu.CurrentColumndId,selecteditem.description,false)
@@ -241,11 +256,7 @@ NB_Pause_Menu.Update = function() -- DRAW FUNCTIONS
 				end 
 			end
 			
-			if selecteditem.setter == "X" or selecteditem.setter == "XY" then 
-				
-			else 
-				
-			end 
+			
 			local data_idx = pos-1
 			local columnid = PauseMenu.CurrentColumndId
 			if columnid then
@@ -258,6 +269,23 @@ NB_Pause_Menu.Update = function() -- DRAW FUNCTIONS
 						end 
 					else 
 						PauseMenu.SetOrUpdateNormalDataSlot(columnid, data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, data_idx, selecteditem.label, selecteditem.type == 'slider' and selecteditem.value or "" , selecteditem.type == 'slider' and 0 or 1, 4, (not (PauseMenu.CurrentColumndId == nil)));
+					end 
+					
+					
+					if columnid == 1 then 
+						if selecteditem.setter == "X" or selecteditem.setter == "XY" then 
+							PauseMenu.SetDataSlotEmpty(3);
+							print('SetDataSlotEmpty')
+							PauseMenu.ShowColumn(3,true);
+							if not selecteditem.tunedpos then 
+								PauseMenu.SetXYData(3,0,PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION,0,"a","b","c","d",50.0,50.0,selecteditem.setter=="XY",selecteditem.tunedpos~=nil,false)
+								
+								selecteditem.tunedpos = vector3(50.0,50.0,0.0)
+							else 
+								PauseMenu.SetXYData(3,0,PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION,0,"a","b","c","d",selecteditem.tunedpos[1],selecteditem.tunedpos[2],selecteditem.setter=="XY",selecteditem.tunedpos~=nil,false)
+							end 
+							PauseMenu.DisplayDataSlot(3);
+						end 
 					end 
 				end 
 			end 
