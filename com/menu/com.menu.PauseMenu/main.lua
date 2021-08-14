@@ -29,28 +29,10 @@ NB.MenuFramework.AcceptedInput["PauseMenu"].input = function(input)
 	NB_Pause_Menu.GetCurrentFocusData(function(namespace,name,elementslength,menu,pos,itemdata)
 		switch (input) (
 			case ("MENU_WHEEL_UP") ( function()
-				if PauseMenu.SelectedItem and PauseMenu.SelectedItem.tunebar then 
-					PauseMenu.SelectedItem.tunebar = PauseMenu.SelectedItem.tunebar + 0.5
-					if PauseMenu.SelectedItem.tunebar > 100.0 then 
-						PauseMenu.SelectedItem.tunebar = 100.0
-					end 
-					PauseMenu.SetColorValue(7,string.format("%.2f",PauseMenu.SelectedItem.tunebar).."%","",PauseMenu.SelectedItem.tunebar,-1,-1,true);
-					PauseMenu.SelectedItem.value = PauseMenu.SelectedItem.tunebar
-
-					NB_Pause_Menu.Update();
-				end 
+				
 			end),
 			case ("MENU_WHEEL_DOWN") ( function()
-				if PauseMenu.SelectedItem and PauseMenu.SelectedItem.tunebar then 
-					PauseMenu.SelectedItem.tunebar = PauseMenu.SelectedItem.tunebar - 0.5
-					if PauseMenu.SelectedItem.tunebar < 0.0 then 
-						PauseMenu.SelectedItem.tunebar = 0.0
-					end 
-					PauseMenu.SetColorValue(7,string.format("%.2f",PauseMenu.SelectedItem.tunebar).."%","",PauseMenu.SelectedItem.tunebar,-1,-1,true);
-					PauseMenu.SelectedItem.value = PauseMenu.SelectedItem.tunebar
-
-					NB_Pause_Menu.Update();
-				end 
+				
 			end),
 			case ("MENU_SELECT","MENU_ENTER") (function()
 					NB_Pause_Menu.submit(namespace, name, itemdata);
