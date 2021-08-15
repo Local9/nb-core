@@ -10,12 +10,15 @@ function Select(souceid,...)
     TriggerClientEvent("CreateSelection",sourceid,...)
 end 
 
-
 function StartEvent(eventid,souceid)
     this.Event[eventid](souceid)
 end 
 
-AddEventHandler('nbk_events:StartEvent', function(eventid)
+AddEventHandler('nb-core:StartEvent', function(eventid)
 	local _source = source
 	StartEvent(eventid,_source)
+end)
+
+exports('StartEvent',function(eventid)
+    StartEvent(eventid)
 end)
