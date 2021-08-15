@@ -8,7 +8,7 @@ StringCopy = function(fromlabel) if IsStringNullOrEmpty(fromlabel) then return "
 GetHashString = StringCopy
 GetPauseMenuSelection = function() if N_0x2e22fefa0100275e() --[[IsSelectionUpdated]] then return GetPauseMenuSelectionData() end end
 IF = function(x,a,b) return x and a or b end 
-
+ratioX = function(x) x = (x * (1.777778 / GetAspectRatio(0)));return x; end
 
 NB = {
 	_CACHE_ = {},

@@ -360,7 +360,7 @@ function PauseMenu.SetColorLevel(Param0, Param1)
 	end
 end
 
-function PauseMenu.GetValueFromKeyboard(needY)
+function PauseMenu.GetValueFromKeyboard(needY,hasdescription)
 
 	local Var0;
 	local fVar1;
@@ -383,14 +383,14 @@ function PauseMenu.GetValueFromKeyboard(needY)
 	height = 0.14
 	minX = (Var0.x + ratioX(0.073));
 	width = ratioX(width);
-	minY = (Var0.y + 0.54);
+	minY = (Var0.y + 0.54 - (hasdescription and 0.0 or 0.042 ) );
 	maxX = (minX + width);
 	maxY = (minY + height);
 	nowX = (GetControlNormal(2, 239) + 0.005 );
 	nowY = GetControlNormal(2, 240);
 	
 	if (((nowX >= minX  and  nowX <= maxX)  and  nowY >= minY)  and  nowY <= maxY) then
-		--[=[
+		
 		SetScriptGfxDrawBehindPausemenu(true)
 		DrawRect(
 			minX+(maxX-minX)/2 --[[ number ]], 
@@ -403,7 +403,7 @@ function PauseMenu.GetValueFromKeyboard(needY)
 			255 --[[ integer ]]
 		)
 		SetScriptGfxDrawBehindPausemenu(false)
-		--]=]
+		
 		Var6 = (nowX - minX);
 		Var7 = (nowY - minY);
 		Var8 = ((Var6 / width) * 100 );
@@ -420,63 +420,110 @@ function PauseMenu.GetValueFromKeyboard(needY)
 end
 
 
-function PauseMenu.GetValueFromKeyboard2(needY)
+
+function PauseMenu.GetValueFromMouse(x)
+
+	local Var1;
+	
+	Var1 = 0;
+	Var1 = func_1559(0.5,x);
+	if Var1 == -1 then
+	
+		SetMouseCursorSprite(12);
+	
+	elseif Var1 == 1 then
+	
+		SetMouseCursorSprite(11);
+	else 
+		return 0
+	end
+	return Var1;
+	
+end
+
+function func_1559(Param1,nVar)
 
 	local Var0;
-	local fVar1;
-	local fVar2;
-	local fVar3;
-	local fVar4;
-	local fVar5;
-	local fVar6;
-	local fVar7;
-	local fVar8;
-	local fVar9;
-	local fVar10;
-	local fVar11;
+	local Var1;
+	local Var2;
+	local Var3;
+	local Var4;
 	local function ratioX(x)
 		x = (x * (1.777778 / GetAspectRatio(0)));
 		return x;
 	end
-	Var0 = GetPauseMenuCursorPosition() ;
-	width = 0.24 ;
-	height = 2.0
-	minX = (Var0.x + ratioX(0.073)) - 0.08;
-	width = ratioX(width);
-	minY = (Var0.y - 1.0);
-	maxX = (minX + width);
-	maxY = (minY + height);
-	nowX = (GetControlNormal(2, 239) + 0.005 );
-	nowY = GetControlNormal(2, 240);
+	Var0 =  GetPauseMenuCursorPosition() ;
+	Var1 = nVar or 0.225 ;
+
+	Var1 = ratioX(Var1);
+	Var2 = (Var0.x + Var1);
+	Var3 = GetControlNormal(2, 239);
+	Var4 = (Var2 - (Var1 * Param1));
+	if not GetIsWidescreen() then
 	
-	if (((nowX >= minX  and  nowX <= maxX)  and  nowY >= minY)  and  nowY <= maxY) then
-		--[=[
-		SetScriptGfxDrawBehindPausemenu(true)
-		DrawRect(
-			minX+(maxX-minX)/2 --[[ number ]], 
-			minY+(maxY-minY)/2 --[[ number ]], 
-			(maxX-minX) --[[ number ]], 
-			(maxY-minY) --[[ number ]], 
-			255 --[[ integer ]], 
-			255 --[[ integer ]], 
-			255 --[[ integer ]], 
-			255 --[[ integer ]]
-		)
-		SetScriptGfxDrawBehindPausemenu(false)
-		--]=]
-		Var6 = (nowX - minX);
-		Var7 = (nowY - minY);
-		Var8 = ((Var6 / width) * 100 );
+		Var1 = (Var1 * 1.33 );
+	end
+	if (Var3 >= Var0.x  and  Var3 <= Var2) then
+	
+		if Var3 >= Var4 then
 		
-		Var9 = (not needY and 50.0) or ((Var7 / 0.14 ) * 100 );
+			return 1;
 		
-		SetMouseCursorSprite(5);
-		if IsDisabledControlPressed(2, 237) then
-			return Var8,Var9;
-			
+		else
+		
+			return -1;
 		end
 	end
-	return nil,nil;
+	return 0;
+end
+function PauseMenu.SetMomDadData(Param0, Param1, Param2, Param3, Param4, Param5, Param6, Param7, Param8, Param9, update, Param11, Param12, Param13, Param14)
+
+	local method = update and "UPDATE_SLOT" or "SET_DATA_SLOT";
+	if BeginScaleformMovieMethodOnFrontend(method) then
+	
+		ScaleformMovieMethodAddParamInt(Param0);
+		ScaleformMovieMethodAddParamInt(Param1);
+		ScaleformMovieMethodAddParamInt(Param2);
+		ScaleformMovieMethodAddParamInt(Param3);
+		ScaleformMovieMethodAddParamInt(Param4);
+		ScaleformMovieMethodAddParamFloat(Param5);
+		ScaleformMovieMethodAddParamInt(IF(Param9, 1, 0));
+		ScaleformMovieMethodAddParamTextureNameString(Param6);
+		if not IsStringNullOrEmpty(Param7) then
+			ScaleformMovieMethodAddParamTextureNameString(Param7)
+		end
+		if Param4 == 1 then
+		
+			ScaleformMovieMethodAddParamInt(116);
+		
+		elseif Param4 == 0 then
+		
+			ScaleformMovieMethodAddParamTextureNameString("");
+			if (not IsStringNullOrEmpty(Param12)  and  not IsStringNullOrEmpty(Param14)) then
+			
+				ScaleformMovieMethodAddParamTextureNameString(Param14);
+				ScaleformMovieMethodAddParamTextureNameString(Param12);
+			
+			else
+			
+				ScaleformMovieMethodAddParamInt(0);
+			end
+			if (not IsStringNullOrEmpty(Param13)  and  not IsStringNullOrEmpty(Param14)) then
+			
+				ScaleformMovieMethodAddParamTextureNameString(Param14);
+				ScaleformMovieMethodAddParamTextureNameString(Param13);
+			
+			else
+			
+				ScaleformMovieMethodAddParamInt(0);
+			end
+		
+		else
+		
+			ScaleformMovieMethodAddParamBool(Param8);
+		end
+		EndScaleformMovieMethod();
+	end
 end
 
 end
