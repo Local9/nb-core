@@ -3,8 +3,12 @@ Learning making a framework for FiveM
 
 # to-do  
 [...](https://youtu.be/OjfZpTy6xqo)
+<<<<<<< HEAD
 [...](https://www.youtube.com/watch?v=2qrhqz01n8k&list=PLVDDl9QjMbTJvBwfc_UTQwFlUeMJhDum0)
 
+=======
+[...2](https://www.youtube.com/watch?v=2qrhqz01n8k&list=PLVDDl9QjMbTJvBwfc_UTQwFlUeMJhDum0)
+>>>>>>> 8373f858c856e839f3c9f74ea3395ef8538b9f41
 - [ ] Phone
 - [ ] Multi Character Creation
 - [ ] Choosing Spawn Positions
