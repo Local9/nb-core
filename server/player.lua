@@ -1,22 +1,5 @@
 NB["_LOCAL_"].thisPlayerId = -1
 
-AddEventHandler('playerConnecting', function(name, setKickReason, deferrals)
-	local playerId = NB.PlayerId(source)
-	TriggerEvent('NB:log','Player Connected',false,playerId)
-	
-	
-	if OnPlayerConnect then OnPlayerConnect(playerId, name, setKickReason, deferrals) end 
-end)
-
-AddEventHandler('playerDropped', function (reason)
-	local playerId = tonumber(source)
-	TriggerEvent('NB:log','Player Disconnected',false,playerId)
-	
-	
-	if OnPlayerDisconnect then OnPlayerDisconnect(playerId) end 
-	NB.ReleasePlayer()
-end)
-
 NB.GetPlayers = function(id)
 	return not id and NB.Players or NB.Players[id]
 end
@@ -57,11 +40,6 @@ NB.GetPlayerFromIdentifier = function(identifier)
 	end
 end
 
-NB.GetLicense = com.game.license.GetLicense
-
-NB.GetIdentifier = NB.GetLicense
-
-
 function CreatePlayer(playerId, license,citizenID)
 	local self = {}
 	self.playerId = playerId
@@ -93,8 +71,7 @@ function DB_IsUserExist(license)
 	local result = NB.Utils.Remote.mysql_scalar_sync('SELECT COUNT(*) as count FROM users WHERE license = @license', {
 		['@license'] = license
 	})
-	local r = not not (result > 0)
-	
+	local r = not not (result and result > 0)
 	return r
 end 
 
@@ -102,7 +79,7 @@ function DB_IsCharacterExist(citizenID)
 	local result = NB.Utils.Remote.mysql_scalar_sync('SELECT COUNT(*) as count FROM characters WHERE citizen_id = @citizen_id', {
 		['@citizen_id'] = citizenID
 	})
-	local r = not not (result > 0)
+	local r = not not (result and result > 0)
 	return r 
 end 
 
@@ -125,10 +102,10 @@ function DB_GetCharactersByLicense(license,idx)
 	end 
 end 
 
-RegisterNetEvent('NB:OnPlayerJoined', function() --called by com.game.session.default.lua/CreateThread
+RegisterNetEvent('NB:OnPlayerJoined', function() --called by com.game.session.spawn.lua/CreateThread
 	local playerdata,playerId = NB.PlayerData(source)
 	if not playerdata then
-		local license = com.game.license.GetLicense(playerId)
+		local license = com.game.Server.License.Get(playerId)
 		if license then 
 			if not DB_IsUserExist(license) then
 				
@@ -155,7 +132,7 @@ RegisterNetEvent('NB:OnPlayerJoined', function() --called by com.game.session.de
 end)
 
 NB.GetCheapCitizenData = function(citizenID,tablename,dataname)
-	return NB.GetCacheSomthing("CITIZEN",citizenID,tablename,dataname) or NB.GetExpensiveCitizenData(citizenID,tablename,dataname)
+	return NB.Cache.GetPropSlotValue("CITIZEN",citizenID,tablename,dataname) or NB.GetExpensiveCitizenData(citizenID,tablename,dataname)
 end 
 
 NB.GetExpensiveCitizenData = function(citizenID,tablename,dataname)
@@ -163,7 +140,7 @@ NB.GetExpensiveCitizenData = function(citizenID,tablename,dataname)
 		['@citizen_id'] = citizenID
 	})
 	local t = json.decodetable(result)
-	NB.SetCacheSomething("CITIZEN",citizenID,tablename,dataname,t)
+	NB.Cache.SetPropSlotValue("CITIZEN",citizenID,tablename,dataname,t)
 	return t 
 end 
 
@@ -175,7 +152,7 @@ NB.SaveAllCacheCitizenDataIntoMysql = function(citizenID)
 			if (forcedcitizenID and citizenidstr == citizenID) or (not forcedcitizenID) then 
 				for tablename,datanames in pairs(tablenames) do 
 					--for dataname,data in pairs(datanames) do 
-						if not NB.IsCacheSomthingExist(citizenidstr,tablename,"DontSaveToDatabase") then --dont save the table slots 
+						if not NB.Cache.IsPropValueExist("CITIZEN",citizenidstr,tablename,"DontSaveToDatabase") then --dont save the table slots 
 							local task = function(cb)
 									NB.SetExpensiveCitizenData(citizenidstr,tablename,datanames)
 									--print(citizenidstr,tablename,dataname,data)
@@ -205,9 +182,9 @@ end )
 
 NB.SetCheapCitizenData = function(citizenID,tablename,dataname,datas,dontSaveSql)
 	if dontSaveSql then 
-		NB.SetCacheSomething("CITIZEN",citizenID,tablename,"DontSaveToDatabase",true)
+		NB.Cache.SetPropSlotValue("CITIZEN",citizenID,tablename,"DontSaveToDatabase",true)
 	end 
-	NB.SetCacheSomething("CITIZEN",citizenID,tablename,dataname,datas)
+	NB.Cache.SetPropSlotValue("CITIZEN",citizenID,tablename,dataname,datas)
 end 
 
 NB.SetExpensiveCitizenData = function(citizenID,tablename,dataname,datas,...)

@@ -27,8 +27,9 @@ if IsClient() then
 		end)
 		return 
 	end)
-	AddEventHandler("NB:CancelDefaultSpawn",function()
+	
+	com.game.Client.Session.CancelDefaultSpawn = function()
 		DefaultSpawnCanceled = true
-	end )
+	end 
 end 
 

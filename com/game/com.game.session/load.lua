@@ -1,4 +1,4 @@
-LoadDataSheet = function(dataname,iskeys)
+com.game.Shared.Load.LoadDataSheet = function(dataname,iskeys)
 	local keys 
 	NB.Datas[dataname],keys = com.lua.utils.Csv.LoadDataSheet(dataname,iskeys)
 	--[=[
@@ -12,5 +12,3 @@ LoadDataSheet = function(dataname,iskeys)
 end 
 
 
-LoadDataSheet("items",true)
-LoadDataSheet("monster")

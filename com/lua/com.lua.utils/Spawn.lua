@@ -121,7 +121,9 @@ com.lua.utils.SpawnManager.Spawn = function(coords, heading, model,cb)
     FreezeEntityPosition(ped, false)
     --SetCharNeverTargetted(ped, false)
     SetPlayerInvincible(player, false)
-    TriggerEvent('playerSpawned')
+	if GetResourceState("spawnmanager") ~= "started" then 
+		TriggerEvent('playerSpawned')
+	end 
 	--local model = GetEntityModel(ped)
 	if model and model == `mp_m_freemode_01` or model == `mp_f_freemode_01` then 
 		SetPedDefaultComponentVariation(ped)

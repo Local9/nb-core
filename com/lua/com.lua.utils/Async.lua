@@ -1,4 +1,5 @@
-Async = {}
+
+local Async = {}
 com.lua.utils.Async = Async
 function Async.parallel(tasks, cb)
 	if #tasks == 0 then
@@ -14,8 +15,11 @@ function Async.parallel(tasks, cb)
 				remaining = remaining - 1;
 				if remaining == 0 then
 					if cb then cb(results) end 
+					return
 				end
+				return
 			end)
+			return 
 		end)
 	end
 end
@@ -44,10 +48,13 @@ function Async.parallelLimit(tasks, limit, cb)
 				running   = running - 1
 				if remaining == 0 then
 					if cb then cb(results) end 
+					return
 				end
+				return
 			end)
 		end
 		CreateThread(processQueue)
+		return 
 	end
 	processQueue()
 end

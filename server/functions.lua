@@ -1,3 +1,4 @@
+
 NB.RegisterServerCallback = ESX.RegisterServerCallback 
 
 NB.SendClientMessage = function(playerId, color, message)

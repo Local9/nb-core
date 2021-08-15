@@ -1,5 +1,9 @@
+
+
 Main(function()
 	print("NB-CORE INITIALISED")
+	NB.LoadDataSheet("items",false)
+	NB.LoadDataSheet("monster",false)
 
 end)
 
