@@ -106,6 +106,30 @@ NB.MenuFramework.AcceptedInput["PauseMenu"].input = function(input)
 							end 
 						end 
 					end 
+					if PauseMenu.CurrentColumndId == 4 then 
+						if PauseMenu.SelectedItem.setter == "POINTS" then 
+							local c = PauseMenu.GetValueFromMouse()
+							if c then 
+								local item = PauseMenu.SelectedItem
+								if item.tuneskill then 
+									item.tuningskill = true 
+									PauseMenu.SelectedItem.tuneskill = PauseMenu.SelectedItem.tuneskill + c
+									if PauseMenu.SelectedItem.tuneskill < 0 then PauseMenu.SelectedItem.tuneskill = 0.0 end 
+									if PauseMenu.SelectedItem.tuneskill > 100.0  then PauseMenu.SelectedItem.tuneskill = 100.0 end 
+									PauseMenu.SelectedItem.tuneskill = math.floor(PauseMenu.SelectedItem.tuneskill)
+									if PauseMenu.SelectedItem.setter then 
+										if PauseMenu.SelectedItem.setter == "POINTS" then 
+											PauseMenu.SelectedItem.getter.value = PauseMenu.SelectedItem.tuneskill
+										end 
+									end 
+									
+									NB_Pause_Menu.change(PauseMenu.SelectedItem._namespace, PauseMenu.SelectedItem._name, PauseMenu.SelectedItem)
+									NB_Pause_Menu.Update();
+								end 
+
+							end 
+						end 
+					end 
 					if PauseMenu.CurrentColumndId == 1 then 
 						if PauseMenu.SelectedItem.setter=="XY" or PauseMenu.SelectedItem.setter=="X" then 
 							local a,b = PauseMenu.GetValueFromKeyboard(PauseMenu.SelectedItem.setter=="XY",PauseMenu.SelectedItem.description~=nil)
@@ -276,7 +300,8 @@ local OpenLoop = function(Break)
 						end 
 					end 
 				end
-			end 			
+			end 	
+			
 		end 
 	else 
 		SetMouseCursorVisibleInMenus(false);
@@ -339,9 +364,13 @@ NB_Pause_Menu.Open = function(namespace,name,data)
 		columnid = 6
 	elseif data._style == "heritage" then 
 		columnid = 2	
-		
+	elseif data._style == "stats" then 	
+		columnid = 5
+	elseif data._style == "setpoints" then 	
+		columnid = 4
 	end 
 	PauseMenu.CurrentColumndId = columnid
+	
 	if columnid then --Build Menu 
 		if columnid == 0 or columnid == 1 or columnid == 6 then 
 			PauseMenu.SetDataSlotEmpty(columnid);
@@ -369,6 +398,58 @@ NB_Pause_Menu.Open = function(namespace,name,data)
 					PauseMenu.InitColumnScroll(columnid, 1, 1, 1, 0, 0)
 				end 
 			end 
+		end 
+		if columnid == 4 then 
+			PauseMenu.SetDataSlotEmpty(columnid);
+			PauseMenu.SetColumnTitle(columnid,data.title,data.description or "","");
+			local data_idx = 0
+			for i=1,#data.elements do 
+				local item = data.elements[i]
+				item.tuneskill = 0
+				item.tuningskill = false 
+				if i == #data.elements then 
+					if item.type == 'footer' then 
+						PauseMenu.SetSkillPointData(columnid, data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, data_idx, item.tuningskill and 1 or 0,item.label,tostring(item.tuneskill),116,item.tuneskill,0,item.setter ~= nil,(not (PauseMenu.CurrentColumndId == nil)))--, " " , 1, 50, 100,true,(not (PauseMenu.CurrentColumndId == nil)));
+					else 
+						PauseMenu.SetSkillPointData(columnid, data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, data_idx, item.tuningskill and 1 or 0,item.label,tostring(item.tuneskill),116,item.tuneskill,0,item.setter ~= nil,(not (PauseMenu.CurrentColumndId == nil)))--, " ",1, 50 100,true,(not (PauseMenu.CurrentColumndId == nil))); 
+					end 
+				else 
+					PauseMenu.SetSkillPointData(columnid, data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, data_idx, item.tuningskill and 1 or 0,item.label,tostring(item.tuneskill),120,item.tuneskill,0,item.setter ~= nil,(not (PauseMenu.CurrentColumndId == nil)))--, " ", 1, 50 100,true,(not (PauseMenu.CurrentColumndId == nil)));
+				end 
+				data_idx = data_idx + 1
+			end 
+			PauseMenu.DisplayDataSlot(columnid);
+			PauseMenu.SetColumnFocus(columnid, 1, 1);
+			PauseMenu.SetColumnCanJump(columnid, 1);
+			PauseMenu.SetCurrentColumn(columnid)
+			
+		end 
+		if columnid == 5 then 
+			PauseMenu.SetDataSlotEmpty(columnid);
+			
+			PauseMenu.SetColumnTitle2(columnid,data.title or "",data.description or "",116,65,data.menurightbottom or "",data.playercrew or "",-1,-1,22,255,255,255,255,"","")--,"RIGHTBOTTOM","(+#NEGBK","a","b",22,255,255,255,255,"","");
+			PauseMenu.SetSkillData0(columnid,0, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION,0,data.playerdescription or "",data.playername or "",data.playertag or "",data.playerlevel or 0,true,true,true,true)
+			
+			local value = 50.0
+			local data_idx = 1
+			for i=1,#data.elements do 
+				local item = data.elements[i]
+				if i == #data.elements then 
+					if item.type == 'footer' then 
+						PauseMenu.SetSkillData(columnid,data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION,item.label,item.description or "",item.value)
+					else 
+						PauseMenu.SetSkillData(columnid,data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION,item.label,item.description or "",item.value)
+					end 
+				else 
+					PauseMenu.SetSkillData(columnid,data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION,item.label,item.description or "",item.value)
+				end 
+				data_idx = data_idx + 1
+			end 
+			PauseMenu.DisplayDataSlot(columnid);
+			PauseMenu.SetColumnFocus(columnid, 1, 1);
+			PauseMenu.SetColumnCanJump(columnid, 1);
+			PauseMenu.SetCurrentColumn(columnid)
+			
 		end 
 		if columnid == 2 then 
 			
@@ -490,6 +571,7 @@ NB_Pause_Menu.Update = function() -- DRAW FUNCTIONS
 			
 			local data_idx = pos-1
 			local columnid = PauseMenu.CurrentColumndId
+			
 			if columnid then
 				if columnid == 0 or columnid == 1 or columnid == 6 then 
 					if pos == #menuData.elements then 
@@ -597,6 +679,14 @@ NB_Pause_Menu.Update = function() -- DRAW FUNCTIONS
 							PauseMenu.SetMomDadData(columnid, 0, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, 0, 0,0.0,"","",false,0,(not (PauseMenu.CurrentColumndId == nil)), -1, menuData.LastMother, menuData.LastFather, "CHAR_CREATOR_PORTRAITS");
 							PauseMenu.SetMomDadData(columnid, data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, data_idx, item.type == 'slider' and 2 or 1,item.tunelike or item.tuneskin or 0.0,item.label,NB.GetHashString(rlabel),true,1,(not (PauseMenu.CurrentColumndId == nil)), -1, 0, 0, 0);
 							
+						end 
+					end 
+				end 
+				if columnid == 4 then 
+					if selecteditem.setter == "POINTS" then 
+						local item = selecteditem
+						if item.tuneskill then 
+						   PauseMenu.SetSkillPointData(columnid, data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, data_idx, item.tuningskill and 1 or 0,item.label,tostring(item.tuneskill),120,item.tuneskill,0,not item.disable,(not (PauseMenu.CurrentColumndId == nil)))	
 						end 
 					end 
 				end 

@@ -275,6 +275,11 @@ function PauseMenu.SetColumnTitle(columnid, title, desc1, desc2)
 		send(columnid, title, desc1, desc2)
 	end
 end
+function PauseMenu.SetColumnTitle2(...)
+	if start("SET_COLUMN_TITLE") then
+		send(...)
+	end
+end
 function PauseMenu.SetCurrentColumn(columnid)
 	for i=0,7 do
 		PauseMenu.ShowColumn(i, false);
@@ -298,14 +303,15 @@ function PauseMenu.SetXYData(columnid, rowidx, menuid, uniqueid, labeltextY, lab
 	end
 end
 
-function PauseMenu.SetBarData(columnid, rowidx, menuid, uniqueid, int, str, rstr, color, nowvalue, maxvalue, editable, update)
+function PauseMenu.SetSkillPointData(columnid, rowidx, menuid, uniqueid, style, str, rstr, color, nowvalue, maxvalue, editable, update)
+	
 	local method = update and "UPDATE_SLOT" or "SET_DATA_SLOT";
 	if BeginScaleformMovieMethodOnFrontend(method) then
 		ScaleformMovieMethodAddParamInt(columnid);
 		ScaleformMovieMethodAddParamInt(rowidx);
 		ScaleformMovieMethodAddParamInt(menuid);
 		ScaleformMovieMethodAddParamInt(uniqueid);
-		ScaleformMovieMethodAddParamInt(int);
+		ScaleformMovieMethodAddParamInt(style);
 		ScaleformMovieMethodAddParamInt(0);
 		ScaleformMovieMethodAddParamInt(IF(editable, 1, 0));
 		ScaleformMovieMethodAddParamTextureNameString(str);
@@ -525,5 +531,52 @@ function PauseMenu.SetMomDadData(Param0, Param1, Param2, Param3, Param4, Param5,
 		EndScaleformMovieMethod();
 	end
 end
+function PauseMenu.SetSkillData0(columnid, rowidx, menuid, uniqueid,title,desc,header,level,bool1,bool2,bool3,bool4)
+	local method = "SET_DATA_SLOT"
+	if BeginScaleformMovieMethodOnFrontend(method) then
+		ScaleformMovieMethodAddParamInt(columnid);
+		ScaleformMovieMethodAddParamInt(rowidx);
+		ScaleformMovieMethodAddParamInt(menuid);
+		ScaleformMovieMethodAddParamInt(uniqueid);
+		ScaleformMovieMethodAddParamInt(0);
+		ScaleformMovieMethodAddParamInt(0);
+		ScaleformMovieMethodAddParamBool(bool1);
+		ScaleformMovieMethodAddParamBool(bool2);
+		ScaleformMovieMethodAddParamBool(bool3);
+		ScaleformMovieMethodAddParamBool(bool4);
+		ScaleformMovieMethodAddParamInt(level);
+		ScaleformMovieMethodAddParamTextureNameString(title);
+		ScaleformMovieMethodAddParamInt(0);
+		ScaleformMovieMethodAddParamInt(116);
+		ScaleformMovieMethodAddParamTextureNameString(desc);
+		ScaleformMovieMethodAddParamInt(0);
+		ScaleformMovieMethodAddParamInt(116);
+		ScaleformMovieMethodAddParamTextureNameString(header);
+		ScaleformMovieMethodAddParamInt(0);
+		ScaleformMovieMethodAddParamInt(116);
+		EndScaleformMovieMethod();
+	end
+end
+
+function PauseMenu.SetSkillData(Param0, Param1, Param2, Param3, Param4, Param5)
+
+	local method = "SET_DATA_SLOT";
+	if BeginScaleformMovieMethodOnFrontend(method) then
+	
+		ScaleformMovieMethodAddParamInt(Param0);
+		ScaleformMovieMethodAddParamInt(Param1);
+		ScaleformMovieMethodAddParamInt(Param2);
+		ScaleformMovieMethodAddParamInt(0);
+		ScaleformMovieMethodAddParamInt(0);
+		ScaleformMovieMethodAddParamInt(0);
+		ScaleformMovieMethodAddParamInt(1);
+		ScaleformMovieMethodAddParamTextureNameString(Param3);
+		ScaleformMovieMethodAddParamTextureNameString(Param4);
+		ScaleformMovieMethodAddParamInt(Param5);
+		EndScaleformMovieMethod();
+	end
+end
+
+
 
 end

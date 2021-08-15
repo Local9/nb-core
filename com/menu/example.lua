@@ -42,7 +42,6 @@ CreateThread(function()
 			function(data, menu)
 				print("result change",data.current.value)
 				--NB.Utils.Debug.DrawText("Change",data.current.value)
-				
 			end
 			,
 			function()
@@ -90,7 +89,6 @@ CreateThread(function()
 			function(data, menu)
 				print("result change",data.current.value)
 				--NB.Utils.Debug.DrawText("Change",data.current.value)
-				
 			end
 			,
 			function()
@@ -99,37 +97,27 @@ CreateThread(function()
 			end
 		)
 		--]=]
+		--heritage
+		--[=[
 		local elements = {}
-
 		local Mothers = {}
 		local Fathers = {}
-		
 		for i=0,GetNumParentPedsOfType(1)-1 do --female
 			--PauseMenu.SetColorData(7,i,GetPedHairRgbColor(i))
-			
 			table.insert(Mothers,("Female_"..i))
-			 
 		end 
-		
-
 		for i=0,GetNumParentPedsOfType(0)-1 do --female
 			--PauseMenu.SetColorData(7,i,GetPedHairRgbColor(i))
-			
 			table.insert(Fathers,("Male_"..i))
-			 
 		end 
-
 		for i=0,GetNumParentPedsOfType(4) do --female
 			--PauseMenu.SetColorData(7,i,GetPedHairRgbColor(i))
 			table.insert(Mothers,("Special_Female_"..i))
 		end 
-
-
 		for i=0,GetNumParentPedsOfType(3) do --female
 			--PauseMenu.SetColorData(7,i,GetPedHairRgbColor(i))
 			table.insert(Fathers,("Special_Male_"..i))
 		end 
-	
 		local Salle = {
 			{label="Apple",value="Apple"},
 			{label="选择mother",type="slider",options=Mothers,setter="Mother",description="select your mother"},
@@ -168,7 +156,6 @@ CreateThread(function()
 				print("result open",data.current.label,data.current.setter,data.current.getter.value)
 				end 
 				--NB.Utils.Debug.DrawText("Change",data.current.value)
-				
 			end
 			,
 			function()
@@ -176,6 +163,100 @@ CreateThread(function()
 				--NB.Utils.Debug.DrawText("Close")
 			end
 		)
+		--]=]
+		--[=[
+		local elements = {}
+		local HairColors = {}
+		for i=0,GetNumHairColors() do 
+			--PauseMenu.SetColorData(7,i,GetPedHairRgbColor(i))
+			table.insert(HairColors,{GetPedHairRgbColor(i)})
+		end 
+		local Salle = {
+			{label="Apple",description="desc Apple",value=80},
+			{label="Apple2",value=60},
+			{label="Apple3",value=50},
+			{label="Apple4",value=40}
+		}
+		NB.MenuFramework.CloseAll()
+		NB.MenuFramework.Open(
+			'PauseMenu', GetCurrentResourceName(), 'strip',
+			{
+				title  = 'Position Menu',
+				description = "MENU DESCRIPTION",
+				playerlevel = 34,
+				playertag = "player tag",
+				playername = GetPlayerName(PlayerId()),
+				playerdescription = "Good Player",
+				playercrew = "(+#CREW",
+				menurighttext = "menurighttext",
+				style = "stats", --default, scroll, scroll2
+				-- 0: list menu  |  1: link-pad rolling list menu  |  2:  bar menu 142561   | 3:  pad menu   | 4: skillpoint menu  | 5:skilldata menu | 6: link-color-list menu |  7:color menu 
+				elements = Salle
+			},
+			function(data, menu)
+				print("result open",data.current.value)
+				--menu.close()
+				--NB.Utils.Debug.DrawText("Open",data.current.value)
+			end,
+			function(data, menu)
+				print("result cancel")
+				--NB.Utils.Debug.DrawText("Cancel")
+				menu.close()
+			end
+			,
+			function(data, menu)
+				print("result change",data.current.value)
+				--NB.Utils.Debug.DrawText("Change",data.current.value)
+			end
+			,
+			function()
+				print("result close")
+				--NB.Utils.Debug.DrawText("Close")
+			end
+		)
+		--]=]
+		--scroll 
+		--[=[
+		local Salle = {
+			{label="Apple",value="Apple"},
+			{label="Apple123",value="Apple123",description="good health",setter="POINTS"},
+			{label="Apple123",value="Apple123",setter="POINTS"},
+			{label="Apple123",value="Apple123",setter="POINTS"},
+			{label="Apple123",value="Apple123",setter="POINTS"},
+			{label=GetLabelText("FACE_STATPT"),value="Save",type="footer"},
+		}
+		NB.MenuFramework.CloseAll()
+		NB.MenuFramework.Open(
+			'PauseMenu', GetCurrentResourceName(), 'strip',
+			{
+				title  = 'Position Menu',
+				description = "MENU DESCRIPTION",
+				style = "setpoints", --default, scroll, scroll2, stats, heritage, setpoints
+				-- 0: list menu  |  1: link-pad rolling list menu  |  2:  bar menu 142561   | 3:  pad menu   | 4: skillpoint menu  | 5:skilldata menu | 6: link-color-list menu |  7:color menu 
+				elements = Salle
+			},
+			function(data, menu)
+				print("result open",data.current.value)
+				--menu.close()
+				--NB.Utils.Debug.DrawText("Open",data.current.value)
+			end,
+			function(data, menu)
+				print("result cancel")
+				--NB.Utils.Debug.DrawText("Cancel")
+				menu.close()
+			end
+			,
+			function(data, menu)
+				print("result change",data.current.value)
+				--NB.Utils.Debug.DrawText("Change",data.current.value)
+			end
+			,
+			function()
+				print("result close")
+				--NB.Utils.Debug.DrawText("Close")
+			end
+		)
+		--]=]
+		
 	end)
-	
 end 
