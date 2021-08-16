@@ -1,3 +1,18 @@
+NB = {
+	_CACHE_ = {},
+	_LOCAL_ = {},
+	Cache={},
+	Datas={},
+	Players={},
+	Utils={},
+	Threads={}
+} 
+MAX_CHARACTER_SLOTS = 3
+MAX_WANTED_LEVEL = 0
+DEFAULT_SPAWN_METHOD = true
+DEFAULT_SPAWN_POSITION = {x =-802.311, y = 175.056, z = 72.8446, heading = 0.0}
+
+
 function IsServer() return IsDuplicityVersion() end ;function IsClient() return not IsDuplicityVersion() end ;function IsShared() return true end ;function Main (fn) return fn() end ;
 case = {} --cfx-switchcase by negbook https://github.com/negbook/cfx-switchcase/blob/main/cfx-switchcase.lua
 default = {} --default must put after cases when use
@@ -9,23 +24,9 @@ GetHashString = StringCopy
 GetPauseMenuSelection = function() if N_0x2e22fefa0100275e() --[[IsSelectionUpdated]] then return GetPauseMenuSelectionData() end end
 IF = function(x,a,b) return x and a or b end 
 ratioX = function(x) x = (x * (1.777778 / GetAspectRatio(0)));return x; end
-
-NB = {
-	_CACHE_ = {},
-	_LOCAL_ = {},
-	Cache={},
-	Datas={},
-	Players={},
-	Utils={},
-	Threads={}
-	
-}  
-exports('GetSharedObject',function()return NB end)
-
-MAX_CHARACTER_SLOTS = 3
-MAX_WANTED_LEVEL = 0
-DEFAULT_SPAWN_METHOD = true
-DEFAULT_SPAWN_POSITION = {x =-802.311, y = 175.056, z = 72.8446, heading = 0.0}
+export = exports; import = function(x,slot) NB[slot] = exports[x]:GetSharedObject();return NB[slot] end 
+export('GetSharedObject',function()return NB end)
 
 
+import('nb-menu','Menu')
 
