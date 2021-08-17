@@ -1,12 +1,14 @@
 NB = {
 	_CACHE_ = {},
 	_LOCAL_ = {},
+	_IMPORTED_ = {},
 	Cache={},
 	Datas={},
 	Players={},
 	Utils={},
 	Threads={}
 } 
+thisResourceName= GetCurrentResourceName() -- nb-core
 function IsServer() return IsDuplicityVersion() end ;function IsClient() return not IsDuplicityVersion() end ;function IsShared() return true end ;function Main (fn) return fn() end ;
 case = {} --cfx-switchcase by negbook https://github.com/negbook/cfx-switchcase/blob/main/cfx-switchcase.lua
 default = {} --default must put after cases when use
@@ -18,14 +20,9 @@ GetHashString = StringCopy
 GetPauseMenuSelection = function() if N_0x2e22fefa0100275e() --[[IsSelectionUpdated]] then return GetPauseMenuSelectionData() end end
 IF = function(x,a,b) return x and a or b end 
 ratioX = function(x) x = (x * (1.777778 / GetAspectRatio(0)));return x; end
-export = exports; import = function(x,slot) NB[slot] = exports[x]:GetSharedObject();return NB[slot] end 
-export('GetSharedObject',function()return NB end)
+export = exports; 
 
-
-
-
-
-import('nb-menu','Menu')
+export('GetSharedObject',function() return NB end)
 
 
 

@@ -42,6 +42,5 @@ dependencies {
 	'chat',
 	'ghmattimysql',
 	'connectqueue',
-	'skinchanger',
-	'nb-menu'
+	'skinchanger'
 }

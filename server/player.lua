@@ -102,6 +102,8 @@ function DB_GetCharactersByLicense(license,idx)
 	end 
 end 
 
+
+
 RegisterNetEvent('NB:OnPlayerJoined', function() --called by com.game.session.spawn.lua/CreateThread
 	local playerdata,playerId = NB.PlayerData(source)
 	if not playerdata then
