@@ -577,19 +577,5 @@ function PauseMenu.SetSkillData(Param0, Param1, Param2, Param3, Param4, Param5)
 	end
 end
 
-NBMenu = exports['nb-menu']:GetClientObject()
-RequestMenu = NBMenu.RequestMenu
-BeginMenuMethod = NBMenu.BeginMenuMethod
-MenuMethodAddParams = NBMenu.MenuMethodAddParams
-MenuMethodAddParamsDatas = NBMenu.MenuMethodAddParamsDatas
-MenuMethodAddButton = NBMenu.MenuMethodAddButton
-MenuMethodAddOption = NBMenu.MenuMethodAddOption
-MenuMethodAddCallback = NBMenu.MenuMethodAddCallback
-EndMenuMethod = NBMenu.EndMenuMethod
-EndMenuMethodReturn = NBMenu.EndMenuMethodReturn
-MenuMethodAddElements = NBMenu.MenuMethodAddElements
-SetMenuAsNoLongerNeeded = NBMenu.SetMenuAsNoLongerNeeded
-HasMenuLoaded = NBMenu.HasMenuLoaded
-OnMenuRenderUpdate = NBMenu.OnRenderUpdate
 
 end

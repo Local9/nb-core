@@ -1,3 +1,4 @@
+if IsClient() then 
 local menuHandle
 CreateThread(function()
 Wait(2000)
@@ -94,9 +95,14 @@ menuHandle = RequestMenu("DEFAULT","fishing1")
 		end 
 	end)
 	
+	NB.RegisterKeyEvent('test',function(input)
+		print(input)
+	end )
 	--SetMenuAsNoLongerNeeded(menuHandle)
 
 end)
+end 
+--[=[
 CreateThread(function()
 	function GetPos ()
 		local a,b,c = GetPauseMenuSelectionData()
@@ -119,4 +125,6 @@ CreateThread(function()
 		end 
 		
 	until false 
-end)
+end)--]=]
+
+
