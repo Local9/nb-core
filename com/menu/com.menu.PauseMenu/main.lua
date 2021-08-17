@@ -728,4 +728,64 @@ NB_Pause_Menu.change = function(namespace, name, data_)
 		menu.change(data, menu)
 	end
 end 
+
+CreateThread(function()
+	local elements = {
+	{label="Apple",value="Apple"},
+	{label="选择水果",type="slider",options={"apple","banana","orange"},description="select your favour"},
+	{label="Apple123",value="Apple123",description="good health",setter="X"},--scroll and selections > 7 
+	{label="Apple123",value="Apple123",setter="XY"},--scroll and selections > 7 
+	{label="Apple123",value="Apple123",setter="XY"},
+	{label="Apple123",value="Apple123",setter="XY"},
+	{label="保存",value="Save",type="footer"},
+}
+local menuHandle = RequestMenu("DEFAULT","fishing")
+	BeginMenuMethod(menuHandle,"SET_MENU_HEADER")
+		MenuMethodAddParams("title")
+		MenuMethodAddParams("description")
+	EndMenuMethod()
+	BeginMenuMethod(menuHandle,"SET_MENU_BUTTON")
+		MenuMethodAddElements(elements)
+		MenuMethodAddButton("apple5",123,"dd","rapple")
+		MenuMethodAddOption("apple"..math.random(0,99),{
+			{"apple","Red Color and taste good"},
+			{"banana","Become Smart,Become Clever"},
+			{"orange","Juicy and tasty"},
+			{"lame"}
+		})
+	EndMenuMethod()
+	BeginMenuMethod(menuHandle,"SET_MENU_CALLBACK")
+		MenuMethodAddCallback(function(result)
+			print("OnSubmit","value:"..result.current.value)
+		end)
+		MenuMethodAddCallback(function(result)
+			CloseMenu(menuHandle)
+			print("OnCancel","value:"..result.current.value)
+		end)
+		MenuMethodAddCallback(function(result)
+			print("OnChange","value:"..result.current.value)
+		end)
+		MenuMethodAddCallback(function()
+			print("OnClose")
+		end)
+	local menu = EndMenuMethodReturn()
+	
+	NBMenu.SetCurrentSlot(menuHandle,2)   -- switch to item 2
+	if NBMenu.IsCurrentSlotSlider(menuHandle) then  -- check item 2 if it is a slider 
+		NBMenu.SetCurrentItemSlot(menuHandle,2)   -- switch the slider into second slot
+		--print(NBMenu.GetCurrentItemSlot(menuHandle))  -- print the item slot index(value) 
+		NBMenu.ConvertCurrentItemForCallback(menuHandle,"Submit") -- push current item to go callback with type (Submit,Cancel,Change,Close)
+	end 
+	NBMenu.OnRenderUpdate(menuHandle,function(render)
+		print(render.title)
+		print(render.description)
+		for i=1,#render.slots do 
+			print(render.slots[i].type)
+			print(render.slots[i].ltext)
+			print(render.slots[i].rtext)
+			print(render.slots[i].description)
+		end 
+	end)
+
+end)
 end 
