@@ -10,5 +10,3 @@ NB.SpawnPlayerDefault = function()
 	end )
 	
 end 
-NB.Menu.RequestMenu('x','y')
-NB.Menu.BeginMenuMethod('hi')

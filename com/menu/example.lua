@@ -1,4 +1,5 @@
 if IsClient() then 
+
 CreateThread(function()
 	Wait(2000)
 		--scroll 

@@ -47,6 +47,7 @@ RegisterKeyboardCallback("MENU_DOWN","DOWN","",function()
 end )
 RegisterKeyboardCallback("MENU_LEFT","LEFT","",function()
 	TriggerAcceptedStyleMenuInput("MENU_LEFT")
+	
 end )
 RegisterKeyboardCallback("MENU_RIGHT","RIGHT","",function()
 	TriggerAcceptedStyleMenuInput("MENU_RIGHT")
