@@ -12,38 +12,39 @@ CreateThread(function()
 	{label="保存",value="Save",type="footer"},
 }
 
-menuHandle = RequestMenu("DEFAULT","ttest")
+menuHandle = RequestMenu('1asda','zxcasd',"DEFAULT","ttest")
 	repeat Wait(0) until HasMenuLoaded(menuHandle) 
-	BeginMenuMethod(menuHandle,"SET_MENU_HEADER")
-		MenuMethodAddParams("title")
-		MenuMethodAddParams("description")
-	EndMenuMethod()
-	BeginMenuMethod(menuHandle,"SET_MENU_BUTTON")
-		MenuMethodAddButton("apple5",123,"dd","rapple")
-		MenuMethodAddOption("apple"..math.random(0,99),{
+	NBMenu.SetMenuHeader(menuHandle,'1asda','zxcasd') 
+	NBMenu.SetMenuButtons(menuHandle,{
+		NBMenu.MenuMethodAddButton("apple5",123,"dd","rapple"),
+		NBMenu.MenuMethodAddSlider("apple"..math.random(0,99),{
 			{"apple","Red Color and taste good"},
 			{"banana","Become Smart,Become Clever"},
 			{"orange","Juicy and tasty"},
 			{"lame"}
-		})
-		MenuMethodAddElements(elements)
-	EndMenuMethod()
-	BeginMenuMethod(menuHandle,"SET_MENU_CALLBACK")
-		MenuMethodAddCallback(function(result)
+		}),
+		NBMenu.MenuMethodAddElements(elements)
+	
+	}) 
+	NBMenu.SetMenuCallbacks(menuHandle,{
+		function(result)
 			print("OnSubmit","value:"..result.current.value)
-		end)
-		MenuMethodAddCallback(function(result)
-			--CloseMenu(menuHandle)
+		end,
+		function(result)
+			CloseMenu(menuHandle)
 			print("OnCancel","value:"..result.current.value)
-		end)
-		MenuMethodAddCallback(function(result)
+		end,
+		function(result)
 			print("OnChange","value:"..result.current.value)
-		end)
-		MenuMethodAddCallback(function()
+		end,
+		function()
 			print("OnClose")
-		end)
-	local menu = EndMenuMethodReturn()
+		end
+	
+	})
+
 	PauseMenu.StartPauseMenu(PauseMenu.versionid.FE_MENU_VERSION_MP_CHARACTER_CREATION)
+	
 	NBMenu.OnRenderUpdate(menuHandle,function(render,isUpdate)
 		if render then 
 			--[=[

@@ -1,9 +1,5 @@
 if IsClient() then 
 
-local SetSelection = function(handle,pos) 
-	if not NBMenu.HasMenuLoaded(handle) then error("No such menu Loaded.",2) end 
-	NBMenu.SetProp("CurrentSelection",handle,pos) 
-end 
 local GetSelection = function(handle) 
 	if not NBMenu.HasMenuLoaded(handle) then error("No such menu Loaded.",2) end 
 	return NBMenu.GetProp("CurrentSelection",handle) 
@@ -11,13 +7,18 @@ end
 
 
 --bridge
-NBMenu.SetCurrentSlot = SetSelection
+NBMenu.SetCurrentSlot = function(handle,pos) 
+	if not NBMenu.HasMenuLoaded(handle) then error("No such menu Loaded.",2) end 
+	NBMenu.SetProp("CurrentSelection",handle,pos) 
+end 
+
 NBMenu.GetCurrentSlot = GetSelection
 
 NBMenu.IsCurrentSlotSlider = function(handle)
 	if not NBMenu.HasMenuLoaded(handle) then error("No such menu Loaded.",2) end 
 	local buttons = NBMenu.GetProp("Handles",handle,"menu","metadata","buttons")
-	return buttons[NBMenu.GetCurrentSlot(handle)].type == 'slider'
+	
+	return NBMenu.GetCurrentSlot(handle) and buttons[NBMenu.GetCurrentSlot(handle)].type == 'slider'
 end 
 
 local SetItemSelection = function(handle,pos) 
@@ -83,61 +84,24 @@ NBMenu.ConvertCurrentItemForCallback = function(handle,cbtype) -- "Submit","Canc
 	if cb then cb(convertedData) end 
 end 
 
-
-NBMenu.SetMethods = function(handle,methods,returntype)
+NBMenu.SetMenuCallbacks = function(handle,callbacks)
 	if not NBMenu.HasMenuLoaded(handle) then error("No such menu Loaded.",2) end 
 	local menu = NBMenu.GetProp("Handles",handle,"menu")
-	switch(NBMenu.GetProp("CurrentMethod"))(
-		case ("SET_MENU_HEADER")(function()
-			menu.metadata.title = methods[1]
-			menu.metadata.description = methods[2]
-			menu.metadata.others = methods[3]
-			NBMenu.OnRenderUpdate(handle)
-		end),
-		case ("SET_MENU_BUTTON")(function()
-			menu.metadata.buttons = methods
-			for i,v in pairs(menu.metadata.buttons) do 
-				NBMenu.SetProp("Handles",handle,"menu","metadata","buttonpos",i,1)
-			end 
-			NBMenu.OnRenderUpdate(handle)
-		end),
-		case ("SET_MENU_CALLBACK")(function()
-			menu.callback = {
-				onSubmit = methods[1],
-				onCancel = methods[2],
-				onChange = methods[3],
-				onClose = methods[4]
-			}
-			NBMenu.OnRenderUpdate(handle)
-		end),
-		default(function()
-			error("Something wrong without BeginMenuMethod?",2)
-		end)
-	)
-	NBMenu.ClearProp("CurrentMethod")
-	SetSelection(handle,1)
-	if returntype == 0 then return nil end 
-	if returntype == 1 then return menu end 
-	if returntype == 2 then return menu.metadata end 
-	if returntype == 3 then return menu.callback end 
-	return nil 
-end 
-NBMenu.EndMenuMethod = function(x) 
-	local result
-	if NBMenu.GetProp("CurrentMethod") then 
-		result = NBMenu.SetMethods(NBMenu.GetProp("CurrentHandle"),NBMenu._TEMP_.METHODS,x or 0) ; NBMenu._TEMP_.METHODS={} 
-	else 
-		error("Something wrong without BeginMenuMethod?",2)
-	end 
-	return result
+	menu.callback = {
+		onSubmit = callbacks[1],
+		onCancel = callbacks[2],
+		onChange = callbacks[3],
+		onClose = callbacks[4]
+	}
 end 
 
-NBMenu.RequestMenu = function(menutype,name)
+
+NBMenu.RequestMenu = function(title,description,menutype,name)
 	local r = NBMenu.NextIndex
 	if not (NBMenu.IsPropExist("Menus",menutype,name)) then 
 		NBMenu.SetProp("Handles",NBMenu.NextIndex,"menu","menutype",menutype)
 		NBMenu.SetProp("Handles",NBMenu.NextIndex,"menu","name",name)
-		NBMenu.SetProp("Handles",NBMenu.NextIndex,"menu",'metadata',{})
+		NBMenu.SetProp("Handles",NBMenu.NextIndex,"menu",'metadata',{title=title,description=description})
 		NBMenu.SetProp("Handles",NBMenu.NextIndex,"menu",'callback',{})
 		NBMenu.SetProp("Menus",menutype,name,NBMenu.NextIndex)
 		
@@ -147,7 +111,25 @@ NBMenu.RequestMenu = function(menutype,name)
 	end 
 	return r
 end 
-
+NBMenu.SetMenuHeader = function(handle,title,description)
+	if not NBMenu.HasMenuLoaded(handle) then error("No such menu Loaded.",2) end 
+	local menu = NBMenu.GetProp("Handles",handle,"menu")
+	
+	menu.metadata.title = title
+	menu.metadata.description = description
+	
+	NBMenu.OnRenderUpdate(handle)
+end 
+NBMenu.SetMenuButtons = function(handle,buttons)
+	if not NBMenu.HasMenuLoaded(handle) then error("No such menu Loaded.",2) end 
+	local menu = NBMenu.GetProp("Handles",handle,"menu")
+	menu.metadata.buttons = buttons
+	for i,v in pairs(menu.metadata.buttons) do 
+		NBMenu.SetProp("Handles",handle,"menu","metadata","buttonpos",i,1)
+	end 
+	
+	NBMenu.OnRenderUpdate(handle)
+end 
 local start = BeginScaleformMovieMethodOnFrontend
 local send = function (...)
     local tb = {...}
@@ -184,11 +166,6 @@ NBMenu.SetMenuAsNoLongerNeeded = function(handle)
 	NBMenu.ClearProp("AcceptedInput",menutype,name)
 end 
  
-NBMenu.BeginMenuMethod = function(handle,method)
-	if not NBMenu.HasMenuLoaded(handle) then error("No such menu Loaded.",2) end 
-	NBMenu.SetProp("CurrentMethod",method)
-	NBMenu.SetProp("CurrentHandle",handle)
-end
 
 NBMenu.MenuMethodAddParams = function(str)
 	if NBMenu.GetProp("CurrentMethod") then 
@@ -199,48 +176,37 @@ NBMenu.MenuMethodAddParams = function(str)
 end
 
 NBMenu.MenuMethodAddButton = function(label,params2,description,rtext)
-	if NBMenu.GetProp("CurrentMethod") then 
-		if type(params2) == 'table'then 
-			local endparams2 = {}
-			for i,v in pairs(params2) do 
-				if not endparams2[i] then endparams2[i] = {} end 
-				if params2[i][1]  then endparams2[i].label = params2[i][1]  end 
-				if params2[i][2]  then endparams2[i].description = params2[i][2] end 
-			end 
-			table.insert(NBMenu._TEMP_.METHODS,{type="slider",label=label,options=endparams2}) 
-		else 
-			local value = params2
-			table.insert(NBMenu._TEMP_.METHODS,{type="default",label=label,value=value,description=description,rtext=rtext}) 
+	if type(params2) == 'table'then 
+		local endparams2 = {}
+		for i,v in pairs(params2) do 
+			if not endparams2[i] then endparams2[i] = {} end 
+			if params2[i][1]  then endparams2[i].label = params2[i][1]  end 
+			if params2[i][2]  then endparams2[i].description = params2[i][2] end 
 		end 
+		return {type="slider",label=label,options=endparams2}
 	else 
-		error("Something wrong without BeginMenuMethod?",2)
+		local value = params2
+		return {type="default",label=label,value=value,description=description,rtext=rtext}
 	end 
 end
 NBMenu.MenuMethodAddElements = function(elements)
-	if NBMenu.GetProp("CurrentMethod") then 
-		for i,v in pairs(elements) do 
-			if v.type == nil then 
-				v.type = 'default'
-			end 
-			if v.options then 
-				if v.options[1] then 
-					for k,c in pairs(v.options) do 
-						v.options[k] = {label = v.options[k]}
-					end 
+	local tbl = {}
+	for i,v in pairs(elements) do 
+		if v.type == nil then 
+			v.type = 'default'
+		end 
+		if v.options then 
+			if v.options[1] then 
+				for k,c in pairs(v.options) do 
+					v.options[k] = {label = v.options[k]}
 				end 
 			end 
-			table.insert(NBMenu._TEMP_.METHODS,v) 
 		end 
-	else 
-		error("Something wrong without BeginMenuMethod?",2)
-	end 
+		table.insert(tbl,v)
+	end
+	return table.unpack(tbl)
 end 
 --shadows
-NBMenu.EndMenuMethodReturn = function() return NBMenu.EndMenuMethod(1) end 
-NBMenu.MenuMethodAddCallback = NBMenu.MenuMethodAddParams
-NBMenu.MenuMethodAddParamsDatas = NBMenu.MenuMethodAddParams
-NBMenu.MenuMethodAddOption = NBMenu.MenuMethodAddButton
-NBMenu.EndMenuMethodReturnAny = NBMenu.EndMenuMethodReturn
 
 
 
@@ -296,7 +262,8 @@ BeginMenuMethod = NBMenu.BeginMenuMethod
 MenuMethodAddParams = NBMenu.MenuMethodAddParams
 MenuMethodAddParamsDatas = NBMenu.MenuMethodAddParamsDatas
 MenuMethodAddButton = NBMenu.MenuMethodAddButton
-MenuMethodAddOption = NBMenu.MenuMethodAddOption
+NBMenu.MenuMethodAddSlider = NBMenu.MenuMethodAddButton
+MenuMethodAddSlider = NBMenu.MenuMethodAddSlider
 MenuMethodAddCallback = NBMenu.MenuMethodAddCallback
 EndMenuMethod = NBMenu.EndMenuMethod
 EndMenuMethodReturn = NBMenu.EndMenuMethodReturn

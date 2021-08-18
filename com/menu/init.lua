@@ -14,7 +14,4 @@ NBMenu.NextIndex = 1
 NBMenu._TEMP_ = {METHODS={}}
 NBMenu.RegisteredInput = {}
 NBMenu.Methods = {}
-
-com.menu.ESXMenuFramework = NBMenu --ESX.UI.Menu
-
 end 
