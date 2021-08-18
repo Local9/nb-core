@@ -14,6 +14,7 @@ if IsClient() then
 			},
 			function(result)
 				print("OnSubmit","value:"..result.current.value)
+				print(json.encode(result))
 			end,
 			function(result)
 				--CloseMenu(menuHandle)

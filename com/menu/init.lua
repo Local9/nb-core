@@ -4,6 +4,7 @@ com.menu = {Client={},Server={},Shared={}}
 com.menu.ESXMenuFramework = {}
 com.menu.type = {}
 NBMenu = {}
+com.menu.ESXMenuFramework = NBMenu
 NBMenu.ClearProp = function(...) return com.lua.utils.Table.ClearTableSomething(NBMenu,...) end
 NBMenu.SetProp = function(...) return com.lua.utils.Table.SetTableSomething(NBMenu,...) end
 NBMenu.IsPropExist = function(...) return com.lua.utils.Table.IsTableSomthingExist(NBMenu,...) end 
@@ -17,6 +18,14 @@ NBMenu.RegisteredInput = {}
 NBMenu.SetCurrentSlot = function(handle,pos) 
 	if not NBMenu.HasMenuLoaded(handle) then error("No such menu Loaded.",2) end 
 	NBMenu.SetProp("CurrentSelection",handle,pos) 
+	local buttons = NBMenu.GetProp("Handles",handle,"menu","metadata","buttons")
+	for i,v in pairs(buttons) do 
+		if i~=pos then 
+			v.selected = false 
+		else 
+			v.selected = true 
+		end 
+	end 
 end 
 
 NBMenu.GetCurrentSlot = function(handle) 
@@ -24,10 +33,19 @@ NBMenu.GetCurrentSlot = function(handle)
 	return NBMenu.GetProp("CurrentSelection",handle) 
 end 
 
+NBMenu.SetItemProp = function(handle,itemindex,propname,propvalue)
+	if not NBMenu.HasMenuLoaded(handle) then error("No such menu Loaded.",2) end 
+	NBMenu.SetProp("Handles",handle,"menu","metadata","buttons",itemindex,propname,propvalue)
+end 
+
+NBMenu.GetItemProp = function(handle,itemindex,propname,propvalue)
+	if not NBMenu.HasMenuLoaded(handle) then error("No such menu Loaded.",2) end 
+	NBMenu.GetProp("Handles",handle,"menu","metadata","buttons",itemindex,propname)
+end 
+
 NBMenu.IsCurrentSlotSlider = function(handle)
 	if not NBMenu.HasMenuLoaded(handle) then error("No such menu Loaded.",2) end 
 	local buttons = NBMenu.GetProp("Handles",handle,"menu","metadata","buttons")
-	
 	return NBMenu.GetCurrentSlot(handle) and buttons[NBMenu.GetCurrentSlot(handle)].type == 'slider'
 end 
 
@@ -45,6 +63,7 @@ NBMenu.SetCurrentItemSlot = function(handle,pos)
 	NBMenu.SetProp("ItemSubjectSelection",handle,NBMenu.GetCurrentSlot(handle),"pos",pos) 
 	NBMenu.OnRenderUpdate(handle)
 end 
+
 NBMenu.GetCurrentItemSlot = function(handle) 
 	if not NBMenu.HasMenuLoaded(handle) then error("No such menu Loaded.",2) end 
 	if not NBMenu.IsCurrentSlotSlider(handle) then return print("This item is not a slider object") end  
@@ -54,6 +73,7 @@ NBMenu.GetCurrentItemSlot = function(handle)
 	end 
 	return NBMenu.GetProp("ItemSubjectSelection",handle,NBMenu.GetCurrentSlot(handle),"pos") 
 end 
+
 NBMenu.GetItemSlotPos = function(handle,itemindex)
 	return NBMenu.GetProp("ItemSubjectSelection",handle,itemindex,"pos") --NBMenu.GetProp("Handles",handle,"menu","metadata","buttonpos",itemindex)
 end 
@@ -63,8 +83,8 @@ NBMenu.TriggerMenuCallback = function(handle,cbtype) -- "Submit","Cancel","Chang
 	local menu = NBMenu.GetProp("Handles",handle,"menu")
 	local selecteditem = menu.metadata.buttons[NBMenu.GetCurrentSlot(handle)]
 	local callback = menu.callback 
-	local convertedData = {current={}}
-	
+	local convertedData = deepcopy(menu.metadata.buttons) --editing convertedData will be effected the menu.metadata.buttons if not deepcopy
+	if not convertedData.current then convertedData.current = {} end 
 	if NBMenu.IsCurrentSlotSlider(handle) then 
 		convertedData.current = selecteditem.options[NBMenu.GetCurrentItemSlot(handle)]
 		convertedData.current.value = NBMenu.GetCurrentItemSlot(handle) or 1
@@ -73,6 +93,7 @@ NBMenu.TriggerMenuCallback = function(handle,cbtype) -- "Submit","Cancel","Chang
 		if selecteditem.value == nil then convertedData.current.value = selecteditem.label end 
 	end 
 	convertedData.menuHandle = handle
+	convertedData.index = NBMenu.GetCurrentSlot(handle)
 	switch(cbtype)(
 		case("Submit")(function()
 			cb = callback.onSubmit
@@ -119,6 +140,7 @@ NBMenu.SetMenuButtons = function(handle,buttons)
 	for i,v in pairs(menu.metadata.buttons) do 
 		--NBMenu.SetProp("Handles",handle,"menu","metadata","buttonpos",i,1)
 		NBMenu.SetProp("ItemSubjectSelection",handle,i,"pos",1)
+		v.selected = false 
 	end 
 	NBMenu.OnRenderUpdate(handle)
 end 
