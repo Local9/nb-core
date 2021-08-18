@@ -14,7 +14,7 @@ CreateThread(function()
 
 menuHandle = RequestMenu('1asda','zxcasd',"DEFAULT","ttest")
 	repeat Wait(0) until HasMenuLoaded(menuHandle) 
-	NBMenu.SetMenuHeader(menuHandle,'1asda','zxcasd') 
+	--NBMenu.UpdateMenuHeader(menuHandle,'1asda','zxcasd') 
 	NBMenu.SetMenuButtons(menuHandle,{
 		NBMenu.MenuMethodAddButton("apple5",123,"dd","rapple"),
 		NBMenu.MenuMethodAddSlider("apple"..math.random(0,99),{

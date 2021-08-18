@@ -88,8 +88,25 @@ NBMenu.SetMenuCallbacks = function(handle,callbacks)
 		onClose = callbacks[4]
 	}
 end 
-
-
+NBMenu.UpdateMenuCallbacks = NBMenu.SetMenuCallbacks
+NBMenu.SetMenuHeader = function(handle,title,description)
+	if not NBMenu.HasMenuLoaded(handle) then error("No such menu Loaded.",2) end 
+	local menu = NBMenu.GetProp("Handles",handle,"menu")
+	menu.metadata.title = title
+	menu.metadata.description = description
+	NBMenu.OnRenderUpdate(handle)
+end 
+NBMenu.UpdateMenuHeader = NBMenu.SetMenuHeader
+NBMenu.SetMenuButtons = function(handle,buttons)
+	if not NBMenu.HasMenuLoaded(handle) then error("No such menu Loaded.",2) end 
+	local menu = NBMenu.GetProp("Handles",handle,"menu")
+	menu.metadata.buttons = buttons
+	for i,v in pairs(menu.metadata.buttons) do 
+		NBMenu.SetProp("Handles",handle,"menu","metadata","buttonpos",i,1)
+	end 
+	NBMenu.OnRenderUpdate(handle)
+end 
+NBMenu.UpdateMenuButtons = NBMenu.SetMenuButtons
 NBMenu.RequestMenu = function(title,description,menutype,name)
 	local r = NBMenu.NextIndex
 	if not (NBMenu.IsPropExist("Menus",menutype,name)) then 
@@ -105,25 +122,7 @@ NBMenu.RequestMenu = function(title,description,menutype,name)
 	end 
 	return r
 end 
-NBMenu.SetMenuHeader = function(handle,title,description)
-	if not NBMenu.HasMenuLoaded(handle) then error("No such menu Loaded.",2) end 
-	local menu = NBMenu.GetProp("Handles",handle,"menu")
-	
-	menu.metadata.title = title
-	menu.metadata.description = description
-	
-	NBMenu.OnRenderUpdate(handle)
-end 
-NBMenu.SetMenuButtons = function(handle,buttons)
-	if not NBMenu.HasMenuLoaded(handle) then error("No such menu Loaded.",2) end 
-	local menu = NBMenu.GetProp("Handles",handle,"menu")
-	menu.metadata.buttons = buttons
-	for i,v in pairs(menu.metadata.buttons) do 
-		NBMenu.SetProp("Handles",handle,"menu","metadata","buttonpos",i,1)
-	end 
-	
-	NBMenu.OnRenderUpdate(handle)
-end 
+
 local start = BeginScaleformMovieMethodOnFrontend
 local send = function (...)
     local tb = {...}
