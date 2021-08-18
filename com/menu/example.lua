@@ -12,8 +12,8 @@ CreateThread(function()
 	{label="保存",value="Save",type="footer"},
 }
 
-menuHandle = RequestMenu('1asda','zxcasd',"DEFAULT","ttest")
-	repeat Wait(0) until HasMenuLoaded(menuHandle) 
+menuHandle = NBMenu.RequestMenu('1asda','zxcasd',"DEFAULT","ttest")
+	repeat Wait(0) until NBMenu.HasMenuLoaded(menuHandle) 
 	--NBMenu.UpdateMenuHeader(menuHandle,'1asda','zxcasd') 
 	NBMenu.SetMenuButtons(menuHandle,{
 		NBMenu.MenuMethodAddButton("apple5",123,"dd","rapple"),
@@ -103,56 +103,56 @@ end)
 NB.RegisterKeyEvent('test',function(input)
 	switch(input)(
 		case("MENU_LEFT")(function()
-			if HasMenuLoaded(menuHandle) then
+			if NBMenu.HasMenuLoaded(menuHandle) then
 				NBMenu.SetCurrentSlot(menuHandle,GetPos ())
 				print('left',NBMenu.IsCurrentSlotSlider(menuHandle),NBMenu.GetCurrentItemSlot(menuHandle) )
 				if NBMenu.IsCurrentSlotSlider(menuHandle) then
 					NBMenu.SetCurrentItemSlot(menuHandle,NBMenu.GetCurrentItemSlot(menuHandle)-1)
-					NBMenu.ConvertCurrentItemForCallback(menuHandle,"Change")
+					NBMenu.TriggerMenuCallback(menuHandle,"Change")
 				end 
 			end 
 		end),
 		case("MENU_RIGHT")(function()
-			if HasMenuLoaded(menuHandle) then
+			if NBMenu.HasMenuLoaded(menuHandle) then
 				NBMenu.SetCurrentSlot(menuHandle,GetPos ())
 				if NBMenu.IsCurrentSlotSlider(menuHandle) then
 					NBMenu.SetCurrentItemSlot(menuHandle,NBMenu.GetCurrentItemSlot(menuHandle)+1)
-					NBMenu.ConvertCurrentItemForCallback(menuHandle,"Change")
+					NBMenu.TriggerMenuCallback(menuHandle,"Change")
 				end 
 			end 
 		end),
 		case("MENU_UP")(function()
-			if HasMenuLoaded(menuHandle) then
+			if NBMenu.HasMenuLoaded(menuHandle) then
 				NBMenu.SetCurrentSlot(menuHandle,GetPos ())
 				if NBMenu.IsCurrentSlotSlider(menuHandle) then
-					NBMenu.ConvertCurrentItemForCallback(menuHandle,"Change")
+					NBMenu.TriggerMenuCallback(menuHandle,"Change")
 				end 
 			end 
 		end),
 		case("MENU_DOWN")(function()
-			if HasMenuLoaded(menuHandle) then
+			if NBMenu.HasMenuLoaded(menuHandle) then
 				NBMenu.SetCurrentSlot(menuHandle,GetPos ())
 				if NBMenu.IsCurrentSlotSlider(menuHandle) then
-					NBMenu.ConvertCurrentItemForCallback(menuHandle,"Change")
+					NBMenu.TriggerMenuCallback(menuHandle,"Change")
 				end 
 			end 
 		end),
 		case("MENU_ENTER","MENU_SELECT")(function()
-			if HasMenuLoaded(menuHandle) then
+			if NBMenu.HasMenuLoaded(menuHandle) then
 				NBMenu.SetCurrentSlot(menuHandle,GetPos ())
-				NBMenu.ConvertCurrentItemForCallback(menuHandle,"Submit")
+				NBMenu.TriggerMenuCallback(menuHandle,"Submit")
 			end 
 		end),
 		case("MENU_BACK")(function()
-			if HasMenuLoaded(menuHandle) then
+			if NBMenu.HasMenuLoaded(menuHandle) then
 				NBMenu.SetCurrentSlot(menuHandle,GetPos ())
-				NBMenu.ConvertCurrentItemForCallback(menuHandle,"Cancel")
+				NBMenu.TriggerMenuCallback(menuHandle,"Cancel")
 			end 
 		end),
 		case("MENU_ESCAPE")(function()
-			if HasMenuLoaded(menuHandle) then
+			if NBMenu.HasMenuLoaded(menuHandle) then
 				NBMenu.SetCurrentSlot(menuHandle,GetPos ())
-				NBMenu.ConvertCurrentItemForCallback(menuHandle,"Close")
+				NBMenu.TriggerMenuCallback(menuHandle,"Close")
 			end 
 		end),
 		default(function()
