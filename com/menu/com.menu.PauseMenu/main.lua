@@ -13,7 +13,7 @@ print('remake')
 	{label="保存",value="Save",type="footer"},
 }
 
-menuHandle = RequestMenu("DEFAULT","fishing1")
+menuHandle = RequestMenu("DEFAULT","ttest")
 	repeat Wait(0) until HasMenuLoaded(menuHandle) 
 	BeginMenuMethod(menuHandle,"SET_MENU_HEADER")
 		MenuMethodAddParams("title")
@@ -94,17 +94,54 @@ menuHandle = RequestMenu("DEFAULT","fishing1")
 			
 		end 
 	end)
-	
 	NB.RegisterKeyEvent('test',function(input)
-		print(input)
+		switch(input)(
+			case("MENU_LEFT")(function()
+				if HasMenuLoaded(menuHandle) then
+					NBMenu.SetCurrentSlot(menuHandle,GetPos ())
+					print('left',NBMenu.IsCurrentSlotSlider(menuHandle),NBMenu.GetCurrentItemSlot(menuHandle) )
+					if NBMenu.IsCurrentSlotSlider(menuHandle) then
+						NBMenu.SetCurrentItemSlot(menuHandle,NBMenu.GetCurrentItemSlot(menuHandle)-1)
+						NBMenu.ConvertCurrentItemForCallback(menuHandle,"Change")
+					end 
+				end 
+			end),
+			case("MENU_RIGHT")(function()
+				if HasMenuLoaded(menuHandle) then
+					NBMenu.SetCurrentSlot(menuHandle,GetPos ())
+					if NBMenu.IsCurrentSlotSlider(menuHandle) then
+						NBMenu.SetCurrentItemSlot(menuHandle,NBMenu.GetCurrentItemSlot(menuHandle)+1)
+						NBMenu.ConvertCurrentItemForCallback(menuHandle,"Change")
+					end 
+				end 
+			end),
+			case("MENU_UP")(function()
+				if HasMenuLoaded(menuHandle) then
+					NBMenu.SetCurrentSlot(menuHandle,GetPos ())
+					if NBMenu.IsCurrentSlotSlider(menuHandle) then
+						NBMenu.ConvertCurrentItemForCallback(menuHandle,"Change")
+					end 
+				end 
+			end),
+			case("MENU_DOWN")(function()
+				if HasMenuLoaded(menuHandle) then
+					NBMenu.SetCurrentSlot(menuHandle,GetPos ())
+					if NBMenu.IsCurrentSlotSlider(menuHandle) then
+						NBMenu.ConvertCurrentItemForCallback(menuHandle,"Change")
+					end 
+				end 
+			end),
+			default(function()
+			
+			end)
+		)
 	end )
+	
 	--SetMenuAsNoLongerNeeded(menuHandle)
 
 end)
 end 
---[=[
-CreateThread(function()
-	function GetPos ()
+function GetPos ()
 		local a,b,c = GetPauseMenuSelectionData()
 		if c ~= -1 then 
 			return c+1 
@@ -112,19 +149,6 @@ CreateThread(function()
 			return 1
 		end 
 	end 
-	
-	repeat Wait(300)
-		if HasMenuLoaded(menuHandle) then 
-			NBMenu.SetCurrentSlot(menuHandle,GetPos ())
-			
-			if NBMenu.IsCurrentSlotSlider(menuHandle) then
-				NBMenu.SetCurrentItemSlot(menuHandle,math.random(1,5))
-			end 
-			NBMenu.ConvertCurrentItemForCallback(menuHandle,"Change")
-			
-		end 
-		
-	until false 
-end)--]=]
+
 
 

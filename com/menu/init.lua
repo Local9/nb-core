@@ -14,9 +14,11 @@ NB.RegisterKeyEvent = function(name,cb)
 end 
 
 local TriggerRegisterKeyEvent = function(input)
-	for i,v in pairs(NB.RegisteredInput) do 
-		if v then 
-			v(input)  
+	if NB.RegisteredKeyEvent then 
+		for i,v in pairs(NB.RegisteredKeyEvent) do 
+			if v then 
+				v(input)  
+			end 
 		end 
 	end 
 end 
