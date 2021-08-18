@@ -156,7 +156,7 @@ NBMenu.SetMenuAsNoLongerNeeded = function(handle)
 end 
 
 
-NBMenu.MenuMethodAddButton = function(label,params2,description,rtext)
+NBMenu.AddButton = function(label,params2,description,rtext)
 	if type(params2) == 'table'then 
 		local endparams2 = {}
 		for i,v in pairs(params2) do 
@@ -170,8 +170,8 @@ NBMenu.MenuMethodAddButton = function(label,params2,description,rtext)
 		return {type="default",label=label,value=value,description=description,rtext=rtext}
 	end 
 end
-NBMenu.MenuMethodAddSlider = NBMenu.MenuMethodAddButton
-NBMenu.MenuMethodAddElements = function(elements)
+NBMenu.AddSlider = NBMenu.AddButton
+NBMenu.AddElements = function(elements)
 	local tbl = {}
 	for i,v in pairs(elements) do 
 		if v.type == nil then 
@@ -237,5 +237,6 @@ NBMenu.OnRenderUpdate = function(handle,cb)
 		end 
 	end 
 end 
+NBMenu.RegisterRenderUpdate = NBMenu.OnRenderUpdate
 
 end 
