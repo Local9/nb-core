@@ -1,24 +1,137 @@
 if IsClient() then
 
 com.menu = {Client={},Server={},Shared={}}
-com.menu.ESXMenuFramework = {}
+com.menu.ESXMenuFramework = deepcopy(ESX.UI.Menu)
 com.menu.type = {}
-NBMenu = {}
-com.menu.ESXMenuFramework = NBMenu
+NBMenu = {focus={}}
+NBMenu.CBS = {}
+local MenuType = 'PauseMenu'
+local openMenu = function(namespace, name, menu, isUpdate)
+	menu.namespace = namespace
+	menu.name = name
+	NBMenu.open(namespace, name, menu, isUpdate);
+	NB.RegisterKeyEvent('Menu'..namespace..name,function(input)
+		local function GetPos() local a,b,c = GetPauseMenuSelectionData() return c ~= -1 and c+1 or 1 end 
+			switch(input)(
+				case("MENU_LEFT")(function()
+						NBMenu.SetCurrentSlot(namespace, name,GetPos())
+						if NBMenu.IsCurrentSlotSlider(namespace, name) then
+							NBMenu.SetCurrentItemSlot(namespace, name,NBMenu.GetCurrentItemSlot(namespace, name)-1)
+							
+							
+						end 
+						NBMenu.OnRenderUpdate(namespace,name)
+				end),
+				case("MENU_RIGHT")(function()
+						NBMenu.SetCurrentSlot(namespace, name,GetPos())
+						if NBMenu.IsCurrentSlotSlider(namespace, name) then
+							NBMenu.SetCurrentItemSlot(namespace, name,NBMenu.GetCurrentItemSlot(namespace, name)+1)
+							
+						end 
+						NBMenu.OnRenderUpdate(namespace,name)
+				end),
+				case("MENU_UP")(function()
+						NBMenu.SetCurrentSlot(namespace, name,GetPos())
+						if NBMenu.IsCurrentSlotSlider(namespace, name) then
+						
+						end 
+						NBMenu.OnRenderUpdate(namespace,name)
+				end),
+				case("MENU_DOWN")(function()
+						NBMenu.SetCurrentSlot(namespace, name,GetPos())
+						if NBMenu.IsCurrentSlotSlider(namespace, name) then
+
+						end 
+						NBMenu.OnRenderUpdate(namespace,name)
+				end),
+				case("MENU_ENTER","MENU_SELECT")(function()
+						NBMenu.SetCurrentSlot(namespace, name,GetPos())
+						NBMenu.OnRenderUpdate(namespace,name)
+						
+				end),
+				case("MENU_BACK")(function()
+						NBMenu.SetCurrentSlot(namespace, name,GetPos())
+						NBMenu.OnRenderUpdate(namespace,name)
+						
+				end),
+				case("MENU_ESCAPE")(function()
+						NBMenu.SetCurrentSlot(namespace, name,GetPos())
+						NBMenu.OnRenderUpdate(namespace,name)
+				end),
+				default(function()
+					
+				end)
+			)
+	end )
+	NBMenu.RegisterRenderUpdate(namespace, name,function(menuRenderDatas,isUpdate)
+		local render = menuRenderDatas
+		if render then 
+			--[=[
+			print(render.title)
+			print(render.description)
+			for i=1,#render.elements do 
+				print(render.elements[i].type)
+				print(render.elements[i].ltext)
+				print(render.elements[i].rtext)
+				print(render.elements[i].description)
+			end 
+			--]=]
+			local columnid = 1
+			if not isUpdate then 
+				PauseMenu.SetDataSlotEmpty(columnid);
+				PauseMenu.SetColumnTitle(columnid,render.title,render.description or "","");
+			end 
+			local elements = render.elements
+			local data_idx = 0
+			
+			for i=1,#elements do 
+				local item = elements[i]
+				if i == #elements then 
+					if item.type == 'footer' then 
+						PauseMenu.SetOrUpdateNormalDataSlot(columnid, data_idx, PauseMenu.menuid.CREATION_HERITAGE, data_idx, item.ltext, " " , 2, 1, isUpdate);
+					else 
+						PauseMenu.SetOrUpdateNormalDataSlot(columnid, data_idx, PauseMenu.menuid.CREATION_HERITAGE, data_idx, item.ltext, item.rtext , item.type == 'slider' and 0 or 1, 4, isUpdate); 
+					end 
+				else 
+					PauseMenu.SetOrUpdateNormalDataSlot(columnid, data_idx, PauseMenu.menuid.CREATION_HERITAGE, data_idx, item.ltext, item.rtext , item.type == 'slider' and 0 or 1, 4, isUpdate);
+				end 
+				data_idx = data_idx + 1
+			end 
+			if not isUpdate then 
+				PauseMenu.DisplayDataSlot(columnid);
+				PauseMenu.SetColumnFocus(columnid, 1, 1);
+				PauseMenu.SetColumnCanJump(columnid, 1);
+				PauseMenu.SetCurrentColumn(columnid)
+				if #elements>7 then 
+					if columnid == 1 or columnid == 6 then 
+						PauseMenu.InitColumnScroll(columnid, 1, 1, 1, 0, 0)
+					end 
+				end 
+			end 
+			
+		end 
+	end)
+	NBMenu.OnRenderUpdate(namespace,name)
+end
+local closeMenu = function(namespace, name)
+	NBMenu.close(namespace, name);
+end
+
+com.menu.ESXMenuFramework.RegisterType(MenuType, openMenu, closeMenu)
+
+
 NBMenu.ClearProp = function(...) return com.lua.utils.Table.ClearTableSomething(NBMenu,...) end
 NBMenu.SetProp = function(...) return com.lua.utils.Table.SetTableSomething(NBMenu,...) end
 NBMenu.IsPropExist = function(...) return com.lua.utils.Table.IsTableSomthingExist(NBMenu,...) end 
 NBMenu.GetProp = function(...) return com.lua.utils.Table.GetTableSomthing(NBMenu,...) end  
 NBMenu.InsertPropSlot = function(...) return com.lua.utils.Table.InsertTableSomethingTable(NBMenu,...) end
 NBMenu.RemovePropSlotIndex = function(...) return com.lua.utils.Table.RemoveTableSomethingTable(NBMenu,...) end
-NBMenu.NextIndex = 1
-NBMenu._TEMP_ = {METHODS={}}
-NBMenu.CBS = {}
-NBMenu.RegisteredInput = {}
-NBMenu.SetCurrentSlot = function(handle,pos) 
-	if not NBMenu.HasMenuLoaded(handle) then error("No such menu Loaded.",2) end 
-	NBMenu.SetProp("CurrentSelection",handle,pos) 
-	local buttons = NBMenu.GetProp("Handles",handle,"menu","metadata","buttons")
+
+NBMenu.SetCurrentSlot = function(namespace,name,pos) 
+	NBMenu.SetProp("CurrentSelection",namespace,name,pos) 
+	local menu = com.menu.ESXMenuFramework.GetOpened(MenuType, namespace, name)
+
+	local buttons = menu.data.elements
 	for i,v in pairs(buttons) do 
 		if i~=pos then 
 			v.selected = false 
@@ -27,257 +140,152 @@ NBMenu.SetCurrentSlot = function(handle,pos)
 		end 
 	end 
 end 
-
-NBMenu.GetCurrentSlot = function(handle) 
-	if not NBMenu.HasMenuLoaded(handle) then error("No such menu Loaded.",2) end 
-	return NBMenu.GetProp("CurrentSelection",handle) 
+NBMenu.GetCurrentSlot = function(namespace,name) 
+	return NBMenu.GetProp("CurrentSelection",namespace,name) 
+end 
+NBMenu.IsCurrentSlotSlider = function(namespace,name)
+	local menu = com.menu.ESXMenuFramework.GetOpened(MenuType, namespace, name)
+	local buttons = menu.data.elements
+	return NBMenu.GetCurrentSlot(namespace,name) and buttons[NBMenu.GetCurrentSlot(namespace,name)].type == 'slider'
 end 
 
-NBMenu.SetItemProp = function(handle,itemindex,propname,propvalue)
-	if not NBMenu.HasMenuLoaded(handle) then error("No such menu Loaded.",2) end 
-	NBMenu.SetProp("Handles",handle,"menu","metadata","buttons",itemindex,propname,propvalue)
-end 
-
-NBMenu.GetItemProp = function(handle,itemindex,propname,propvalue)
-	if not NBMenu.HasMenuLoaded(handle) then error("No such menu Loaded.",2) end 
-	NBMenu.GetProp("Handles",handle,"menu","metadata","buttons",itemindex,propname)
-end 
-
-NBMenu.IsCurrentSlotSlider = function(handle)
-	if not NBMenu.HasMenuLoaded(handle) then error("No such menu Loaded.",2) end 
-	local buttons = NBMenu.GetProp("Handles",handle,"menu","metadata","buttons")
-	return NBMenu.GetCurrentSlot(handle) and buttons[NBMenu.GetCurrentSlot(handle)].type == 'slider'
-end 
-
-NBMenu.SetCurrentItemSlot = function(handle,pos) 
-	if not NBMenu.HasMenuLoaded(handle) then error("No such menu Loaded.",2) end 
-	if not NBMenu.IsCurrentSlotSlider(handle) then return print("This item is not a slider object") end 
-	local item = NBMenu.GetProp("Handles",handle,"menu","metadata","buttons")[NBMenu.GetCurrentSlot(handle)]
+NBMenu.SetCurrentItemSlot = function(namespace,name,pos) 
+	local menu = com.menu.ESXMenuFramework.GetOpened(MenuType, namespace, name)
+	local buttons = menu.data.elements
+	local item = buttons[NBMenu.GetCurrentSlot(namespace,name)]
 	if pos > #item.options then 
 		pos = 1
 	end 
 	if pos <= 0 then 
 		pos = #item.options
 	end 
-	--NBMenu.SetProp("Handles",handle,"menu","metadata","buttonpos",NBMenu.GetCurrentSlot(handle),pos)
-	NBMenu.SetProp("ItemSubjectSelection",handle,NBMenu.GetCurrentSlot(handle),"pos",pos) 
-	NBMenu.OnRenderUpdate(handle)
+	NBMenu.SetProp("ItemSubjectSelection",namespace,name,NBMenu.GetCurrentSlot(namespace,name),"pos",pos) 
+	NBMenu.OnRenderUpdate(namespace,name)
 end 
 
-NBMenu.GetCurrentItemSlot = function(handle) 
-	if not NBMenu.HasMenuLoaded(handle) then error("No such menu Loaded.",2) end 
-	if not NBMenu.IsCurrentSlotSlider(handle) then return print("This item is not a slider object") end  
-	local item = NBMenu.GetProp("Handles",handle,"menu","metadata","buttons")[NBMenu.GetCurrentSlot(handle)]
-	if NBMenu.GetProp("ItemSubjectSelection",handle,NBMenu.GetCurrentSlot(handle),"pos") == nil then 
-		NBMenu.SetCurrentItemSlot(handle,1)
+NBMenu.GetCurrentItemSlot = function(namespace,name) 
+	local menu = com.menu.ESXMenuFramework.GetOpened(MenuType, namespace, name)
+	local buttons = menu.data.elements
+	local item = buttons[NBMenu.GetCurrentSlot(namespace,name)]
+	if NBMenu.GetProp("ItemSubjectSelection",namespace,name,NBMenu.GetCurrentSlot(namespace,name),"pos") == nil then 
+		NBMenu.SetCurrentItemSlot(namespace,name,1)
 	end 
-	return NBMenu.GetProp("ItemSubjectSelection",handle,NBMenu.GetCurrentSlot(handle),"pos") 
+	return NBMenu.GetProp("ItemSubjectSelection",namespace,name,NBMenu.GetCurrentSlot(namespace,name),"pos") 
+end 
+NBMenu.SetItemSlotPos = function(namespace,name,itemindex,pos)
+	return NBMenu.SetProp("ItemSubjectSelection",namespace,name,itemindex,"pos",pos) 
+end 
+NBMenu.GetItemSlotPos = function(namespace,name,itemindex)
+	return NBMenu.GetProp("ItemSubjectSelection",namespace,name,itemindex,"pos") 
 end 
 
-NBMenu.GetItemSlotPos = function(handle,itemindex)
-	return NBMenu.GetProp("ItemSubjectSelection",handle,itemindex,"pos") --NBMenu.GetProp("Handles",handle,"menu","metadata","buttonpos",itemindex)
-end 
-
-NBMenu.TriggerMenuCallback = function(handle,cbtype) -- "Submit","Cancel","Change","Close"
-	if not NBMenu.HasMenuLoaded(handle) then error("No such menu Loaded.",2) end 
-	local menu = NBMenu.GetProp("Handles",handle,"menu")
-	local selecteditem = menu.metadata.buttons[NBMenu.GetCurrentSlot(handle)]
-	local callback = menu.callback 
-	local convertedData = deepcopy(menu.metadata) --editing convertedData will be effected the menu.metadata if not deepcopy
-	if not convertedData.current then convertedData.current = {} end 
-	if NBMenu.IsCurrentSlotSlider(handle) then 
-		convertedData.current = selecteditem.options[NBMenu.GetCurrentItemSlot(handle)]
-		convertedData.current.value = NBMenu.GetCurrentItemSlot(handle) or 1
-	else 
-		convertedData.current = selecteditem
-		if selecteditem.value == nil then convertedData.current.value = selecteditem.label end 
-	end 
-	convertedData.menuHandle = handle
-	convertedData.current.index = NBMenu.GetCurrentSlot(handle)
-	switch(cbtype)(
-		case("Submit")(function()
-			cb = callback.onSubmit
-		end),
-		case("Cancel")(function()
-			cb = callback.onCancel
-		end),
-		case("Change")(function()
-			cb = callback.onChange
-		end),
-		case("Close")(function()
-			cb = callback.onClose
-		end),
-		default(function()
-			cb = callback.onSubmit
-		end)
-	)
-	
-	
-	if cb then cb(menu,convertedData) end 
-end 
-
-NBMenu.SetMenuCallbacks = function(handle,callbacks)
-	if not NBMenu.HasMenuLoaded(handle) then error("No such menu Loaded.",2) end 
-	local menu = NBMenu.GetProp("Handles",handle,"menu")
-	menu.callback = {
-		onSubmit = callbacks[1],
-		onCancel = callbacks[2],
-		onChange = callbacks[3],
-		onClose = callbacks[4]
-	}
-end 
-NBMenu.UpdateMenuCallbacks = NBMenu.SetMenuCallbacks
-NBMenu.SetMenuHeader = function(handle,title,description)
-	if not NBMenu.HasMenuLoaded(handle) then error("No such menu Loaded.",2) end 
-	local menu = NBMenu.GetProp("Handles",handle,"menu")
-	menu.metadata.title = title
-	menu.metadata.description = description
-	NBMenu.OnRenderUpdate(handle)
-end 
-NBMenu.UpdateMenuHeader = NBMenu.SetMenuHeader
-NBMenu.SetMenuButtons = function(handle,buttons)
-	if not NBMenu.HasMenuLoaded(handle) then error("No such menu Loaded.",2) end 
-	local menu = NBMenu.GetProp("Handles",handle,"menu")
-	menu.metadata.buttons = buttons
-	for i,v in pairs(menu.metadata.buttons) do 
-		--NBMenu.SetProp("Handles",handle,"menu","metadata","buttonpos",i,1)
-		NBMenu.SetProp("ItemSubjectSelection",handle,i,"pos",1)
-		v.selected = false 
-	end 
-	NBMenu.OnRenderUpdate(handle)
-end 
-NBMenu.UpdateMenuButtons = NBMenu.SetMenuButtons
-NBMenu.RequestMenu = function(title,description,menutype,name,open,close)
-	local r = NBMenu.NextIndex
-	if not (NBMenu.IsPropExist("Menus",menutype,name)) then 
-		NBMenu.SetProp("Handles",r,"menu","open",function()
-			if open then open(r) end 
-		end)
-		NBMenu.SetProp("Handles",r,"menu","close",function()
-			NBMenu.UnRegisterRenderUpdate(r)
-			NB.UnRegisterKeyEvent('Menu'..r)
-			if close then close() end 
-		end)
-		NBMenu.SetProp("Handles",r,"menu","menutype",menutype)
-		NBMenu.SetProp("Handles",r,"menu","name",name)
-		NBMenu.SetProp("Handles",r,"menu",'metadata',{title=title,description=description})
-		NBMenu.SetProp("Handles",r,"menu",'callback',{})
-		NBMenu.SetProp("Menus",menutype,name,r)
-		
-		NBMenu.NextIndex = NBMenu.NextIndex + 1
-	else 
-		return NBMenu.GetProp("Menus",menutype,name)
-	end 
-	return r
-end 
-	
-NBMenu.SetMenuAsNoLongerNeeded = function(handle)
-	if not NBMenu.HasMenuLoaded(handle) then error("No such menu Loaded.",2) end 
-	local menu = NBMenu.GetProp("Handles",handle,"menu")
-	local name = menu.name 
-	local menutype = menu.menutype
-	
-	NBMenu.ClearProp("Handles",handle,"menu","menutype")
-	NBMenu.ClearProp("Handles",handle,"menu","name")
-	--NBMenu.ClearProp("Handles",handle,"menu","metadata","buttonpos")
-	NBMenu.ClearProp("Handles",handle,"menu","metadata","buttons")
-	NBMenu.ClearProp("Handles",handle,"menu",'metadata')
-	NBMenu.ClearProp("Handles",handle,"menu",'callback')
-	NBMenu.ClearProp("Handles",handle,"menu",'opened')
-	NBMenu.ClearProp("Handles",handle,"menu")
-	NBMenu.ClearProp("Handles",handle)
-	NBMenu.ClearProp("Menus",menutype,name)
-	NBMenu.ClearProp("AcceptedInput",menutype,name)
-end 
-
-
-NBMenu.AddButton = function(label,params2,description,rtext)
-	if type(params2) == 'table'then 
-		local endparams2 = {}
-		for i,v in pairs(params2) do 
-			if not endparams2[i] then endparams2[i] = {} end 
-			if params2[i][1]  then endparams2[i].label = params2[i][1]  end 
-			if params2[i][2]  then endparams2[i].description = params2[i][2] end 
-		end 
-		return {type="slider",label=label,options=endparams2}
-	else 
-		local value = params2
-		return {type="default",label=label,value=value,description=description,rtext=rtext}
-	end 
-end
-NBMenu.AddSlider = NBMenu.AddButton
-NBMenu.AddElements = function(elements)
-	local tbl = {}
-	for i,v in pairs(elements) do
-		if v.type == nil then 
-			v.type = 'default'
-		end 
-		if v.options then 
-			if v.options[1] then 
-				for k,c in pairs(v.options) do 
-					v.options[k] = {label = v.options[k]}
-				end 
-			end 
-		end 
-		table.insert(tbl,v)
-	end
-	
-	return table.unpack(tbl)
-end 
---shadows
-
-
-
-NBMenu.HasMenuLoaded = function(handle) 
-	local handle = handle
-	if not handle then return false end 
-	local menu = NBMenu.GetProp("Handles",handle,"menu")
-	if menu == nil then return false end 
-	local name = menu.name 
-	if name == nil then return false end 
-	local menutype = menu.menutype 
-	if menutype == nil then return false end 
-	
-	--print(NBMenu.IsPropExist("Menus",menutype,name),NBMenu.GetProp("Menus",menutype,name),NBMenu.GetProp("Menus",menutype,name),handle , NBMenu.NextIndex)
-	if NBMenu.IsPropExist("Menus",menutype,name) and handle == NBMenu.GetProp("Menus",menutype,name) then 
-		return true 
-	else 
-		return false 
-	end 
-end 
-
-NBMenu.OnRenderUpdate = function(handle,cb)
+NBMenu.OnRenderUpdate = function(namespace,name,cb)
 	if cb then 
-		if not NBMenu.CBS[handle] then NBMenu.CBS[handle] = {isAgain=false,callback=cb} end 
+		if not NBMenu.CBS[namespace..name] then NBMenu.CBS[namespace..name] = {isAgain=false,callback=cb} end 
 	end 
-	local handle = handle
-	local menu = NBMenu.GetProp("Handles",handle,"menu")
+	local menu = com.menu.ESXMenuFramework.GetOpened(MenuType, namespace, name)
 	local name = menu.name 
-	local menutype = menu.menutype 
+	local namespace = menu.namespace 
 	local currentRendering = {
-		title = menu.metadata.title,
-		description = menu.metadata.description,
-		slots = {}
+		title = menu.data.title,
+		description = menu.data.description or '',
+		elements = {}
 	}
-	if menu and menu.metadata and menu.metadata.buttons then 
-		for i,v in pairs(menu.metadata.buttons) do 
+	if menu and menu.data and menu.data.elements then 
+		for i,v in pairs(menu.data.elements) do 
 			
-			if  NBMenu.IsCurrentSlotSlider(handle) and NBMenu.GetCurrentSlot(handle) == i then 
-			table.insert(currentRendering.slots,{raw=v,type = v.type or 'default',ltext = v.label or '',rtext = (v.type == 'slider' and menu.metadata.buttons[NBMenu.GetCurrentSlot(handle)].options[NBMenu.GetCurrentItemSlot(handle)].label or v.rtext) or '',description = v.description or ''})
+			if  NBMenu.IsCurrentSlotSlider(namespace,name) and NBMenu.GetCurrentSlot(namespace,name) == i then 
+			table.insert(currentRendering.elements,{raw=v,type = v.type or 'default',ltext = v.label or '',rtext = (v.type == 'slider' and menu.data.elements[NBMenu.GetCurrentSlot(namespace,name)].options[NBMenu.GetCurrentItemSlot(namespace,name)].label or v.rtext) or '',description = v.description or ''})
 			else 
-			table.insert(currentRendering.slots,{raw=v,type = v.type or 'default',ltext = v.label or '',rtext = (v.type == 'slider' and menu.metadata.buttons[i].options[NBMenu.GetItemSlotPos(handle,i)].label or v.rtext) or '',description = v.description or ''})
+			table.insert(currentRendering.elements,{raw=v,type = v.type or 'default',ltext = v.label or '',rtext = (v.type == 'slider' and (menu.data.elements[i].options[NBMenu.GetItemSlotPos(namespace,name,i)] and menu.data.elements[i].options[NBMenu.GetItemSlotPos(namespace,name,i)].label) or v.rtext) or '',description = v.description or ''})
 			end 
 		end --type,ltext,rtext,description
-		if NBMenu.CBS[handle] then 
-			NBMenu.CBS[handle].callback(currentRendering,NBMenu.CBS[handle].isAgain)
-			NBMenu.CBS[handle].isAgain = true 
+		if NBMenu.CBS[namespace..name] then 
+			NBMenu.CBS[namespace..name].callback(currentRendering,NBMenu.CBS[namespace..name].isAgain)
+			NBMenu.CBS[namespace..name].isAgain = true 
 		end 
 	end 
+	
 end 
 NBMenu.RegisterRenderUpdate = NBMenu.OnRenderUpdate
 
-NBMenu.UnRegisterRenderUpdate = function(handle)
-	if NBMenu.CBS[handle] then NBMenu.CBS[handle] = nil end 
+NBMenu.UnRegisterRenderUpdate = function(namespace,name)
+	if NBMenu.CBS[namespace..name] then NBMenu.CBS[namespace..name] = nil end 
 end 
+
+com.menu.type['PauseMenu'] = NBMenu
+
+
+		
+NBMenu.open = function(namespace,name,data, isUpdate)
+	if NBMenu.IsPropExist("opened",namespace,name) then 
+		NBMenu.close(namespace, name);
+	end 
+
+
+	for i=1,#data.elements,1 do 
+		if data.elements[i].type == nil then 
+			data.elements[i].type = 'default';
+		elseif data.elements[i].type == 'slider' then 
+			if not data.elements[i].options then data.elements[i].options = {} end 
+			--if not data.elements[i].options.pos then data.elements[i].options.pos = 1 end 
+			NBMenu.SetItemSlotPos(namespace,name,i,1)
+			data.elements[i].value = data.elements[i].options[1]
+		end 
+	end 
+	NBMenu.InsertPropSlot("focus",{namespace=namespace,name=name})
+	data._index     = #NBMenu.focus;
+	data._namespace = namespace;
+	data._name      = name;
+	data._style	    = data.style or "default"
+	for i=1,#data.elements,1 do 
+		data.elements[i]._namespace = namespace;
+		data.elements[i]._name      = name;
+	end 
+
+	if not isUpdate then 
+		NBMenu.SetProp("opened",namespace,name,data)
+		for i=1,#data.elements,1 do 
+			if data.elements[i].selected  then 
+				NBMenu.SetProp("CurrentSelection",namespace,name,i)
+			else
+				data.elements[i].selected = false
+			end 
+		end 
+	else 
+		if #data.elements > 0 then 
+			for i=1,#data.elements,1 do 
+				data.elements[i].selected = false
+			end 
+			NBMenu.SetCurrentSlot(namespace,name,1)
+			data.elements[1].selected = false
+		end 
+	end 
+	
+	
+	
+	
+	
+end 
+NBMenu.close = function(namespace, name)
+	print('lclose')
+	for  i=1,#NBMenu.focus, 1 do 
+		if NBMenu.focus[i].namespace == namespace and  NBMenu.focus[i].name == name then 
+			table.remove(NBMenu.focus,i)
+			
+			if #NBMenu.GetProp("focus") > 0 then 
+				NBMenu.SetProp("opened",namespace,name,NBMenu.GetProp("focus")[#NBMenu.GetProp("focus")])
+			else 
+				NBMenu.ClearProp("opened",namespace,name)
+				com.menu.ESXMenuFramework.Close(namespace,name)
+			end 
+			break;
+		end 
+	end 
+	
+end 
+
+
+
 
 end 

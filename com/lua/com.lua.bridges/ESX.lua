@@ -105,7 +105,7 @@ else
             end
         end
         menu.refresh = function()
-            ESX.UI.Menu.RegisteredTypes[type].open(namespace, name, menu.data)
+            ESX.UI.Menu.RegisteredTypes[type].open(namespace, name, menu.data, true)
         end
         menu.setElement = function(i, key, val)
             menu.data.elements[i][key] = val
@@ -133,14 +133,17 @@ else
         return menu
     end
     ESX.UI.Menu.Close = function(type, namespace, name)
+		
         for i=1, #ESX.UI.Menu.Opened, 1 do
             if ESX.UI.Menu.Opened[i] then
                 if ESX.UI.Menu.Opened[i].type == type and ESX.UI.Menu.Opened[i].namespace == namespace and ESX.UI.Menu.Opened[i].name == name then
                     ESX.UI.Menu.Opened[i].close()
+					
                     ESX.UI.Menu.Opened[i] = nil
                 end
             end
         end
+
     end
     ESX.UI.Menu.CloseAll = function()
         for i=1, #ESX.UI.Menu.Opened, 1 do
