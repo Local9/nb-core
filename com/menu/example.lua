@@ -12,24 +12,26 @@ if IsClient() then
 				{label="Apple123",value="Apple123",setter="XY"},
 				{label="保存",value="Save",type="footer"},
 			},
-			function(result)
+			function(menu,result)
 				print("OnSubmit","value:"..result.current.value)
 			end,
-			function(result)
+			function(menu,result)
 				--CloseMenu(menuHandle)
 				print("OnCancel","value:"..result.current.value)
+				menu.close()
 			end,
-			function(result)
+			function(menu,result)
 				print("OnChange","value:"..result.current.value)
 			end,
 			function()
 				print("OnClose")
+				
 			end
 		)
 		
 		menu.open()
 		Wait(3000)
-		menu.close()
+		--menu.close()
 		--NBMenu.SetMenuAsNoLongerNeeded(menuHandle)
 		
 		

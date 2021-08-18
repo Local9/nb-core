@@ -7,7 +7,7 @@ if IsClient() then
 		NB.RegisteredKeyEvent[name] = cb 
 	end 
 	NB.UnRegisterKeyEvent = function(name)
-		NB.RegisteredKeyEvent[name] = nil 
+		if NB.RegisteredKeyEvent[name] then NB.RegisteredKeyEvent[name] = nil end 
 	end 
 
 	local TriggerRegisterKeyEvent = function(input)

@@ -111,7 +111,9 @@ NBMenu.TriggerMenuCallback = function(handle,cbtype) -- "Submit","Cancel","Chang
 			cb = callback.onSubmit
 		end)
 	)
-	if cb then cb(convertedData) end 
+	
+	
+	if cb then cb(menu,convertedData) end 
 end 
 
 NBMenu.SetMenuCallbacks = function(handle,callbacks)
@@ -145,14 +147,22 @@ NBMenu.SetMenuButtons = function(handle,buttons)
 	NBMenu.OnRenderUpdate(handle)
 end 
 NBMenu.UpdateMenuButtons = NBMenu.SetMenuButtons
-NBMenu.RequestMenu = function(title,description,menutype,name)
+NBMenu.RequestMenu = function(title,description,menutype,name,open,close)
 	local r = NBMenu.NextIndex
 	if not (NBMenu.IsPropExist("Menus",menutype,name)) then 
-		NBMenu.SetProp("Handles",NBMenu.NextIndex,"menu","menutype",menutype)
-		NBMenu.SetProp("Handles",NBMenu.NextIndex,"menu","name",name)
-		NBMenu.SetProp("Handles",NBMenu.NextIndex,"menu",'metadata',{title=title,description=description})
-		NBMenu.SetProp("Handles",NBMenu.NextIndex,"menu",'callback',{})
-		NBMenu.SetProp("Menus",menutype,name,NBMenu.NextIndex)
+		NBMenu.SetProp("Handles",r,"menu","open",function()
+			if open then open(r) end 
+		end)
+		NBMenu.SetProp("Handles",r,"menu","close",function()
+			NBMenu.UnRegisterRenderUpdate(r)
+			NB.UnRegisterKeyEvent('Menu'..r)
+			if close then close() end 
+		end)
+		NBMenu.SetProp("Handles",r,"menu","menutype",menutype)
+		NBMenu.SetProp("Handles",r,"menu","name",name)
+		NBMenu.SetProp("Handles",r,"menu",'metadata',{title=title,description=description})
+		NBMenu.SetProp("Handles",r,"menu",'callback',{})
+		NBMenu.SetProp("Menus",menutype,name,r)
 		
 		NBMenu.NextIndex = NBMenu.NextIndex + 1
 	else 
@@ -238,7 +248,7 @@ end
 
 NBMenu.OnRenderUpdate = function(handle,cb)
 	if cb then 
-	if not NBMenu.CBS[handle] then NBMenu.CBS[handle] = {isAgain=false,callback=cb} end 
+		if not NBMenu.CBS[handle] then NBMenu.CBS[handle] = {isAgain=false,callback=cb} end 
 	end 
 	local handle = handle
 	local menu = NBMenu.GetProp("Handles",handle,"menu")
