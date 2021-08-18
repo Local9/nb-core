@@ -1,20 +1,17 @@
 if IsClient() then 
 	CreateThread(function()
-		local elements = {
-			{label="Apple",value="Apple"},
-			{label="选择水果",type="slider",options={"apple","banana","orange"},description="select your favour"},
-			{label="Apple123",value="Apple123",description="good health",setter="X"},--scroll and selections > 7 
-			{label="Apple123",value="Apple123",setter="XY"},--scroll and selections > 7 
-			{label="Apple123",value="Apple123",setter="XY"},
-			{label="Apple123",value="Apple123",setter="XY"},
-			{label="Apple123",value="Apple123",setter="XY"},
-			{label="Apple123",value="Apple123",setter="XY"},
-			{label="保存",value="Save",type="footer"},
-		}
-		local menuHandle = NBMenu.RegisterPauseMenu(
-			"TTitle","DDESC",
-			"fishing",
-			elements,
+		local menuHandle = NBMenu.RegisterPauseMenu("TTitle","DDESC","fishing",
+			{
+				{label="Apple",value="Apple"},
+				{label="选择水果",type="slider",options={"apple","banana","orange"},description="select your favour"},
+				{label="Apple123",value="Apple123",description="good health",setter="X"},--scroll and selections > 7 
+				{label="Apple123",value="Apple123",setter="XY"},--scroll and selections > 7 
+				{label="Apple123",value="Apple123",setter="XY"},
+				{label="Apple123",value="Apple123",setter="XY"},
+				{label="Apple123",value="Apple123",setter="XY"},
+				{label="Apple123",value="Apple123",setter="XY"},
+				{label="保存",value="Save",type="footer"},
+			},
 			function(result)
 				print("OnSubmit","value:"..result.current.value)
 			end,
@@ -27,7 +24,8 @@ if IsClient() then
 			end,
 			function()
 				print("OnClose")
-			end)
+			end
+		)
 		NBMenu.RegisterRenderUpdate(menuHandle,function(menuRenderDatas,isUpdate)
 			local render = menuRenderDatas
 			if render then 
@@ -41,6 +39,7 @@ if IsClient() then
 					print(render.slots[i].description)
 				end 
 				--]=]
+				print(json.encode(render.slots[2].setter))
 				local columnid = 1
 				if not isUpdate then 
 					PauseMenu.SetDataSlotEmpty(columnid);
@@ -48,6 +47,7 @@ if IsClient() then
 				end 
 				local elements = render.slots
 				local data_idx = 0
+				
 				for i=1,#elements do 
 					local item = elements[i]
 					if i == #elements then 
@@ -75,6 +75,8 @@ if IsClient() then
 			end 
 		end)
 		--NBMenu.SetMenuAsNoLongerNeeded(menuHandle)
+		
 	end)
+	
 
 end 

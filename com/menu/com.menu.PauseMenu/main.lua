@@ -26,7 +26,6 @@ if IsClient() then
 			switch(input)(
 				case("MENU_LEFT")(function()
 						NBMenu.SetCurrentSlot(menuHandle,GetPos())
-						print('left',NBMenu.IsCurrentSlotSlider(menuHandle),NBMenu.GetCurrentItemSlot(menuHandle) )
 						if NBMenu.IsCurrentSlotSlider(menuHandle) then
 							NBMenu.SetCurrentItemSlot(menuHandle,NBMenu.GetCurrentItemSlot(menuHandle)-1)
 							NBMenu.TriggerMenuCallback(menuHandle,"Change")
