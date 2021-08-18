@@ -31,7 +31,7 @@ menuHandle = RequestMenu('1asda','zxcasd',"DEFAULT","ttest")
 			print("OnSubmit","value:"..result.current.value)
 		end,
 		function(result)
-			CloseMenu(menuHandle)
+			--CloseMenu(menuHandle)
 			print("OnCancel","value:"..result.current.value)
 		end,
 		function(result)
@@ -137,7 +137,7 @@ NB.RegisterKeyEvent('test',function(input)
 				end 
 			end 
 		end),
-		case("MENU_ENTER")(function()
+		case("MENU_ENTER","MENU_SELECT")(function()
 			if HasMenuLoaded(menuHandle) then
 				NBMenu.SetCurrentSlot(menuHandle,GetPos ())
 				NBMenu.ConvertCurrentItemForCallback(menuHandle,"Submit")

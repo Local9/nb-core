@@ -1,18 +1,14 @@
 if IsClient() then 
-
-local GetSelection = function(handle) 
-	if not NBMenu.HasMenuLoaded(handle) then error("No such menu Loaded.",2) end 
-	return NBMenu.GetProp("CurrentSelection",handle) 
-end 
-
-
 --bridge
 NBMenu.SetCurrentSlot = function(handle,pos) 
 	if not NBMenu.HasMenuLoaded(handle) then error("No such menu Loaded.",2) end 
 	NBMenu.SetProp("CurrentSelection",handle,pos) 
 end 
 
-NBMenu.GetCurrentSlot = GetSelection
+NBMenu.GetCurrentSlot = function(handle) 
+	if not NBMenu.HasMenuLoaded(handle) then error("No such menu Loaded.",2) end 
+	return NBMenu.GetProp("CurrentSelection",handle) 
+end 
 
 NBMenu.IsCurrentSlotSlider = function(handle)
 	if not NBMenu.HasMenuLoaded(handle) then error("No such menu Loaded.",2) end 
@@ -21,7 +17,7 @@ NBMenu.IsCurrentSlotSlider = function(handle)
 	return NBMenu.GetCurrentSlot(handle) and buttons[NBMenu.GetCurrentSlot(handle)].type == 'slider'
 end 
 
-local SetItemSelection = function(handle,pos) 
+NBMenu.SetCurrentItemSlot = function(handle,pos) 
 	if not NBMenu.HasMenuLoaded(handle) then error("No such menu Loaded.",2) end 
 	if not NBMenu.IsCurrentSlotSlider(handle) then return print("This item is not a slider object") end 
 	local item = NBMenu.GetProp("Handles",handle,"menu","metadata","buttons")[NBMenu.GetCurrentSlot(handle)]
@@ -35,17 +31,15 @@ local SetItemSelection = function(handle,pos)
 	NBMenu.SetProp("CurrentItemSelection",handle,item,"pos",pos) 
 	NBMenu.OnRenderUpdate(handle)
 end 
-local GetItemSelection = function(handle) 
+NBMenu.GetCurrentItemSlot = function(handle) 
 	if not NBMenu.HasMenuLoaded(handle) then error("No such menu Loaded.",2) end 
 	if not NBMenu.IsCurrentSlotSlider(handle) then return print("This item is not a slider object") end  
 	local item = NBMenu.GetProp("Handles",handle,"menu","metadata","buttons")[NBMenu.GetCurrentSlot(handle)]
 	if NBMenu.GetProp("CurrentItemSelection",handle,item,"pos") == nil then 
-		SetItemSelection(handle,1)
+		NBMenu.SetCurrentItemSlot(handle,1)
 	end 
 	return NBMenu.GetProp("CurrentItemSelection",handle,item,"pos") 
 end 
-NBMenu.SetCurrentItemSlot = SetItemSelection
-NBMenu.GetCurrentItemSlot = GetItemSelection
 NBMenu.GetItemSlotPos = function(handle,itemindex)
 	return NBMenu.GetProp("Handles",handle,"menu","metadata","buttonpos",itemindex)
 end 
@@ -57,8 +51,8 @@ NBMenu.ConvertCurrentItemForCallback = function(handle,cbtype) -- "Submit","Canc
 	local callback = menu.callback 
 	local convertedData = {current={}}
 	if NBMenu.IsCurrentSlotSlider(handle) then 
-		convertedData.current = selecteditem.options[GetItemSelection(handle)]
-		convertedData.current.value = GetItemSelection(handle) or 1
+		convertedData.current = selecteditem.options[NBMenu.GetCurrentItemSlot(handle)]
+		convertedData.current.value = NBMenu.GetCurrentItemSlot(handle) or 1
 	else 
 		convertedData.current = selecteditem
 		if selecteditem.value == nil then convertedData.current.value = selecteditem.label end 
@@ -165,15 +159,7 @@ NBMenu.SetMenuAsNoLongerNeeded = function(handle)
 	NBMenu.ClearProp("Menus",menutype,name)
 	NBMenu.ClearProp("AcceptedInput",menutype,name)
 end 
- 
 
-NBMenu.MenuMethodAddParams = function(str)
-	if NBMenu.GetProp("CurrentMethod") then 
-		table.insert(NBMenu._TEMP_.METHODS,str) 
-	else 
-		error("Something wrong without BeginMenuMethod?",2)
-	end 
-end
 
 NBMenu.MenuMethodAddButton = function(label,params2,description,rtext)
 	if type(params2) == 'table'then 
@@ -244,7 +230,7 @@ NBMenu.OnRenderUpdate = function(handle,cb)
 	if menu and menu.metadata and menu.metadata.buttons then 
 		for i,v in pairs(menu.metadata.buttons) do 
 			if  NBMenu.IsCurrentSlotSlider(handle) and NBMenu.GetCurrentSlot(handle) == i then 
-			table.insert(currentRendering.slots,{type = v.type or 'default',ltext = v.label or '',rtext = (v.type == 'slider' and menu.metadata.buttons[NBMenu.GetCurrentSlot(handle)].options[GetItemSelection(handle)].label or v.rtext) or '',description = v.description or ''})
+			table.insert(currentRendering.slots,{type = v.type or 'default',ltext = v.label or '',rtext = (v.type == 'slider' and menu.metadata.buttons[NBMenu.GetCurrentSlot(handle)].options[NBMenu.GetCurrentItemSlot(handle)].label or v.rtext) or '',description = v.description or ''})
 			else 
 			table.insert(currentRendering.slots,{type = v.type or 'default',ltext = v.label or '',rtext = (v.type == 'slider' and menu.metadata.buttons[i].options[NBMenu.GetItemSlotPos(handle,i)].label or v.rtext) or '',description = v.description or ''})
 			end 
