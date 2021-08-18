@@ -266,4 +266,8 @@ NBMenu.OnRenderUpdate = function(handle,cb)
 end 
 NBMenu.RegisterRenderUpdate = NBMenu.OnRenderUpdate
 
+NBMenu.UnRegisterRenderUpdate = function(handle)
+	if NBMenu.CBS[handle] then NBMenu.CBS[handle] = nil end 
+end 
+
 end 

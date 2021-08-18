@@ -21,7 +21,8 @@ if IsClient() then
 			onchange,
 			onclose
 		})
-		NB.RegisterKeyEvent('test',function(input)
+		
+		NB.RegisterKeyEvent('Menu'..menuHandle,function(input)
 			local function GetPos() local a,b,c = GetPauseMenuSelectionData() return c ~= -1 and c+1 or 1 end 
 			switch(input)(
 				case("MENU_LEFT")(function()
@@ -57,6 +58,7 @@ if IsClient() then
 				case("MENU_BACK")(function()
 						NBMenu.SetCurrentSlot(menuHandle,GetPos())
 						NBMenu.TriggerMenuCallback(menuHandle,"Cancel")
+						
 				end),
 				case("MENU_ESCAPE")(function()
 						NBMenu.SetCurrentSlot(menuHandle,GetPos())
@@ -66,8 +68,64 @@ if IsClient() then
 				end)
 			)
 		end )
-		PauseMenu.StartPauseMenu(PauseMenu.versionid.FE_MENU_VERSION_MP_CHARACTER_CREATION)
-		return menuHandle
+		local open = function() 
+			PauseMenu.StartPauseMenu(PauseMenu.versionid.FE_MENU_VERSION_MP_CHARACTER_CREATION)
+			NBMenu.RegisterRenderUpdate(menuHandle,function(menuRenderDatas,isUpdate)
+				local render = menuRenderDatas
+				if render then 
+					--[=[
+					print(render.title)
+					print(render.description)
+					for i=1,#render.slots do 
+						print(render.slots[i].type)
+						print(render.slots[i].ltext)
+						print(render.slots[i].rtext)
+						print(render.slots[i].description)
+					end 
+					--]=]
+					local columnid = 1
+					if not isUpdate then 
+						PauseMenu.SetDataSlotEmpty(columnid);
+						PauseMenu.SetColumnTitle(columnid,render.title,render.description or "","");
+					end 
+					local elements = render.slots
+					local data_idx = 0
+					
+					for i=1,#elements do 
+						local item = elements[i]
+						if i == #elements then 
+							if item.type == 'footer' then 
+								PauseMenu.SetOrUpdateNormalDataSlot(columnid, data_idx, PauseMenu.menuid.CREATION_HERITAGE, data_idx, item.ltext, " " , 2, 1, isUpdate);
+							else 
+								PauseMenu.SetOrUpdateNormalDataSlot(columnid, data_idx, PauseMenu.menuid.CREATION_HERITAGE, data_idx, item.ltext, item.rtext , item.type == 'slider' and 0 or 1, 4, isUpdate); 
+							end 
+						else 
+							PauseMenu.SetOrUpdateNormalDataSlot(columnid, data_idx, PauseMenu.menuid.CREATION_HERITAGE, data_idx, item.ltext, item.rtext , item.type == 'slider' and 0 or 1, 4, isUpdate);
+						end 
+						data_idx = data_idx + 1
+					end 
+					if not isUpdate then 
+						PauseMenu.DisplayDataSlot(columnid);
+						PauseMenu.SetColumnFocus(columnid, 1, 1);
+						PauseMenu.SetColumnCanJump(columnid, 1);
+						PauseMenu.SetCurrentColumn(columnid)
+						if #elements>7 then 
+							if columnid == 1 or columnid == 6 then 
+								PauseMenu.InitColumnScroll(columnid, 1, 1, 1, 0, 0)
+							end 
+						end 
+					end 
+				end 
+			end)
+		end 
+		local close = function() 
+			NBMenu.UnRegisterRenderUpdate(menuHandle)
+			NB.UnRegisterKeyEvent('Menu'..menuHandle,nil)
+			SetFrontendActive(false);
+		end 
+		return {handle = menuHandle,open = open,close = close }
 	end 
+	
+	
 
 end 

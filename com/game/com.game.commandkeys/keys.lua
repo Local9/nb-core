@@ -1,10 +1,14 @@
-NB.RegisteredKeyEvent = {}
+
+
+if IsClient() then
+	NB.RegisteredKeyEvent = {}
 
 	NB.RegisterKeyEvent = function(name,cb)
 		NB.RegisteredKeyEvent[name] = cb 
 	end 
-if IsClient() then
-	
+	NB.UnRegisterKeyEvent = function(name)
+		NB.RegisteredKeyEvent[name] = nil 
+	end 
 
 	local TriggerRegisterKeyEvent = function(input)
 		if NB.RegisteredKeyEvent then 
@@ -31,37 +35,36 @@ if IsClient() then
 	end)
 	RegisterKeyboardCallback("MENU_SELECT","SPACE","MENU SELECT",function()
 		TriggerRegisterKeyEvent("MENU_SELECT")
-	end )
+	end)
 	RegisterKeyboardCallback("MENU_SHIFT","TAB","",function()
 		TriggerRegisterKeyEvent("MENU_SHIFT")
-	end )
+	end)
 	RegisterKeyboardCallback("MENU_BACK","BACK","",function()
 		TriggerRegisterKeyEvent("MENU_BACK")
-	end )
+	end)
 	RegisterKeyboardCallback("MENU_ESCAPE","ESCAPE","",function()
 		TriggerRegisterKeyEvent("MENU_ESCAPE")
-	end )
+	end)
 	RegisterKeyboardCallback("MENU_ENTER","RETURN","",function()
 		TriggerRegisterKeyEvent("MENU_ENTER")
-		print('enter')
-	end )
+	end)
 	RegisterKeyboardCallback("MENU_UP","UP","",function()
 		TriggerRegisterKeyEvent("MENU_UP")
-		print(1)
-	end )
+		
+	end)
 	RegisterKeyboardCallback("MENU_DOWN","DOWN","",function()
 		TriggerRegisterKeyEvent("MENU_DOWN")
-		print(1)
-	end )
+		
+	end)
 	RegisterKeyboardCallback("MENU_LEFT","LEFT","",function()
 		TriggerRegisterKeyEvent("MENU_LEFT")
-		print(1)
 		
-	end )
+		
+	end)
 	RegisterKeyboardCallback("MENU_RIGHT","RIGHT","",function()
 		TriggerRegisterKeyEvent("MENU_RIGHT")
-		print(1)
-	end )
-	print(1)print(1)
+		
+	end)
+	
 
 end 
