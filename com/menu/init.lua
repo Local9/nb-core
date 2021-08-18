@@ -1,5 +1,5 @@
 if IsClient() then
-print(1)
+
 com.menu = {Client={},Server={},Shared={}}
 com.menu.ESXMenuFramework = {}
 com.menu.type = {}
@@ -12,6 +12,7 @@ NBMenu.InsertPropSlot = function(...) return com.lua.utils.Table.InsertTableSome
 NBMenu.RemovePropSlotIndex = function(...) return com.lua.utils.Table.RemoveTableSomethingTable(NBMenu,...) end
 NBMenu.NextIndex = 1
 NBMenu._TEMP_ = {METHODS={}}
+NBMenu.CBS = {}
 NBMenu.RegisteredInput = {}
 NBMenu.SetCurrentSlot = function(handle,pos) 
 	if not NBMenu.HasMenuLoaded(handle) then error("No such menu Loaded.",2) end 
@@ -209,7 +210,7 @@ NBMenu.HasMenuLoaded = function(handle)
 		return false 
 	end 
 end 
-NBMenu.CBS = {}
+
 NBMenu.OnRenderUpdate = function(handle,cb)
 	if cb then 
 	if not NBMenu.CBS[handle] then NBMenu.CBS[handle] = {isAgain=false,callback=cb} end 
