@@ -83,7 +83,7 @@ NBMenu.TriggerMenuCallback = function(handle,cbtype) -- "Submit","Cancel","Chang
 	local menu = NBMenu.GetProp("Handles",handle,"menu")
 	local selecteditem = menu.metadata.buttons[NBMenu.GetCurrentSlot(handle)]
 	local callback = menu.callback 
-	local convertedData = deepcopy(menu.metadata.buttons) --editing convertedData will be effected the menu.metadata.buttons if not deepcopy
+	local convertedData = deepcopy(menu.metadata) --editing convertedData will be effected the menu.metadata if not deepcopy
 	if not convertedData.current then convertedData.current = {} end 
 	if NBMenu.IsCurrentSlotSlider(handle) then 
 		convertedData.current = selecteditem.options[NBMenu.GetCurrentItemSlot(handle)]
@@ -93,7 +93,7 @@ NBMenu.TriggerMenuCallback = function(handle,cbtype) -- "Submit","Cancel","Chang
 		if selecteditem.value == nil then convertedData.current.value = selecteditem.label end 
 	end 
 	convertedData.menuHandle = handle
-	convertedData.index = NBMenu.GetCurrentSlot(handle)
+	convertedData.current.index = NBMenu.GetCurrentSlot(handle)
 	switch(cbtype)(
 		case("Submit")(function()
 			cb = callback.onSubmit
