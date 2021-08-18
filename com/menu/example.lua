@@ -1,263 +1,174 @@
 if IsClient() then 
-
+local menuHandle
 CreateThread(function()
-	Wait(2000)
-		--scroll 
-		--[=[
-		local elements = {}
-		local HairColors = {}
-		for i=0,GetNumHairColors() do 
-			--PauseMenu.SetColorData(7,i,GetPedHairRgbColor(i))
-			table.insert(HairColors,{GetPedHairRgbColor(i)})
-		end 
-		local Salle = {
-			{label="Apple",value="Apple"},
-			{label="选择水果",type="slider",options={"apple","banana","orange"},description="select your favour"},
-			{label="Apple123",value="Apple123",description="good health",setter="X"},--scroll and selections > 7 
-			{label="Apple123",value="Apple123",setter="XY"},--scroll and selections > 7 
-			{label="Apple123",value="Apple123",setter="XY"},
-			{label="Apple123",value="Apple123",setter="XY"},
-			{label="保存",value="Save",type="footer"},
-		}
-		NB.MenuFramework.CloseAll()
-		NB.MenuFramework.Open(
-			'PauseMenu', GetCurrentResourceName(), 'strip',
-			{
-				title  = 'Position Menu',
-				description = "MENU DESCRIPTION",
-				style = "scroll", --default, scroll, scroll2
-				-- 0: list menu  |  1: link-pad rolling list menu  |  2:  bar menu 142561   | 3:  pad menu   | 4: skillpoint menu  | 5:skilldata menu | 6: link-color-list menu |  7:color menu 
-				elements = Salle
-			},
-			function(data, menu)
-				print("result open",data.current.value)
-				--menu.close()
-				--NB.Utils.Debug.DrawText("Open",data.current.value)
-			end,
-			function(data, menu)
-				print("result cancel")
-				--NB.Utils.Debug.DrawText("Cancel")
-				menu.close()
-			end
-			,
-			function(data, menu)
-				print("result change",data.current.value)
-				--NB.Utils.Debug.DrawText("Change",data.current.value)
-			end
-			,
-			function()
-				print("result close")
-				--NB.Utils.Debug.DrawText("Close")
-			end
-		)
-		--]=]
-		--scroll2 
-		--[=[
-		local elements = {}
-		local HairColors = {}
-		for i=0,GetNumHairColors() do 
-			--PauseMenu.SetColorData(7,i,GetPedHairRgbColor(i))
-			table.insert(HairColors,{GetPedHairRgbColor(i)})
-		end 
-		local Salle = {
-			{label="Apple",value="Apple"},
-			{label="选择水果",type="slider",options={"apple","banana","orange"},description="select your favour"},
-			{label="Apple123",value="Apple123",setter="BAR"},--scroll2
-			{label="Color Pad",type="slider",options=HairColors,setter="COLOR"},--scroll2
-			{label="保存",value="Save",type="footer"},
-		}
-		NB.MenuFramework.CloseAll()
-		NB.MenuFramework.Open(
-			'PauseMenu', GetCurrentResourceName(), 'strip',
-			{
-				title  = 'Position Menu',
-				description = "MENU DESCRIPTION",
-				style = "scroll2", --default, scroll, scroll2
-				-- 0: list menu  |  1: link-pad rolling list menu  |  2:  bar menu 142561   | 3:  pad menu   | 4: skillpoint menu  | 5:skilldata menu | 6: link-color-list menu |  7:color menu 
-				elements = Salle
-			},
-			function(data, menu)
-				print("result open",data.current.value)
-				--menu.close()
-				--NB.Utils.Debug.DrawText("Open",data.current.value)
-			end,
-			function(data, menu)
-				print("result cancel")
-				--NB.Utils.Debug.DrawText("Cancel")
-				menu.close()
-			end
-			,
-			function(data, menu)
-				print("result change",data.current.value)
-				--NB.Utils.Debug.DrawText("Change",data.current.value)
-			end
-			,
-			function()
-				print("result close")
-				--NB.Utils.Debug.DrawText("Close")
-			end
-		)
-		--]=]
-		--heritage
-		--[=[
-		local elements = {}
-		local Mothers = {}
-		local Fathers = {}
-		for i=0,GetNumParentPedsOfType(1)-1 do --female
-			--PauseMenu.SetColorData(7,i,GetPedHairRgbColor(i))
-			table.insert(Mothers,("Female_"..i))
-		end 
-		for i=0,GetNumParentPedsOfType(0)-1 do --female
-			--PauseMenu.SetColorData(7,i,GetPedHairRgbColor(i))
-			table.insert(Fathers,("Male_"..i))
-		end 
-		for i=0,GetNumParentPedsOfType(4) do --female
-			--PauseMenu.SetColorData(7,i,GetPedHairRgbColor(i))
-			table.insert(Mothers,("Special_Female_"..i))
-		end 
-		for i=0,GetNumParentPedsOfType(3) do --female
-			--PauseMenu.SetColorData(7,i,GetPedHairRgbColor(i))
-			table.insert(Fathers,("Special_Male_"..i))
-		end 
-		local Salle = {
-			{label="Apple",value="Apple"},
-			{label="选择mother",type="slider",options=Mothers,setter="Mother",description="select your mother"},
-			{label="选择father",type="slider",options=Fathers,setter="Father",description="select your father"},
-			{label="HERITAGE",setter="SEX"},--dad
-			{label="SKIN",setter="SEX"},--dad
-			{label="保存",value="Save",type="footer"},
-		}
-		NB.MenuFramework.CloseAll()
-		NB.MenuFramework.Open(
-			'PauseMenu', GetCurrentResourceName(), 'strip',
-			{
-				title  = 'Position Menu',
-				description = "MENU DESCRIPTION",
-				style = "heritage", --default, scroll, scroll2
-				-- 0: list menu  |  1: link-pad rolling list menu  |  2:  bar menu 142561   | 3:  pad menu   | 4: skillpoint menu  | 5:skilldata menu | 6: link-color-list menu |  7:color menu 
-				elements = Salle
-			},
-			function(data, menu)
-				print("result open",data.current.value)
-				if data.current.getter then 
-				print("result open",data.current.label,data.current.setter,data.current.getter.value)
+
+	local elements = {
+	{label="Apple",value="Apple"},
+	{label="选择水果",type="slider",options={"apple","banana","orange"},description="select your favour"},
+	{label="Apple123",value="Apple123",description="good health",setter="X"},--scroll and selections > 7 
+	{label="Apple123",value="Apple123",setter="XY"},--scroll and selections > 7 
+	{label="Apple123",value="Apple123",setter="XY"},
+	{label="Apple123",value="Apple123",setter="XY"},
+	{label="保存",value="Save",type="footer"},
+}
+
+menuHandle = RequestMenu("DEFAULT","ttest")
+	repeat Wait(0) until HasMenuLoaded(menuHandle) 
+	BeginMenuMethod(menuHandle,"SET_MENU_HEADER")
+		MenuMethodAddParams("title")
+		MenuMethodAddParams("description")
+	EndMenuMethod()
+	BeginMenuMethod(menuHandle,"SET_MENU_BUTTON")
+		MenuMethodAddButton("apple5",123,"dd","rapple")
+		MenuMethodAddOption("apple"..math.random(0,99),{
+			{"apple","Red Color and taste good"},
+			{"banana","Become Smart,Become Clever"},
+			{"orange","Juicy and tasty"},
+			{"lame"}
+		})
+		MenuMethodAddElements(elements)
+	EndMenuMethod()
+	BeginMenuMethod(menuHandle,"SET_MENU_CALLBACK")
+		MenuMethodAddCallback(function(result)
+			print("OnSubmit","value:"..result.current.value)
+		end)
+		MenuMethodAddCallback(function(result)
+			--CloseMenu(menuHandle)
+			print("OnCancel","value:"..result.current.value)
+		end)
+		MenuMethodAddCallback(function(result)
+			print("OnChange","value:"..result.current.value)
+		end)
+		MenuMethodAddCallback(function()
+			print("OnClose")
+		end)
+	local menu = EndMenuMethodReturn()
+	PauseMenu.StartPauseMenu(PauseMenu.versionid.FE_MENU_VERSION_MP_CHARACTER_CREATION)
+	NBMenu.OnRenderUpdate(menuHandle,function(render,isUpdate)
+		if render then 
+			--[=[
+			print(render.title)
+			print(render.description)
+			for i=1,#render.slots do 
+				print(render.slots[i].type)
+				print(render.slots[i].ltext)
+				print(render.slots[i].rtext)
+				print(render.slots[i].description)
+			end 
+			--]=]
+			local columnid = 1
+			if not isUpdate then 
+				PauseMenu.SetDataSlotEmpty(columnid);
+				PauseMenu.SetColumnTitle(columnid,render.title,render.description or "","");
+			end 
+			
+			local elements = render.slots
+			local data_idx = 0
+			for i=1,#elements do 
+				local item = elements[i]
+				if i == #elements then 
+					if item.type == 'footer' then 
+						PauseMenu.SetOrUpdateNormalDataSlot(columnid, data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, data_idx, item.ltext, " " , 2, 1, isUpdate);
+					else 
+						PauseMenu.SetOrUpdateNormalDataSlot(columnid, data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, data_idx, item.ltext, item.rtext , item.type == 'slider' and 0 or 1, 4, isUpdate); 
+					end 
+				else 
+					PauseMenu.SetOrUpdateNormalDataSlot(columnid, data_idx, PauseMenu.menuid.HEADER_MP_CHARACTER_CREATION, data_idx, item.ltext, item.rtext , item.type == 'slider' and 0 or 1, 4, isUpdate);
 				end 
-				--menu.close()
-				--NB.Utils.Debug.DrawText("Open",data.current.value)
-			end,
-			function(data, menu)
-				print("result cancel")
-				--NB.Utils.Debug.DrawText("Cancel")
-				menu.close()
-			end
-			,
-			function(data, menu)
-				print("result change",data.current.value)
-				if data.current.getter then 
-				print("result open",data.current.label,data.current.setter,data.current.getter.value)
+				data_idx = data_idx + 1
+			end 
+			
+			if not isUpdate then 
+				PauseMenu.DisplayDataSlot(columnid);
+				PauseMenu.SetColumnFocus(columnid, 1, 1);
+				PauseMenu.SetColumnCanJump(columnid, 1);
+				PauseMenu.SetCurrentColumn(columnid)
+			
+				if #elements>7 then 
+					if columnid == 1 or columnid == 6 then 
+						PauseMenu.InitColumnScroll(columnid, 1, 1, 1, 0, 0)
+					end 
 				end 
-				--NB.Utils.Debug.DrawText("Change",data.current.value)
-			end
-			,
-			function()
-				print("result close")
-				--NB.Utils.Debug.DrawText("Close")
-			end
-		)
-		--]=]
-		--[=[
-		local elements = {}
-		local HairColors = {}
-		for i=0,GetNumHairColors() do 
-			--PauseMenu.SetColorData(7,i,GetPedHairRgbColor(i))
-			table.insert(HairColors,{GetPedHairRgbColor(i)})
+			end 
+			
 		end 
-		local Salle = {
-			{label="Apple",description="desc Apple",value=80},
-			{label="Apple2",value=60},
-			{label="Apple3",value=50},
-			{label="Apple4",value=40}
-		}
-		NB.MenuFramework.CloseAll()
-		NB.MenuFramework.Open(
-			'PauseMenu', GetCurrentResourceName(), 'strip',
-			{
-				title  = 'Position Menu',
-				description = "MENU DESCRIPTION",
-				playerlevel = 34,
-				playertag = "player tag",
-				playername = GetPlayerName(PlayerId()),
-				playerdescription = "Good Player",
-				playercrew = "(+#CREW",
-				menurighttext = "menurighttext",
-				style = "stats", --default, scroll, scroll2
-				-- 0: list menu  |  1: link-pad rolling list menu  |  2:  bar menu 142561   | 3:  pad menu   | 4: skillpoint menu  | 5:skilldata menu | 6: link-color-list menu |  7:color menu 
-				elements = Salle
-			},
-			function(data, menu)
-				print("result open",data.current.value)
-				--menu.close()
-				--NB.Utils.Debug.DrawText("Open",data.current.value)
-			end,
-			function(data, menu)
-				print("result cancel")
-				--NB.Utils.Debug.DrawText("Cancel")
-				menu.close()
-			end
-			,
-			function(data, menu)
-				print("result change",data.current.value)
-				--NB.Utils.Debug.DrawText("Change",data.current.value)
-			end
-			,
-			function()
-				print("result close")
-				--NB.Utils.Debug.DrawText("Close")
-			end
-		)
-		--]=]
-		--scroll 
-		--[=[
-		local Salle = {
-			{label="Apple",value="Apple"},
-			{label="Apple123",value="Apple123",description="good health",setter="POINTS"},
-			{label="Apple123",value="Apple123",setter="POINTS"},
-			{label="Apple123",value="Apple123",setter="POINTS"},
-			{label="Apple123",value="Apple123",setter="POINTS"},
-			{label=GetLabelText("FACE_STATPT"),value="Save",type="footer"},
-		}
-		NB.MenuFramework.CloseAll()
-		NB.MenuFramework.Open(
-			'PauseMenu', GetCurrentResourceName(), 'strip',
-			{
-				title  = 'Position Menu',
-				description = "MENU DESCRIPTION",
-				style = "setpoints", --default, scroll, scroll2, stats, heritage, setpoints
-				-- 0: list menu  |  1: link-pad rolling list menu  |  2:  bar menu 142561   | 3:  pad menu   | 4: skillpoint menu  | 5:skilldata menu | 6: link-color-list menu |  7:color menu 
-				elements = Salle
-			},
-			function(data, menu)
-				print("result open",data.current.value)
-				--menu.close()
-				--NB.Utils.Debug.DrawText("Open",data.current.value)
-			end,
-			function(data, menu)
-				print("result cancel")
-				--NB.Utils.Debug.DrawText("Cancel")
-				menu.close()
-			end
-			,
-			function(data, menu)
-				print("result change",data.current.value)
-				--NB.Utils.Debug.DrawText("Change",data.current.value)
-			end
-			,
-			function()
-				print("result close")
-				--NB.Utils.Debug.DrawText("Close")
-			end
-		)
-		--]=]
-		
 	end)
+	
+	
+	--SetMenuAsNoLongerNeeded(menuHandle)
+
+end)
+
+NB.RegisterKeyEvent('test',function(input)
+	switch(input)(
+		case("MENU_LEFT")(function()
+			if HasMenuLoaded(menuHandle) then
+				NBMenu.SetCurrentSlot(menuHandle,GetPos ())
+				print('left',NBMenu.IsCurrentSlotSlider(menuHandle),NBMenu.GetCurrentItemSlot(menuHandle) )
+				if NBMenu.IsCurrentSlotSlider(menuHandle) then
+					NBMenu.SetCurrentItemSlot(menuHandle,NBMenu.GetCurrentItemSlot(menuHandle)-1)
+					NBMenu.ConvertCurrentItemForCallback(menuHandle,"Change")
+				end 
+			end 
+		end),
+		case("MENU_RIGHT")(function()
+			if HasMenuLoaded(menuHandle) then
+				NBMenu.SetCurrentSlot(menuHandle,GetPos ())
+				if NBMenu.IsCurrentSlotSlider(menuHandle) then
+					NBMenu.SetCurrentItemSlot(menuHandle,NBMenu.GetCurrentItemSlot(menuHandle)+1)
+					NBMenu.ConvertCurrentItemForCallback(menuHandle,"Change")
+				end 
+			end 
+		end),
+		case("MENU_UP")(function()
+			if HasMenuLoaded(menuHandle) then
+				NBMenu.SetCurrentSlot(menuHandle,GetPos ())
+				if NBMenu.IsCurrentSlotSlider(menuHandle) then
+					NBMenu.ConvertCurrentItemForCallback(menuHandle,"Change")
+				end 
+			end 
+		end),
+		case("MENU_DOWN")(function()
+			if HasMenuLoaded(menuHandle) then
+				NBMenu.SetCurrentSlot(menuHandle,GetPos ())
+				if NBMenu.IsCurrentSlotSlider(menuHandle) then
+					NBMenu.ConvertCurrentItemForCallback(menuHandle,"Change")
+				end 
+			end 
+		end),
+		case("MENU_ENTER")(function()
+			if HasMenuLoaded(menuHandle) then
+				NBMenu.SetCurrentSlot(menuHandle,GetPos ())
+				NBMenu.ConvertCurrentItemForCallback(menuHandle,"Submit")
+			end 
+		end),
+		case("MENU_BACK")(function()
+			if HasMenuLoaded(menuHandle) then
+				NBMenu.SetCurrentSlot(menuHandle,GetPos ())
+				NBMenu.ConvertCurrentItemForCallback(menuHandle,"Cancel")
+			end 
+		end),
+		case("MENU_ESCAPE")(function()
+			if HasMenuLoaded(menuHandle) then
+				NBMenu.SetCurrentSlot(menuHandle,GetPos ())
+				NBMenu.ConvertCurrentItemForCallback(menuHandle,"Close")
+			end 
+		end),
+		default(function()
+		
+		end)
+	)
+end )
+function GetPos ()
+	local a,b,c = GetPauseMenuSelectionData()
+	if c ~= -1 then 
+		return c+1 
+	else 
+		return 1
+	end 
 end 
+end 
+
+
+
+
