@@ -11,14 +11,12 @@ if IsClient() then
 		"menus",
 		"currentmenu"
 	}
-
 	local menuOpen = function(currentMenu,isUpdate)
 		if not isUpdate then 
 			local namespace, name, data = currentMenu.namespace, currentMenu.name, currentMenu.data
 			local _,lastindex,newmenu = TableInsert("menus",currentMenu)
 			currentMenu.index = lastindex
 			Set("currentmenu",newmenu)
-			
 			return lastindex
 		end 
 		if isUpdate then 
@@ -26,17 +24,12 @@ if IsClient() then
 			return currentMenu.index
 		end 
 	end 
-	
 	local menuClose = function()
 		local _,lastindex,lastmenu= TableRemove("menus")
 		if lastmenu then 
 			Set("currentmenu",lastmenu)
 		end 
 	end 
-	
-	
-	
-	
 	local open = function(namespace, name, data) --button = data.elements
 		local currentMenu = com.menu.ESXMenu.DeepOpen(MENUTYPE,namespace, name)  --獲得目前最新的純表格並關閉
 		currentMenu.refresh = function() menuOpen(currentMenu,true) end
@@ -45,6 +38,5 @@ if IsClient() then
 	local close = function() --button = data.elements
 		menuClose()
 	end
-
 	com.menu.ESXMenu.RegisterType(MENUTYPE, open, close)
 end

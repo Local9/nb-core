@@ -56,19 +56,14 @@ if IsClient() then
 					local tbl = options 
 					for k=1,#options do 
 						options[k] = {label=tbl[k],description='',value=tbl[k],selected = false,index=k,parentindex=i}
-						
 					end 
 				end 
 				options[1].selected = true
-				
 			end 
-			
 			v.selected = false
 			v.index = i 
 		end 
 		buttons[1].selected = true
-		
-		
 		return buttons
 	end 
 	com.menu.ESXMenu.ThrowAway = function(type, namespace, name) --基本不會用到 除非這麼有責任心
@@ -118,7 +113,6 @@ if IsClient() then
 			if (current and changeY) or (current2 and changeX) then 
 				menu.change(menu.data,menu)
 			end 
-			
 		end 
 		menu.getcurrentselection = function()
 			local currentselection 
@@ -194,7 +188,6 @@ if IsClient() then
 		menu.button = {
 			up = function()
 				menu.select(menu.getcurrentselection()-1,1)
-				
 			end,
 			down = function()
 				menu.select(menu.getcurrentselection()+1,1)
@@ -219,10 +212,8 @@ if IsClient() then
 				menu.close()
 			end 
 		}
-		
 		menu.refresh = nil 
 		com.menu.ESXMenu.ThrowAway(type,namespace, name) --關閉大Open,menu依然有結構，不用deepcopy
-		
         return menu
     end
 	com.menu._TEMP_.Clear = 		function(...) return com.lua.utils.Table.ClearTableSomething(com.menu._TEMP_.NBMenu,...) end
