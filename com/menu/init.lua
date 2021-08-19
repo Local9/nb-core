@@ -49,11 +49,14 @@ if IsClient() then
 		local menu = com.menu.ESXMenu.GetOpened(type,namespace, name)
 		menu.data.elements = convertButtons(menu.data.elements,namespace,name)
 		menu.select = function(posVertical,posHorizontal)
+			local current = menu.getcurrentselection()
+			local current2 , changeX
 			if posVertical <= 0 then 
 				posVertical = (posVertical-1)%#menu.data.elements+1
 			elseif posVertical > #menu.data.elements then 
 				posVertical = posVertical%#menu.data.elements
 			end 
+			local changeY = posVertical ~= current
 			for i,v in pairs(menu.data.elements) do 
 				if i == posVertical then 
 					v.selected = true 
@@ -63,6 +66,8 @@ if IsClient() then
 						elseif posHorizontal > #v.options then 
 							posHorizontal = posHorizontal%#v.options
 						end 
+						current2 = menu.getcurrentoptionselection()
+						changeX = current2 ~= posHorizontal
 						for k,c in pairs(v.options) do 
 							if k == posHorizontal then 
 								c.selected = true
@@ -76,11 +81,10 @@ if IsClient() then
 				end 
 				
 			end 
-			return {switch = function(y)
-				if y then 
-					menu.select(posVertical,y)
-				end 
-			end}
+			if (current and changeY) or (current2 and changeX) then 
+				menu.change(menu.data,menu)
+			end 
+			
 		end 
 		menu.getcurrentselection = function()
 			local currentselection 
@@ -111,18 +115,34 @@ if IsClient() then
 		end 
 		menu.button = {
 			up = function()
-				menu.select(menu.getcurrentselection()-1).switch(1)
+				menu.select(menu.getcurrentselection()-1,1)
+				
 			end,
 			down = function()
-				menu.select(menu.getcurrentselection()+1).switch(1)
+				menu.select(menu.getcurrentselection()+1,1)
 			end,
 			left = function()
-				menu.select(menu.getcurrentselection()).switch(menu.getcurrentoptionselection()-1)
+				if menu.getcurrentoptionselection() then 
+					menu.select(menu.getcurrentselection(),menu.getcurrentoptionselection()-1)
+				end 
 			end,
 			right = function()
-				menu.select(menu.getcurrentselection()).switch(menu.getcurrentoptionselection()+1)
-			end
+				if menu.getcurrentoptionselection() then 
+					menu.select(menu.getcurrentselection(),menu.getcurrentoptionselection()+1)
+				end 
+			end,
+			enter = function()
+				menu.submit(menu.data,menu)
+			end,
+			back = function()
+				menu.cancel(menu.data,menu)
+			end,
+			esc = function()
+				menu.close()
+			end 
 		}
+		
+		
 		com.menu.ESXMenu.ThrowAway(type,namespace, name) --關閉大Open,menu依然有結構，不用deepcopy
         return menu
     end
