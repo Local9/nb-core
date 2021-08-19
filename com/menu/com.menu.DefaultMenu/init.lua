@@ -22,7 +22,7 @@ if IsClient() then
 			return lastindex
 		end 
 		if isUpdate then 
-			print_table_server(com.menu.minify(currentMenu))
+			--local simplymenu = com.menu.minify(currentMenu)
 			return currentMenu.index
 		end 
 	end 
