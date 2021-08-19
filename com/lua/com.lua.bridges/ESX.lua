@@ -61,12 +61,15 @@ else
         if ESX.ServerCallbacks[requestId] then ESX.ServerCallbacks[requestId](...) end 
         ESX.ServerCallbacks[requestId] = nil
     end)
+	--註冊一個Menu風格，以及它的開關 
     ESX.UI.Menu.RegisterType = function(type, open, close)
         ESX.UI.Menu.RegisteredTypes[type] = {
             open   = open,
             close  = close
         }
     end
+	--開啟一個菜單，在一個Menu風格，這個菜單有namespace和name作為識別。
+	--開啟同一個風格的同一個namespace和name，會刷新這個底層的目前的資料。
     ESX.UI.Menu.Open = function(type, namespace, name, data, submit, cancel, change, close)
         local menu = {}
         menu.type      = type
@@ -132,8 +135,7 @@ else
         ESX.UI.Menu.RegisteredTypes[type].open(namespace, name, data)
         return menu
     end
-    ESX.UI.Menu.Close = function(type, namespace, name)
-		
+    ESX.UI.Menu.Close = function(type, namespace, name) --基本不會用到 除非這麼有責任心
         for i=1, #ESX.UI.Menu.Opened, 1 do
             if ESX.UI.Menu.Opened[i] then
                 if ESX.UI.Menu.Opened[i].type == type and ESX.UI.Menu.Opened[i].namespace == namespace and ESX.UI.Menu.Opened[i].name == name then
@@ -145,7 +147,7 @@ else
         end
 
     end
-    ESX.UI.Menu.CloseAll = function()
+    ESX.UI.Menu.CloseAll = function() --基本不會用到 會把default以及各種dialog的menu消除
         for i=1, #ESX.UI.Menu.Opened, 1 do
             if ESX.UI.Menu.Opened[i] then
                 ESX.UI.Menu.Opened[i].close()
@@ -153,7 +155,7 @@ else
             end
         end
     end
-    ESX.UI.Menu.GetOpened = function(type, namespace, name)
+    ESX.UI.Menu.GetOpened = function(type, namespace, name)  --得到某個風格menu的最新大Open資料 如果是default，因為Open會堆疊open，這將會是focus[#focus]
         for i=1, #ESX.UI.Menu.Opened, 1 do
             if ESX.UI.Menu.Opened[i] then
                 if ESX.UI.Menu.Opened[i].type == type and ESX.UI.Menu.Opened[i].namespace == namespace and ESX.UI.Menu.Opened[i].name == name then
@@ -162,10 +164,10 @@ else
             end
         end
     end
-    ESX.UI.Menu.GetOpenedMenus = function()
+    ESX.UI.Menu.GetOpenedMenus = function() --得到各個風格menu的最新大Open資料
         return ESX.UI.Menu.Opened
     end
-    ESX.UI.Menu.IsOpen = function(type, namespace, name)
+    ESX.UI.Menu.IsOpen = function(type, namespace, name) --得到某個風格menu的大Open資料是否存在
         return ESX.UI.Menu.GetOpened(type, namespace, name) ~= nil
     end
 end 
