@@ -18,15 +18,15 @@ if IsClient() then
 	end 
 	
 	local menuOpen = function(currentMenu,isUpdate)
-		NB.Threads.CreateLoopOnce("Menu"..MENUTYPE,33,function()
-			local pos = GetPos()
-			local currentmenu = Get("currentmenu")
-			if pos and currentmenu then 
-				currentmenu.select(pos)
-			end 
-			
-		end)
+		
 		NB.Threads.CreateThreadOnce(function()
+			NB.Threads.CreateLoop("Menu"..MENUTYPE,33,function(Break)
+				local pos = GetPos()
+				local currentmenu = Get("currentmenu")
+				if pos and currentmenu then 
+					currentmenu.select(pos)
+				end 
+			end)
 			NB.RegisterKeyEvent('Menu'..MENUTYPE,function(input)
 				switch(input)(
 					case("MENU_LEFT")(function()
@@ -63,30 +63,7 @@ if IsClient() then
 					end),
 					--]=]
 					case("MENU_MOUSE_LEFT_CLICK")(function()
-						local c = PauseMenu.GetValueFromMouse(0.355)
-						if c then 
-							if c == 1 then 
-								local currentmenu = Get("currentmenu")
-								if currentmenu then 
-								
-									currentmenu.button.right()
-									if com.menu.PauseMenu.UI.Render then 
-										local simplymenu = com.menu.minify(Get("currentmenu"))
-										com.menu.PauseMenu.UI.Render(simplymenu,true)
-									end 
-								end 
-							elseif c == -1 then  
-								local currentmenu = Get("currentmenu")
-								if currentmenu then 
-									currentmenu.button.left()
-									if com.menu.PauseMenu.UI.Render then 
-										local simplymenu = com.menu.minify(Get("currentmenu"))
-										com.menu.PauseMenu.UI.Render(simplymenu,true)
-									end 
-								end 
-							end 
-							SetMouseCursorSprite(1)
-						end 
+						
 					end),
 					case("MENU_ENTER","MENU_SELECT")(function()
 						local currentmenu = Get("currentmenu")
