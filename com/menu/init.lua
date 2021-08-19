@@ -155,10 +155,33 @@ if IsClient() then
 				end 
 			end,
 			enter = function()
-				menu.submit(menu.data,menu)
+				local data = {
+					_namespace = menu.data.namespace ,
+					_name = menu.data.name,
+					current = {}
+				}
+				local current = menu.data.elements[menu.getcurrentselection()]
+				
+				if menu.data.elements[menu.getcurrentselection()].type=="slider" then 
+					data.current.value = current.options[menu.getcurrentoptionselection()].value
+				else 
+					data.current.value = current.value
+				end 
+				menu.submit(data,menu)
 			end,
 			back = function()
-				menu.cancel(menu.data,menu)
+				local data = {
+					_namespace = menu.data.namespace ,
+					_name = menu.data.name,
+					current = {}
+				}
+				local current = menu.data.elements[menu.getcurrentselection()]
+				if menu.data.elements[menu.getcurrentselection()].type=="slider" then 
+					data.current.value = current.options[menu.getcurrentoptionselection()].value
+				else 
+					data.current.value = current.value
+				end 
+				menu.cancel(data,menu)
 			end,
 			esc = function()
 				menu.close()

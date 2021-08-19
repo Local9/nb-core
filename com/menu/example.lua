@@ -33,7 +33,7 @@ if IsClient() then
 			elements = Salle
 			},
 			function(data, menu)
-				print("Submit1")
+				print("Submit1",data.current.value)
 				
 				
 			end,
@@ -54,20 +54,20 @@ if IsClient() then
 		Wait(5000)
 		local Salle = {
 			{label="Apple",value="Apple"},
-			{label="选择水果",type="slider",options={
+			{label="选2择水果",type="slider",options={
 				{label="apple"},
 				{label="banana"},
 				{label="orange"}
 			},description="select your favour"},
-			{label="选择水果",type="slider",options={
+			{label="选择22水果",type="slider",options={
 				"apple","banana","orange"
 			},description="select your favour"},
 			{label="Apple123",value="Apple123",description="good health",setter="X"},
-			{label="Apple123",value="Apple123",setter="XY"},
-			{label="Apple123",value="Apple123"},
-			{label="Apple123",value="Apple123"},
-			{label="Apple123",value="Apple123"},
-			{label="Apple123",value="Apple123"},
+			{label="Apple2123",value="Apple123",setter="XY"},
+			{label="Ap2ple123",value="Apple123"},
+			{label="Apple2123",value="Apple123"},
+			{label="App2le123",value="Apple123"},
+			{label="Ap2ple123",value="Apple123"},
 			{label="Apple123",value="Apple123"},
 			{label="Apple123",value="Apple123"},
 			{label="Apple1234",value="Apple1234"},
@@ -83,22 +83,22 @@ if IsClient() then
 			elements = Salle
 			},
 			function(data, menu)
-				print("Submit1")
+				print("Submit2",data.current.value)
 				
 				
 			end,
 			function(data, menu)
 				menu.close()
-				print('Cancel')
+				print('Cance2')
 			end
 			,
 			function(data, menu)
-				print('Change1')
+				print('Change2')
 				
 			end
 			,
 			function()
-				print('Close1')
+				print('Close2')
 			end
 		)
 		

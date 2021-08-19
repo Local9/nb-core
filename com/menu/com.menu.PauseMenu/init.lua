@@ -14,35 +14,31 @@ if IsClient() then
 
 	local function GetPos() 
 		local a,b,c = GetPauseMenuSelectionData() 
-		
-			return c ~= -1 and c+1 or 1 
-		
+		return c ~= -1 and c+1 or 1 
 	end 
 	
 	local menuOpen = function(currentMenu,isUpdate)
-
-		if not isUpdate then 
-			local namespace, name, data = currentMenu.namespace, currentMenu.name, currentMenu.data
-			local _,lastindex,newmenu = TableInsert("menus",currentMenu)
-			currentMenu.index = lastindex
-			Set("currentmenu",newmenu)
-			local menu = newmenu
+		NB.Threads.CreateLoopOnce("Menu"..MENUTYPE,33,function()
 			local pos = GetPos()
-			if pos then 
-				menu.select(pos)
+			local currentmenu = Get("currentmenu")
+			if pos and currentmenu then 
+				currentmenu.select(pos)
 			end 
-			CreateThread(function() repeat Wait(33) menu.select(GetPos()) until false end)
-			NB.RegisterKeyEvent('Menu'..namespace..name,function(input)
+		end)
+		NB.Threads.CreateThreadOnce(function()
+			NB.RegisterKeyEvent('Menu'..MENUTYPE,function(input)
 				switch(input)(
 					case("MENU_LEFT")(function()
-						menu.button.left()
+						local currentmenu = Get("currentmenu")
+						currentmenu.button.left()
 						if com.menu.PauseMenu.UI.Render then 
 							local simplymenu = com.menu.minify(Get("currentmenu"))
 							com.menu.PauseMenu.UI.Render(simplymenu,true)
 						end 
 					end),
 					case("MENU_RIGHT")(function()
-						menu.button.right()
+						local currentmenu = Get("currentmenu")
+						currentmenu.button.right()
 						if com.menu.PauseMenu.UI.Render then 
 							local simplymenu = com.menu.minify(Get("currentmenu"))
 							com.menu.PauseMenu.UI.Render(simplymenu,true)
@@ -62,13 +58,16 @@ if IsClient() then
 					end),
 					--]=]
 					case("MENU_ENTER","MENU_SELECT")(function()
-						menu.button.enter()
+						local currentmenu = Get("currentmenu")
+						currentmenu.button.enter()
 					end),
 					case("MENU_BACK")(function()
-						menu.button.back()
+						local currentmenu = Get("currentmenu")
+						currentmenu.button.back()
 					end),
 					case("MENU_ESCAPE")(function()
-						menu.button.esc()
+						local currentmenu = Get("currentmenu")
+						currentmenu.button.esc()
 					end),
 					default(function()
 					end)
@@ -76,6 +75,15 @@ if IsClient() then
 				
 				
 			end )
+		end)
+		if not isUpdate then 
+			local namespace, name, data = currentMenu.namespace, currentMenu.name, currentMenu.data
+			local _,lastindex,newmenu = TableInsert("menus",currentMenu)
+			currentMenu.index = lastindex
+			Set("currentmenu",newmenu)
+			local menu = newmenu
+			
+			
 			if com.menu.PauseMenu.UI.Render then 
 				local simplymenu = com.menu.minify(Get("currentmenu"))
 				com.menu.PauseMenu.UI.Render(simplymenu,isUpdate)
@@ -97,10 +105,19 @@ if IsClient() then
 		local _,lastindex,lastmenu= TableRemove("menus")
 		if lastmenu then 
 			Set("currentmenu",lastmenu)
+			if com.menu.PauseMenu.UI.Render then 
+				local simplymenu = com.menu.minify(Get("currentmenu"))
+				com.menu.PauseMenu.UI.Render(simplymenu,isUpdate)
+				--print_table_server(simplymenu)
+			end 
+		else 
+			Clear("currentmenu")
+			if com.menu.PauseMenu.UI.RenderStop then 
+				com.menu.PauseMenu.UI.RenderStop()
+			end 
 		end 
-		if com.menu.PauseMenu.UI.RenderStop then 
-			com.menu.PauseMenu.UI.RenderStop()
-		end 
+		
+		
 	end 
 	local open = function(namespace, name, data) --button = data.elements
 		local currentMenu = com.menu.ESXMenu.DeepOpen(MENUTYPE,namespace, name)  --獲得目前最新的純表格並關閉
