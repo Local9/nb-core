@@ -21,10 +21,12 @@ if IsClient() then
 		
 		NB.Threads.CreateThreadOnce(function()
 			NB.Threads.CreateLoop("Menu"..MENUTYPE,33,function(Break)
-				local pos = GetPos()
-				local currentmenu = Get("currentmenu")
-				if pos and currentmenu then 
-					currentmenu.select(pos)
+				if N_0x2e22fefa0100275e() then 
+					local pos = GetPos()
+					local currentmenu = Get("currentmenu")
+					if pos and currentmenu then 
+						currentmenu.select(pos)
+					end 
 				end 
 			end)
 			NB.RegisterKeyEvent('Menu'..MENUTYPE,function(input)
