@@ -3,7 +3,31 @@ if IsClient() then
 		_TEMP_ = {NBMenu={}}
 	}
 	com.menu.ESXMenu = ESX.UI.Menu
-	local convertButtons = function(buttons, namespace, name)
+	com.menu.minify = function(menu)
+		local menu = deepcopy(menu)
+		local items = menu.data.elements
+		local result = {
+			title = menu.data.title,
+			description = menu.data.description,
+			slots = {}
+		}
+		local buttons = menu.data.elements
+		for i,v in pairs(buttons) do 
+			if not result.slots[i] then result.slots[i] = {} end 
+			result.slots[i].lefttext = v.label
+			if buttons[i].type == 'slider' then 
+				local options = v.options 
+				for k,c in pairs(options) do 
+					if c.selected then 
+						result.slots[i].righttext = c.label 
+						break
+					end 
+				end 
+			end 
+		end 
+		return result
+	end 
+	com.menu.convertButtons = function(buttons, namespace, name)
 		for i,v in pairs(buttons) do 
 			v._namespace = namespace 
 			v._name = name 
@@ -22,18 +46,26 @@ if IsClient() then
 						if not c.description then c.description = '' end 
 						if not c.value then c.value = c.label end 
 						c.selected = false
+						c.index = k
+						c.parentindex = i
 					end 
 				else 
 					local tbl = options 
-					for i=1,#options do 
-						options[i] = {label=tbl[i],description='',value=tbl[i],selected = false}
+					for k=1,#options do 
+						options[k] = {label=tbl[k],description='',value=tbl[k],selected = false,index=k,parentindex=i}
+						
 					end 
 				end 
 				options[1].selected = true
+				
 			end 
+			
 			v.selected = false
+			v.index = i 
 		end 
 		buttons[1].selected = true
+		
+		
 		return buttons
 	end 
 	com.menu.ESXMenu.ThrowAway = function(type, namespace, name) --基本不會用到 除非這麼有責任心
@@ -47,7 +79,7 @@ if IsClient() then
     end
 	com.menu.ESXMenu.DeepOpen = function(type, namespace, name)
 		local menu = com.menu.ESXMenu.GetOpened(type,namespace, name)
-		menu.data.elements = convertButtons(menu.data.elements,namespace,name)
+		menu.data.elements = com.menu.convertButtons(menu.data.elements,namespace,name)
 		menu.select = function(posVertical,posHorizontal)
 			local current = menu.getcurrentselection()
 			local current2 , changeX
@@ -79,7 +111,6 @@ if IsClient() then
 				else 
 					v.selected = false
 				end 
-				
 			end 
 			if (current and changeY) or (current2 and changeX) then 
 				menu.change(menu.data,menu)
@@ -109,6 +140,50 @@ if IsClient() then
 				end 
 			end 
 			return currentselection
+		end 
+		menu.getcurrentitem = function()
+			local currentselection 
+			for i,v in pairs(menu.data.elements) do 
+				if v.selected then 
+					currentselection = v
+					break
+				end 
+			end 
+			return currentselection
+		end 
+		menu.getitem = function(posVertical)
+			if posVertical <= 0 then 
+				posVertical = (posVertical-1)%#menu.data.elements+1
+			elseif posVertical > #menu.data.elements then 
+				posVertical = posVertical%#menu.data.elements
+			end 
+			return menu.data.elements[posVertical]
+		end 
+		menu.getitemselection = function(posVertical)
+			local v = menu.getitem(posVertical)
+			local currentselection
+			if v.selected and v.type == 'slider' then 
+				for k,c in pairs(v.options) do 
+					if c.selected then 
+						currentselection = k
+						break
+					end 
+				end 
+			end 
+			return currentselection
+		end 
+		menu.getitemselecteditem = function(posVertical)
+			local v = menu.getitem(posVertical).options
+			local currentselection
+			if v.selected and v.type == 'slider' then 
+				for k,c in pairs(v.options) do 
+					if c.selected then 
+						currentselection = k
+						break
+					end 
+				end 
+			end 
+			return v[currentselection]
 		end 
 		menu.switch = function(posHorizontal)
 			menu.select(menu.getcurrentselection(),posHorizontal)

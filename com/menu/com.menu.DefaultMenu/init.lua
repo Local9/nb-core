@@ -18,10 +18,11 @@ if IsClient() then
 			local _,lastindex,newmenu = TableInsert("menus",currentMenu)
 			currentMenu.index = lastindex
 			Set("currentmenu",newmenu)
+			
 			return lastindex
 		end 
 		if isUpdate then 
-			print_table_server(currentMenu)
+			print_table_server(com.menu.minify(currentMenu))
 			return currentMenu.index
 		end 
 	end 
