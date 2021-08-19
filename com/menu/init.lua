@@ -45,7 +45,7 @@ if IsClient() then
             end
         end
     end
-	com.menu.ESXMenu.DeepOpen = function(type, namespace, name) --基本不會用到 除非這麼有責任心
+	com.menu.ESXMenu.DeepOpen = function(type, namespace, name)
 		local menu = com.menu.ESXMenu.GetOpened(type,namespace, name)
 		menu.data.elements = convertButtons(menu.data.elements,namespace,name)
 		menu.select = function(posVertical,posHorizontal)
