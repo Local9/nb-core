@@ -19,9 +19,9 @@ if IsClient() then
 			{label="Apple123",value="Apple123",setter="XY"},
 			{label="保存",value="Save",type="footer"},
 		}
-		local menu = com.menu.ESXMenuFramework.Open(
-			'PauseMenu', GetCurrentResourceName(), 'shop',
-			{
+		com.menu.ESXMenu.Open(
+			'default', GetCurrentResourceName(), 'shop',
+			{--data
 			css =  'superete',
 			title =  'Magasin',
 			description = "Good",
@@ -35,13 +35,7 @@ if IsClient() then
 				print('Close')
 			end
 		)
-		NBMenu.SetCurrentSlot(menu.namespace,menu.name,2)
-		print(NBMenu.GetCurrentSlot(menu.namespace,menu.name),NBMenu.IsCurrentSlotSlider(menu.namespace,menu.name))
-		NBMenu.SetCurrentItemSlot(menu.namespace,menu.name,2)
-		print(NBMenu.GetItemSlotPos(menu.namespace,menu.name,2))
-		--menu.close()
-		--NBMenu.SetMenuAsNoLongerNeeded(menuHandle)
-		Wait(300)
+
 		
 	end)
 end 

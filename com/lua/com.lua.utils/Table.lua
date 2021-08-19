@@ -87,24 +87,27 @@ com.lua.utils.Table.InsertTableSomethingTable = function(obj,...)
 	table.remove(args,#args)
 	local tbl,idx = com.lua.utils.Table.GetLastSlot(obj,table.unpack(args))
 	table.insert(tbl[idx],value)
-	local rtbl = tbl[idx]
-	local rlength = #rtbl 
+	local rtbl = tbl and tbl[idx]
+	local rlength = rtbl and #rtbl
+	if rlength == 0 then return nil, nil end 
 	return rtbl,rlength
 end 
 
 com.lua.utils.Table.RemoveTableSomethingTable = function(obj,...)
 	local args = {...}
 	local index = args[#args]
+	local tbl,idx
 	if type(index) == 'number' or (#args>1 and index==nil) then 
 		table.remove(args,#args)
-		local tbl,idx = com.lua.utils.Table.GetLastSlot(obj,table.unpack(args))
+		tbl,idx = com.lua.utils.Table.GetLastSlot(obj,table.unpack(args))
 		table.remove(tbl[idx],index)
 	else 
-		local tbl,idx = com.lua.utils.Table.GetLastSlot(obj,table.unpack(args))
+		tbl,idx = com.lua.utils.Table.GetLastSlot(obj,table.unpack(args))
 		table.remove(tbl[idx])
 	end 
-	local rtbl = tbl[idx]
-	local rlength = #rtbl 
+	local rtbl = tbl and tbl[idx]
+	local rlength = rtbl and #rtbl
+	if rlength == 0 then return nil, nil end 
 	return rtbl,rlength
 end 
 

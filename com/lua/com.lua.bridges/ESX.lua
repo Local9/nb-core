@@ -108,7 +108,7 @@ else
             end
         end
         menu.refresh = function()
-            ESX.UI.Menu.RegisteredTypes[type].open(namespace, name, menu.data, true)
+            ESX.UI.Menu.RegisteredTypes[type].open(namespace, name, menu.data)
         end
         menu.setElement = function(i, key, val)
             menu.data.elements[i][key] = val
