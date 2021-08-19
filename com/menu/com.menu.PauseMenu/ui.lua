@@ -13,16 +13,7 @@ function PauseMenu.StartPauseMenu(versionHash)
 		SetFrontendActive(false);
 		ActivateFrontendMenu(1399975061, false, -1);
 	end
-	Wait(333)
-	if (IsPauseMenuActive()  or  IsPauseMenuRestarting()) then
-		if GetCurrentFrontendMenuVersion() ~= 1399975061 then
-			SetFrontendActive(false)
-		end
-	else
-		SetFrontendActive(false);
-		ActivateFrontendMenu(1399975061, false, -1);
-	end
-	Wait(333)
+
 	PauseMenu.SetCurrentColumn(-1)
 end
 function PauseMenu.InitColumnScroll(Param0, Param1, Param2, Param3, Param4, Param5)
@@ -30,6 +21,7 @@ function PauseMenu.InitColumnScroll(Param0, Param1, Param2, Param3, Param4, Para
 		send(Param0,false,Param1,Param2,Param3,true,Param4,Param5);
 	end 
 end
+
 function PauseMenu.SetColumnCanJump(Param0, Param1)
 	if start("SET_COLUMN_CAN_JUMP") then
 		send(Param0,not Param1);
@@ -364,13 +356,16 @@ if IsClient() then
 			PauseMenu.SetColumnFocus(columnid, 1, 1);
 			PauseMenu.SetColumnCanJump(columnid, 1);
 			PauseMenu.SetCurrentColumn(columnid)
-			if not isUpdate then 
-				if #elements>7 then 
-					if columnid == 1 or columnid == 6 then 
-						PauseMenu.InitColumnScroll(columnid, 1, 1, 1, 0, 0)
-					end 
-				end 
+			if #elements>7 then 
+				if columnid == 1 then 
+					PauseMenu.InitColumnScroll(columnid, 1, 1, 1, 0, 0)
+				end
+			else 
+				if columnid == 1 then 
+					PauseMenu.InitColumnScroll(columnid, 1, 1, 1, -1, 0)
+				end
 			end 
+			
 		end 
 	end 
 end 
