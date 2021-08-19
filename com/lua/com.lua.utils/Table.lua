@@ -89,8 +89,8 @@ com.lua.utils.Table.InsertTableSomethingTable = function(obj,...)
 	table.insert(tbl[idx],value)
 	local rtbl = tbl and tbl[idx]
 	local rlength = rtbl and #rtbl
-	if rlength == 0 then return nil, nil end 
-	return rtbl,rlength
+	if rlength == 0 then return nil, nil, nil end 
+	return rtbl,rlength,rtbl[#rtbl]
 end 
 
 com.lua.utils.Table.RemoveTableSomethingTable = function(obj,...)
@@ -107,7 +107,7 @@ com.lua.utils.Table.RemoveTableSomethingTable = function(obj,...)
 	end 
 	local rtbl = tbl and tbl[idx]
 	local rlength = rtbl and #rtbl
-	if rlength == 0 then return nil, nil end 
-	return rtbl,rlength
+	if rlength == 0 then return nil, nil, nil end 
+	return rtbl,rlength,rtbl[#rtbl]
 end 
 
