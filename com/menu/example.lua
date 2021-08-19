@@ -50,7 +50,8 @@ if IsClient() then
 				print('Close1')
 			end
 		)
-		
+		Wait(3000)
+		menu.refresh()
 		
 	end)
 end 

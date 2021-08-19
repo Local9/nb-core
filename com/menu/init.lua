@@ -142,8 +142,9 @@ if IsClient() then
 			end 
 		}
 		
-		
+		menu.refresh = nil 
 		com.menu.ESXMenu.ThrowAway(type,namespace, name) --關閉大Open,menu依然有結構，不用deepcopy
+		
         return menu
     end
 	com.menu._TEMP_.Clear = 		function(...) return com.lua.utils.Table.ClearTableSomething(com.menu._TEMP_.NBMenu,...) end
