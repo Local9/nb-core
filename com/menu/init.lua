@@ -2,6 +2,8 @@ if IsClient() then
 	com.menu = {
 		_TEMP_ = {NBMenu={}}
 	}
+	com.menu.Default = {UI={}}
+	com.menu.PauseMenu = {UI={}}
 	com.menu.ESXMenu = ESX.UI.Menu
 	com.menu.minify = function(menu)
 		local menu = deepcopy(menu)
@@ -78,119 +80,69 @@ if IsClient() then
 	com.menu.ESXMenu.DeepOpen = function(type, namespace, name)
 		local menu = com.menu.ESXMenu.GetOpened(type,namespace, name)
 		menu.data.elements = com.menu.convertButtons(menu.data.elements,namespace,name)
+		menu.data.elementpos = {}
+		for i,v in pairs(menu.data.elements) do
+			if v.type == 'slider' then 
+				menu.data.elementpos[i] = 1
+			end 
+		end 
+		menu.pos = 1
 		menu.select = function(posVertical,posHorizontal)
-			local current = menu.getcurrentselection()
-			local current2 , changeX
 			if posVertical <= 0 then 
 				posVertical = (posVertical-1)%#menu.data.elements+1
 			elseif posVertical > #menu.data.elements then 
 				posVertical = posVertical%#menu.data.elements
 			end 
+			menu.pos = posVertical
+			local current = menu.getcurrentselection()
+			local current2 , changeX
 			local changeY = posVertical ~= current
-			for i,v in pairs(menu.data.elements) do 
-				if i == posVertical then 
-					v.selected = true 
-					if posHorizontal and v.type == 'slider' then 
-						if posHorizontal <= 0 then 
-							posHorizontal = (posHorizontal-1)%#v.options+1
-						elseif posHorizontal > #v.options then 
-							posHorizontal = posHorizontal%#v.options
-						end 
-						current2 = menu.getcurrentoptionselection()
-						changeX = current2 ~= posHorizontal
-						for k,c in pairs(v.options) do 
-							if k == posHorizontal then 
-								c.selected = true
-							else 
-								c.selected = false
+			if posHorizontal then 
+				for i,v in pairs(menu.data.elements) do 
+					if i == posVertical then 
+						v.selected = true 
+						if posHorizontal and v.type == 'slider' then 
+							if posHorizontal <= 0 then 
+								posHorizontal = (posHorizontal-1)%#v.options+1
+							elseif posHorizontal > #v.options then 
+								posHorizontal = posHorizontal%#v.options
+							end 
+							menu.data.elementpos[menu.getcurrentselection()] = posHorizontal
+							current2 = menu.getcurrentoptionselection()
+							changeX = current2 ~= posHorizontal
+							for k,c in pairs(v.options) do 
+								if k == posHorizontal then 
+									c.selected = true
+								else 
+									c.selected = false
+								end 
 							end 
 						end 
+					else 
+						v.selected = false
 					end 
-				else 
-					v.selected = false
 				end 
 			end 
 			if (current and changeY) or (current2 and changeX) then 
 				menu.change(menu.data,menu)
 			end 
 		end 
+		
 		menu.getcurrentselection = function()
-			local currentselection 
-			for i,v in pairs(menu.data.elements) do 
-				if v.selected then 
-					currentselection = i
-					break
-				end 
-			end 
-			return currentselection
+			return menu.pos
 		end 
 		menu.getcurrentoptionselection = function()
-			local currentselection 
-			for i,v in pairs(menu.data.elements) do 
-				if v.selected and v.type == 'slider' then 
-					for k,c in pairs(v.options) do 
-						if c.selected then 
-							currentselection = k
-							break
-						end 
-					end 
-				end 
-			end 
-			return currentselection
-		end 
-		menu.getcurrentitem = function()
-			local currentselection 
-			for i,v in pairs(menu.data.elements) do 
-				if v.selected then 
-					currentselection = v
-					break
-				end 
-			end 
-			return currentselection
-		end 
-		menu.getitem = function(posVertical)
-			if posVertical <= 0 then 
-				posVertical = (posVertical-1)%#menu.data.elements+1
-			elseif posVertical > #menu.data.elements then 
-				posVertical = posVertical%#menu.data.elements
-			end 
-			return menu.data.elements[posVertical]
-		end 
-		menu.getitemselection = function(posVertical)
-			local v = menu.getitem(posVertical)
-			local currentselection
-			if v.selected and v.type == 'slider' then 
-				for k,c in pairs(v.options) do 
-					if c.selected then 
-						currentselection = k
-						break
-					end 
-				end 
-			end 
-			return currentselection
-		end 
-		menu.getitemselecteditem = function(posVertical)
-			local v = menu.getitem(posVertical).options
-			local currentselection
-			if v.selected and v.type == 'slider' then 
-				for k,c in pairs(v.options) do 
-					if c.selected then 
-						currentselection = k
-						break
-					end 
-				end 
-			end 
-			return v[currentselection]
+			return menu.data.elementpos[menu.getcurrentselection()]
 		end 
 		menu.switch = function(posHorizontal)
 			menu.select(menu.getcurrentselection(),posHorizontal)
 		end 
 		menu.button = {
 			up = function()
-				menu.select(menu.getcurrentselection()-1,1)
+				menu.select(menu.getcurrentselection()-1)
 			end,
 			down = function()
-				menu.select(menu.getcurrentselection()+1,1)
+				menu.select(menu.getcurrentselection()+1)
 			end,
 			left = function()
 				if menu.getcurrentoptionselection() then 
