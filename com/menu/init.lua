@@ -15,11 +15,14 @@ if IsClient() then
 		for i,v in pairs(buttons) do 
 			if not result.slots[i] then result.slots[i] = {} end 
 			result.slots[i].lefttext = v.label
+			result.slots[i].righttext = v.righttext
+			result.slots[i].selection = false
 			if buttons[i].type == 'slider' then 
 				local options = v.options 
 				for k,c in pairs(options) do 
 					if c.selected then 
 						result.slots[i].righttext = c.label 
+						result.slots[i].selection = true
 						break
 					end 
 				end 
@@ -32,7 +35,7 @@ if IsClient() then
 			v._namespace = namespace 
 			v._name = name 
 			if not v.description then v.description = '' end 
-			if not v.righttext then v.righttext = '' end 
+			--if not v.righttext then v.righttext = '' end 
 			if not v.label then error("elements = {{label='apple'},{label='banana'}}",2) end 
 			if not v.value then v.value = v.label end 
 			if v.setter then v.getter = {};v.getter.value = 0 end
