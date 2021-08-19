@@ -9,35 +9,36 @@ if IsClient() then
 	local GetTableLastItem	= 	function(x) return (#Get(x) > 0 and Get(x)[#Get(x)]) or nil end
 	local Keys = {
 		"menus",
-		"focus"
+		"currentmenu"
 	}
-	
 
-	menuOpen = function(currentMenu)
+	local menuOpen = function(currentMenu)
 		local namespace, name, data = currentMenu.namespace, currentMenu.name, currentMenu.data
-		local _,lastindex,lastmenu = TableInsert("menus",currentMenu)
-		lastmenu.index = lastindex
-		Set("focus",lastmenu)
-		
-		
+		local _,lastindex,newmenu = TableInsert("menus",currentMenu)
+		currentMenu.index = lastindex
+		Set("currentmenu",newmenu)
+		print_table_server(newmenu)
+		return lastindex
 	end 
 	
-	menuClose = function(namespace, name)
-		print(namespace, name);
-		
+	local menuClose = function()
 		local _,lastindex,lastmenu= TableRemove("menus")
 		if lastmenu then 
-			Set("focus",lastmenu)
+			Set("currentmenu",lastmenu)
 		end 
 	end 
 	
 	
 	
 	
-	local Open = function(namespace, name, data) --button = data.elements
-		local currentMenu = com.menu.ESXMenu.DeepOpen(MENUTYPE,namespace, name)  --獲得目前最新的純表格的DeepCopy並關閉
-		menuOpen(currentMenu)
+	local open = function(namespace, name, data) --button = data.elements
+		local currentMenu = com.menu.ESXMenu.DeepOpen(MENUTYPE,namespace, name)  --獲得目前最新的純表格並關閉
+		local handle = menuOpen(currentMenu)
+		
+	end
+	local close = function() --button = data.elements
+		menuClose()
 	end
 
-	com.menu.ESXMenu.RegisterType(MENUTYPE, Open)
+	com.menu.ESXMenu.RegisterType(MENUTYPE, open, close)
 end
