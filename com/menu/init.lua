@@ -66,7 +66,7 @@ if IsClient() then
 		buttons[1].selected = true
 		return buttons
 	end 
-	com.menu.ESXMenu.ThrowAway = function(type, namespace, name) --基本不會用到 除非這麼有責任心
+	com.menu.ESXMenu.ThrowAway = function(type, namespace, name) --Close基本不會用到 除非這麼有責任心 Close還會call close 如果想丟掉Open就不用Close了
         for i=1, #com.menu.ESXMenu.Opened, 1 do
             if com.menu.ESXMenu.Opened[i] then
                 if com.menu.ESXMenu.Opened[i].type == type and com.menu.ESXMenu.Opened[i].namespace == namespace and com.menu.ESXMenu.Opened[i].name == name then
@@ -212,7 +212,7 @@ if IsClient() then
 				menu.close()
 			end 
 		}
-		menu.refresh = nil 
+		menu.refresh = nil --交給中間框架吧
 		com.menu.ESXMenu.ThrowAway(type,namespace, name) --關閉大Open,menu依然有結構，不用deepcopy
         return menu
     end
