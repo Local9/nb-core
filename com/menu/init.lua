@@ -111,7 +111,7 @@ if IsClient() then
 			return currentselection
 		end 
 		menu.switch = function(posHorizontal)
-			menu.select(menu.getcurrentselection()).switch(posHorizontal)
+			menu.select(menu.getcurrentselection(),posHorizontal)
 		end 
 		menu.button = {
 			up = function()
