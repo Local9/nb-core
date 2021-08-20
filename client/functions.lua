@@ -46,7 +46,7 @@ NB.CreateLoad = function(typeLoading,name,cb)
 		end)
 	)
 end 
-
+--[=[
 CreateThread(function()
 	for i=1,21 do 
 		NB.CreateLoad("model","dlc_sol",function(handle)
@@ -60,3 +60,4 @@ CreateThread(function()
 		end )
 	end 
 end)
+--]=]
