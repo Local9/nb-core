@@ -14,7 +14,7 @@ function PauseMenu.StartPauseMenu(versionHash)
 		ActivateFrontendMenu(1399975061, false, -1);
 	end
 
-	PauseMenu.SetCurrentColumn(-1)
+	
 end
 function PauseMenu.InitColumnScroll(Param0, Param1, Param2, Param3, Param4, Param5)
 	if start("INIT_COLUMN_SCROLL") then 
@@ -326,21 +326,23 @@ if IsClient() then
 	com.menu.PauseMenu.UI.RenderStop = function()
 		SetFrontendActive(false);
 	end 
-	com.menu.PauseMenu.UI.Render = function(simplymenu,isUpdate)
+	com.menu.PauseMenu.UI.Render = function(simplymenu,isUpdate,slot)
 		PauseMenu.StartPauseMenu(PauseMenu.versionid.FE_MENU_VERSION_MP_CHARACTER_CREATION)
 		local render = simplymenu
 		if render then 
 			local columnid = 1
+			PauseMenu.SetCurrentColumn(-1)
 			if not isUpdate then 
+				
 				PauseMenu.SetDataSlotEmpty(columnid);
 				PauseMenu.SetColumnTitle(columnid,render.title,render.description or "","");
 			end 
 			local elements = render.slots
 			local data_idx = 0
-			
-			for i=1,#elements do 
-				local item = elements[i]
-				if i == #elements then 
+			if slot then 
+				data_idx = slot - 1
+				local item = elements[slot]
+				if slot == #elements then 
 					if item.type == 'footer' then 
 						PauseMenu.SetOrUpdateNormalDataSlot(columnid, data_idx, PauseMenu.menuid.CREATION_HERITAGE, data_idx, item.lefttext, " " , 2, 1, isUpdate);
 					else 
@@ -349,13 +351,29 @@ if IsClient() then
 				else 
 					PauseMenu.SetOrUpdateNormalDataSlot(columnid, data_idx, PauseMenu.menuid.CREATION_HERITAGE, data_idx, item.lefttext, item.righttext , item.selection and 0 or 1, 4, isUpdate);
 				end 
-				data_idx = data_idx + 1
+			else 
+				for i=1,#elements do 
+					local item = elements[i]
+					if i == #elements then 
+						if item.type == 'footer' then 
+							PauseMenu.SetOrUpdateNormalDataSlot(columnid, data_idx, PauseMenu.menuid.CREATION_HERITAGE, data_idx, item.lefttext, " " , 2, 1, isUpdate);
+						else 
+							PauseMenu.SetOrUpdateNormalDataSlot(columnid, data_idx, PauseMenu.menuid.CREATION_HERITAGE, data_idx, item.lefttext, item.righttext , item.selection and 0 or 1, 4, isUpdate); 
+						end 
+					else 
+						PauseMenu.SetOrUpdateNormalDataSlot(columnid, data_idx, PauseMenu.menuid.CREATION_HERITAGE, data_idx, item.lefttext, item.righttext , item.selection and 0 or 1, 4, isUpdate);
+					end 
+					data_idx = data_idx + 1
+				end 
 			end 
-			
 			PauseMenu.DisplayDataSlot(columnid);
+			PauseMenu.SetCurrentColumn(columnid)
 			PauseMenu.SetColumnFocus(columnid, 1, 1);
 			PauseMenu.SetColumnCanJump(columnid, 1);
-			PauseMenu.SetCurrentColumn(columnid)
+				
+			
+			
+			
 			if #elements>7 then 
 				if columnid == 1 then 
 					PauseMenu.InitColumnScroll(columnid, 1, 1, 1, 0, 0)

@@ -36,8 +36,8 @@ if IsClient() then
 						if currentmenu then 
 							currentmenu.button.left()
 							if com.menu.PauseMenu.UI.Render then 
-								local simplymenu = com.menu.minify(Get("currentmenu"))
-								com.menu.PauseMenu.UI.Render(simplymenu,true)
+								local simplymenu = com.menu.minify(currentmenu)
+								com.menu.PauseMenu.UI.Render(simplymenu,true,currentmenu.getcurrentselection())
 							end 
 						end 
 					end),
@@ -46,8 +46,8 @@ if IsClient() then
 						if currentmenu then 
 							currentmenu.button.right()
 							if com.menu.PauseMenu.UI.Render then 
-								local simplymenu = com.menu.minify(Get("currentmenu"))
-								com.menu.PauseMenu.UI.Render(simplymenu,true)
+								local simplymenu = com.menu.minify(currentmenu)
+								com.menu.PauseMenu.UI.Render(simplymenu,true,currentmenu.getcurrentselection())
 							end 
 						end 
 					end),
@@ -64,8 +64,29 @@ if IsClient() then
 						--menu.button.down()
 					end),
 					--]=]
-					case("MENU_MOUSE_LEFT_CLICK")(function()
-						
+					case("MENU_MOUSE_LEFT_CLICK")(function()--[=[
+						local c = PauseMenu.GetValueFromMouse(0.375)
+						if c then 
+							if c == 1 then 
+								local currentmenu = Get("currentmenu")
+								if currentmenu then 
+									currentmenu.button.right()
+									if com.menu.PauseMenu.UI.Render then 
+										local simplymenu = com.menu.minify(currentmenu)
+										com.menu.PauseMenu.UI.Render(simplymenu,true,currentmenu.getcurrentselection())
+									end 
+								end 
+							elseif c == -1 then 
+								local currentmenu = Get("currentmenu")
+								if currentmenu then 
+									currentmenu.button.left()
+									if com.menu.PauseMenu.UI.Render then 
+										local simplymenu = com.menu.minify(currentmenu)
+										com.menu.PauseMenu.UI.Render(simplymenu,true,currentmenu.getcurrentselection())
+									end 
+								end 
+							end 
+						end --]=]
 					end),
 					case("MENU_ENTER","MENU_SELECT")(function()
 						local currentmenu = Get("currentmenu")
