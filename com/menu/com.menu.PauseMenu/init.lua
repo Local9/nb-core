@@ -20,7 +20,7 @@ if IsClient() then
 	local menuOpen = function(currentMenu,isUpdate)
 		
 		NB.Threads.CreateThreadOnce(function()
-			NB.Threads.CreateLoop("Menu"..MENUTYPE,33,function(Break)
+			NB.Threads.CreateLoop("Menu"..MENUTYPE,333,function(Break)
 				if N_0x2e22fefa0100275e() then 
 					local pos = GetPos()
 					local currentmenu = Get("currentmenu")

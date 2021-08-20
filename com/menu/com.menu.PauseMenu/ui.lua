@@ -330,13 +330,8 @@ if IsClient() then
 		PauseMenu.StartPauseMenu(PauseMenu.versionid.FE_MENU_VERSION_MP_CHARACTER_CREATION)
 		local render = simplymenu
 		if render then 
+			
 			local columnid = 1
-			PauseMenu.SetCurrentColumn(-1)
-			if not isUpdate then 
-				
-				PauseMenu.SetDataSlotEmpty(columnid);
-				PauseMenu.SetColumnTitle(columnid,render.title,render.description or "","");
-			end 
 			local elements = render.slots
 			local data_idx = 0
 			if slot then 
@@ -352,6 +347,13 @@ if IsClient() then
 					PauseMenu.SetOrUpdateNormalDataSlot(columnid, data_idx, PauseMenu.menuid.CREATION_HERITAGE, data_idx, item.lefttext, item.righttext , item.selection and 0 or 1, 4, isUpdate);
 				end 
 			else 
+				PauseMenu.SetCurrentColumn(-1)
+				if not isUpdate then 
+					
+					PauseMenu.SetDataSlotEmpty(columnid);
+					PauseMenu.SetColumnTitle(columnid,render.title,render.description or "","");
+				end 
+
 				for i=1,#elements do 
 					local item = elements[i]
 					if i == #elements then 
@@ -365,25 +367,25 @@ if IsClient() then
 					end 
 					data_idx = data_idx + 1
 				end 
-			end 
-			PauseMenu.DisplayDataSlot(columnid);
-			PauseMenu.SetCurrentColumn(columnid)
-			PauseMenu.SetColumnFocus(columnid, 1, 1);
-			PauseMenu.SetColumnCanJump(columnid, 1);
+				 
+				PauseMenu.DisplayDataSlot(columnid);
+				PauseMenu.SetCurrentColumn(columnid)
+				PauseMenu.SetColumnFocus(columnid, 1, 1);
+				PauseMenu.SetColumnCanJump(columnid, 1);
+					
 				
-			
-			
-			
-			if #elements>7 then 
-				if columnid == 1 then 
-					PauseMenu.InitColumnScroll(columnid, 1, 1, 1, 0, 0)
-				end
-			else 
-				if columnid == 1 then 
-					PauseMenu.InitColumnScroll(columnid, 1, 1, 1, -1, 0)
-				end
+				
+				
+				if #elements>7 then 
+					if columnid == 1 then 
+						PauseMenu.InitColumnScroll(columnid, 1, 1, 1, 0, 0)
+					end
+				else 
+					if columnid == 1 then 
+						PauseMenu.InitColumnScroll(columnid, 1, 1, 1, -1, 0)
+					end
+				end 
 			end 
-			
 		end 
 	end 
 end 
