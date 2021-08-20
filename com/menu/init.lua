@@ -21,9 +21,9 @@ if IsClient() then
 			result.slots[i].selection = false
 			if v.selected then 
 				result.slots[i].selected = true 
-				if v.description then 
-					result.slots[i].description = v.description
-				end 
+			end 
+			if v.description then 
+				result.slots[i].description = v.description
 			end 
 			if buttons[i].type == 'slider' then 
 				local options = v.options 
@@ -31,15 +31,14 @@ if IsClient() then
 					if c.selected then 
 						result.slots[i].righttext = c.label 
 						result.slots[i].selection = true
-						if c.description then 
-							if not result.slots[i].description then 
+						if c.description and not result.slots[i].description then 
 							result.slots[i].description = c.description
-							end
 						end 
 						break
 					end 
 				end 
 			end 
+
 		end 
 		return result
 	end 
@@ -76,6 +75,7 @@ if IsClient() then
 			end 
 			v.selected = false
 			v.index = i 
+			
 		end 
 		buttons[1].selected = true
 		return buttons
@@ -99,16 +99,18 @@ if IsClient() then
 			end 
 		end 
 		menu.pos = 1
+		if menu.updateRender then menu.updateRender(com.menu.minify(menu)) end 
 		menu.select = function(posVertical,posHorizontal)
 			if posVertical <= 0 then 
 				posVertical = (posVertical-1)%#menu.data.elements+1
 			elseif posVertical > #menu.data.elements then 
 				posVertical = posVertical%#menu.data.elements
 			end 
-			menu.pos = posVertical
 			local current = menu.getcurrentselection()
 			local current2 , changeX
 			local changeY = posVertical ~= current
+			menu.pos = posVertical
+			
 			if posHorizontal then 
 				for i,v in pairs(menu.data.elements) do 
 					if i == posVertical then 
@@ -119,9 +121,9 @@ if IsClient() then
 							elseif posHorizontal > #v.options then 
 								posHorizontal = posHorizontal%#v.options
 							end 
-							menu.data.elementpos[menu.getcurrentselection()] = posHorizontal
 							current2 = menu.getcurrentoptionselection()
 							changeX = current2 ~= posHorizontal
+							menu.data.elementpos[menu.getcurrentselection()] = posHorizontal
 							for k,c in pairs(v.options) do 
 								if k == posHorizontal then 
 									c.selected = true
@@ -137,6 +139,7 @@ if IsClient() then
 			end 
 			if (current and changeY) or (current2 and changeX) then 
 				menu.change(menu.data,menu)
+				if menu.updateRender then menu.updateRender(com.menu.minify(menu),true,menu.pos) end 
 			end 
 		end 
 		
@@ -203,10 +206,34 @@ if IsClient() then
 		com.menu.ESXMenu.ThrowAway(type,namespace, name) --關閉大Open,menu依然有結構，不用deepcopy
         return menu
     end
+	
 	com.menu._TEMP_.Clear = 		function(...) return com.lua.utils.Table.ClearTableSomething(com.menu._TEMP_.NBMenu,...) end
 	com.menu._TEMP_.Set = 			function(...) return com.lua.utils.Table.SetTableSomething(com.menu._TEMP_.NBMenu,...) end
 	com.menu._TEMP_.IsExist = 		function(...) return com.lua.utils.Table.IsTableSomthingExist(com.menu._TEMP_.NBMenu,...) end 
 	com.menu._TEMP_.Get = 			function(...) return com.lua.utils.Table.GetTableSomthing(com.menu._TEMP_.NBMenu,...) end  
 	com.menu._TEMP_.InsertTable = 	function(...) return com.lua.utils.Table.InsertTableSomethingTable(com.menu._TEMP_.NBMenu,...) end
 	com.menu._TEMP_.RemoveTable = 	function(...) return com.lua.utils.Table.RemoveTableSomethingTable(com.menu._TEMP_.NBMenu,...) end
+	
+	com.menu.RegisteredKeyEvent = {}
+
+	com.menu.RegisterKeyEvent = function(name,cb)
+		com.menu.RegisteredKeyEvent[name] = cb 
+	end 
+	com.menu.UnRegisterKeyEvent = function(name)
+		if com.menu.RegisteredKeyEvent[name] then com.menu.RegisteredKeyEvent[name] = nil end 
+	end 
+
+	local TriggerRegisterKeyEvent = function(input)
+		if com.menu.RegisteredKeyEvent then 
+			for i,v in pairs(com.menu.RegisteredKeyEvent) do 
+				if v then 
+					v(input)  
+				end 
+			end 
+		end 
+	end 
+	
+	NB.RegisterKeyEvent('Menu',function(input)
+		TriggerRegisterKeyEvent(input)
+	end )
 end 

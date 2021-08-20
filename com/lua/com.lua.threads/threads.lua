@@ -231,12 +231,14 @@ end
 
 
 Threads.OnceThread = {}
-Threads.CreateThreadOnce = function(fn)
-    if Threads.OnceThread[tostring(fn)] then 
+Threads.CreateThreadOnce = function(name,fn)
+    if Threads.OnceThread[name] then 
         return 
     end 
-    Threads.OnceThread[tostring(fn)] = true
+    Threads.OnceThread[name] = true
     CreateThread(fn)
+	local b = function() Threads.OnceThread[name] = nil end 
+	return b
 end 
 Threads.ClearThreadOnce = function(name)
     Threads.OnceThread[name] = nil 

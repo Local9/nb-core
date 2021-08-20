@@ -1,6 +1,9 @@
 if IsClient() then 
+	
 	CreateThread(function()
+		
 		Wait(1000)
+		
 		local menu2
 		local Salle = {
 			{label="Apple",value="Apple",description="App"},

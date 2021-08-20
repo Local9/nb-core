@@ -340,6 +340,11 @@ if IsClient() then
 			if slot then 
 				data_idx = slot - 1
 				local item = elements[slot]
+				if item.description then 
+					PauseMenu.SetDescription(columnid,item.description,false) 
+				else  
+					PauseMenu.SetDescription(columnid,"",false) 
+				end 
 				
 				if slot == #elements then 
 					if item.type == 'footer' then 
@@ -380,15 +385,16 @@ if IsClient() then
 					
 				
 				
-				
-				if #elements>7 then 
-					if columnid == 1 then 
-						PauseMenu.InitColumnScroll(columnid, 1, 1, 1, 0, 0)
-					end
-				else 
-					if columnid == 1 then 
-						PauseMenu.InitColumnScroll(columnid, 1, 1, 1, -1, 0)
-					end
+				if not isUpdate then 
+					if #elements>7 then 
+						if columnid == 1 then 
+							PauseMenu.InitColumnScroll(columnid, 1, 1, 1, 0, 0)
+						end
+					else 
+						if columnid == 1 then 
+							PauseMenu.InitColumnScroll(columnid, 1, 1, 1, 0, 0)
+						end
+					end 
 				end 
 			end 
 		end 

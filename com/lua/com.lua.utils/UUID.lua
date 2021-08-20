@@ -77,4 +77,3 @@ uuid.GenByString2 = function(str)
     end)
     return str
 end
-print(uuid.Gen2("Negbook"))

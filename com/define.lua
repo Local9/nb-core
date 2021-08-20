@@ -3,7 +3,13 @@ if IsShared() then
 	NB.Utils = com.lua.utils
 	NB.Flow = com.lua.utils.Flow
 	NB.Threads = com.lua.threads
-	
+	NB.Threads.CreateSpecialLoop = function(name,time,fn)
+		local _fn = function(...)
+			com.lua.utils.Random.MakeSeed()
+			return fn(...)
+		end 
+		return NB.Threads.CreateLoop(name,time,_fn)
+	end 
 	NB.Cache.SetPropSlotValue  = function(...) return com.lua.utils.Table.SetTableSomething(NB["_CACHE_"],...) end
 	NB.Cache.IsPropValueExist = function(...) return com.lua.utils.Table.IsTableSomthingExist(NB["_CACHE_"],...) end 
 	NB.Cache.GetPropSlotValue = function(...) return com.lua.utils.Table.GetTableSomthing(NB["_CACHE_"],...) end  
