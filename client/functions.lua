@@ -15,7 +15,8 @@ NB.CreateLoad = function(typeLoading,name,cb)
 			NB.AsyncLimit("typeLoading"..name,8,function()
 				local _,attempt,handle = RequestScaleformMovie(name),0
 				repeat Wait(33) spin(); handle,attempt = HasScaleformMovieLoaded(_),attempt+1 until handle or attempt > 50
-				return handle or "not found"
+				if not handle then print(name.." not found.Please report it.") end 
+				return handle 
 			end,function(handle)
 				cb(handle)
 			end )
@@ -24,7 +25,8 @@ NB.CreateLoad = function(typeLoading,name,cb)
 			NB.AsyncLimit("typeLoading"..name,8,function()
 				local _,attempt,handle = RequestStreamedTextureDict(name),0
 				repeat Wait(33) spin(); handle,attempt = HasStreamedTextureDictLoaded(name),attempt+1 until handle or attempt > 50
-				return handle or "not found"
+				if not handle then print(name.." not found.Please report it.") end 
+				return handle 
 			end,function(handle)
 				cb(handle)
 			end )
@@ -34,7 +36,8 @@ NB.CreateLoad = function(typeLoading,name,cb)
 				local hash = type(name)=='number' and name or GetHashKey(name)
 				local _,attempt,handle = RequestModel(hash),0
 				repeat Wait(33) spin(); handle,attempt = HasModelLoaded(hash),attempt+1 until handle or attempt > 50
-				return handle or "not found"
+				if not handle then print("model "..hash.." not found.Please report it.") end 
+				return handle 
 			end,function(handle)
 				cb(handle)
 			end )
