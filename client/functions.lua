@@ -1,6 +1,4 @@
-
 NB.TriggerServerCallback = ESX.TriggerServerCallback 
-
 NB.SpawnPlayerDefault = function()
 	local player = PlayerId()
 	SetPlayerControl(player, true, false)
@@ -8,48 +6,41 @@ NB.SpawnPlayerDefault = function()
 	NB.Skin.LoadDefaultModel(true,function()
 		NB.Utils.SpawnManager.Spawn(coords, heading)
 	end )
-	
 end 
-
 NB.CreateLoad = function(typeLoading,name,cb)
 	local spin = function() if not BusyspinnerIsOn() then BeginTextCommandBusyspinnerOn("MP_SPINLOADING") EndTextCommandBusyspinnerOn(3) end end
 	PreloadBusyspinner()
 	switch(typeLoading)(
 		case("scaleform")(function()
-			NB.AsyncLimit(name,8,function()
+			NB.AsyncLimit("typeLoading"..name,8,function()
 				local _,attempt,handle = RequestScaleformMovie(name),0
 				repeat Wait(33) spin(); handle,attempt = HasScaleformMovieLoaded(_),attempt+1 until handle or attempt > 50
 				return handle or "not found"
 			end,function(handle)
-				
 				cb(handle)
 			end )
 		end),
 		case("texture")(function()
-			NB.AsyncLimit(name,8,function()
+			NB.AsyncLimit("typeLoading"..name,8,function()
 				local _,attempt,handle = RequestStreamedTextureDict(name),0
 				repeat Wait(33) spin(); handle,attempt = HasStreamedTextureDictLoaded(name),attempt+1 until handle or attempt > 50
 				return handle or "not found"
 			end,function(handle)
-				
 				cb(handle)
 			end )
 		end),
 		case("model")(function()
-			NB.AsyncLimit(name,8,function()
+			NB.AsyncLimit("typeLoading"..name,8,function()
 				local hash = type(name)=='number' and name or GetHashKey(name)
 				local _,attempt,handle = RequestModel(hash),0
 				repeat Wait(33) spin(); handle,attempt = HasModelLoaded(hash),attempt+1 until handle or attempt > 50
 				return handle or "not found"
 			end,function(handle)
-				
 				cb(handle)
 			end )
 		end),
 		default(function()
-		
 		end)
-	
 	)
 end 
 --[=[
