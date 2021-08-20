@@ -13,15 +13,12 @@ function PauseMenu.StartPauseMenu(versionHash)
 		SetFrontendActive(false);
 		ActivateFrontendMenu(1399975061, false, -1);
 	end
-
-	
 end
 function PauseMenu.InitColumnScroll(Param0, Param1, Param2, Param3, Param4, Param5)
 	if start("INIT_COLUMN_SCROLL") then 
 		send(Param0,false,Param1,Param2,Param3,true,Param4,Param5);
 	end 
 end
-
 function PauseMenu.SetColumnCanJump(Param0, Param1)
 	if start("SET_COLUMN_CAN_JUMP") then
 		send(Param0,not Param1);
@@ -320,9 +317,7 @@ function PauseMenu.SetSkillData(Param0, Param1, Param2, Param3, Param4, Param5)
 	end
 end
 end
-
 if IsClient() then 
-
 	com.menu.PauseMenu.UI.RenderStop = function()
 		SetFrontendActive(false);
 	end 
@@ -331,12 +326,9 @@ if IsClient() then
 		local render = simplymenu
 		--print_table_server(simplymenu)
 		if render then 
-			
 			local columnid = 1
-			
 			local elements = render.slots
 			local data_idx = 0
-			
 			if slot then 
 				data_idx = slot - 1
 				local item = elements[slot]
@@ -345,7 +337,6 @@ if IsClient() then
 				else  
 					PauseMenu.SetDescription(columnid,"",false) 
 				end 
-				
 				if slot == #elements then 
 					if item.type == 'footer' then 
 						PauseMenu.SetOrUpdateNormalDataSlot(columnid, data_idx, PauseMenu.menuid.CREATION_HERITAGE, data_idx, item.lefttext, " " , 2, 1, isUpdate);
@@ -358,14 +349,11 @@ if IsClient() then
 			else 
 				PauseMenu.SetCurrentColumn(-1)
 				if not isUpdate then 
-					
 					PauseMenu.SetDataSlotEmpty(columnid);
 					PauseMenu.SetColumnTitle(columnid,render.title,render.description or "","");
 				end 
-
 				for i=1,#elements do 
 					local item = elements[i]
-					
 					if i == #elements then 
 						if item.type == 'footer' then 
 							PauseMenu.SetOrUpdateNormalDataSlot(columnid, data_idx, PauseMenu.menuid.CREATION_HERITAGE, data_idx, item.lefttext, " " , 2, 1, isUpdate);
@@ -377,14 +365,10 @@ if IsClient() then
 					end 
 					data_idx = data_idx + 1
 				end 
-				 
 				PauseMenu.DisplayDataSlot(columnid);
 				PauseMenu.SetCurrentColumn(columnid)
 				PauseMenu.SetColumnFocus(columnid, 1, 1);
 				PauseMenu.SetColumnCanJump(columnid, 1);
-					
-				
-				
 				if not isUpdate then 
 					if #elements>7 then 
 						if columnid == 1 then 

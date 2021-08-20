@@ -11,12 +11,10 @@ if IsClient() then
 		"menus",
 	}
 	local CurrentMenu = nil
-
 	local function GetPos() 
 		local a,b,c = GetPauseMenuSelectionData() 
 		return c ~= -1 and c+1 or 1 
 	end 
-	
 	local menuOpen = function(newMenu,isUpdate)
 		if not isUpdate then 
 			local namespace, name, data = newMenu.namespace, newMenu.name, newMenu.data
@@ -30,7 +28,6 @@ if IsClient() then
 				--print_table_server(simplymenu)
 			end 
 		end 
-		
 		NB.Threads.CreateThreadOnce(MENUTYPE,function()
 			--只會建立一次
 			NB.Threads.CreateLoop("Menu"..MENUTYPE,333,function(Break)
@@ -93,7 +90,6 @@ if IsClient() then
 						default(function()
 						end)
 					)
-				
 				end 
 			end )
 		end)
@@ -118,8 +114,6 @@ if IsClient() then
 			end 
 			CurrentMenu = nil
 		end 
-		
-		
 	end 
 	local open = function(namespace, name, data) --button = data.elements
 		local newMenu = com.menu.ESXMenu.DeepOpen(MENUTYPE,namespace, name)  --獲得目前最新的純表格並關閉

@@ -38,7 +38,6 @@ if IsClient() then
 					end 
 				end 
 			end 
-
 		end 
 		return result
 	end 
@@ -46,7 +45,6 @@ if IsClient() then
 		for i,v in pairs(buttons) do 
 			v._namespace = namespace 
 			v._name = name 
-			
 			--if not v.description then v.description = '' end 
 			--if not v.righttext then v.righttext = '' end 
 			if not v.label then error("elements = {{label='apple'},{label='banana'}}",2) end 
@@ -75,7 +73,6 @@ if IsClient() then
 			end 
 			v.selected = false
 			v.index = i 
-			
 		end 
 		buttons[1].selected = true
 		return buttons
@@ -110,7 +107,6 @@ if IsClient() then
 			local current2 , changeX
 			local changeY = posVertical ~= current
 			menu.pos = posVertical
-			
 			if posHorizontal then 
 				for i,v in pairs(menu.data.elements) do 
 					if i == posVertical then 
@@ -142,7 +138,6 @@ if IsClient() then
 				if menu.updateRender then menu.updateRender(com.menu.minify(menu),true,menu.pos) end 
 			end 
 		end 
-		
 		menu.getcurrentselection = function()
 			return menu.pos
 		end 
@@ -176,7 +171,6 @@ if IsClient() then
 					current = {}
 				}
 				local current = menu.data.elements[menu.getcurrentselection()]
-				
 				if menu.data.elements[menu.getcurrentselection()].type=="slider" then 
 					data.current.value = current.options[menu.getcurrentoptionselection()].value
 				else 
@@ -206,23 +200,19 @@ if IsClient() then
 		com.menu.ESXMenu.ThrowAway(type,namespace, name) --關閉大Open,menu依然有結構，不用deepcopy
         return menu
     end
-	
 	com.menu._TEMP_.Clear = 		function(...) return com.lua.utils.Table.ClearTableSomething(com.menu._TEMP_.NBMenu,...) end
 	com.menu._TEMP_.Set = 			function(...) return com.lua.utils.Table.SetTableSomething(com.menu._TEMP_.NBMenu,...) end
 	com.menu._TEMP_.IsExist = 		function(...) return com.lua.utils.Table.IsTableSomthingExist(com.menu._TEMP_.NBMenu,...) end 
 	com.menu._TEMP_.Get = 			function(...) return com.lua.utils.Table.GetTableSomthing(com.menu._TEMP_.NBMenu,...) end  
 	com.menu._TEMP_.InsertTable = 	function(...) return com.lua.utils.Table.InsertTableSomethingTable(com.menu._TEMP_.NBMenu,...) end
 	com.menu._TEMP_.RemoveTable = 	function(...) return com.lua.utils.Table.RemoveTableSomethingTable(com.menu._TEMP_.NBMenu,...) end
-	
 	com.menu.RegisteredKeyEvent = {}
-
 	com.menu.RegisterKeyEvent = function(name,cb)
 		com.menu.RegisteredKeyEvent[name] = cb 
 	end 
 	com.menu.UnRegisterKeyEvent = function(name)
 		if com.menu.RegisteredKeyEvent[name] then com.menu.RegisteredKeyEvent[name] = nil end 
 	end 
-
 	local TriggerRegisterKeyEvent = function(input)
 		if com.menu.RegisteredKeyEvent then 
 			for i,v in pairs(com.menu.RegisteredKeyEvent) do 
@@ -232,7 +222,6 @@ if IsClient() then
 			end 
 		end 
 	end 
-	
 	NB.RegisterKeyEvent('Menu',function(input)
 		TriggerRegisterKeyEvent(input)
 	end )
