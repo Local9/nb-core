@@ -20,6 +20,7 @@ if IsShared() then
 	NB.RandomFloat = com.lua.utils.Math.getRandomFloat
 	NB.AsyncLimit = com.lua.utils.Async.CreateLimit --namespace,limited,fnwithWaitAndReturnInside
 	NB.AsyncSeries = com.lua.utils.Async.CreateSeries --namespace,fnwithWaitAndReturnInside
+	
 end 
 if IsServer() then 
 	NB.GetLicense = com.game.Server.License.Get
@@ -28,6 +29,7 @@ end
 if IsClient() then 
 	NB.Skin = com.game.Client.Skin
 	NB.GetHashString = GetHashString
+	NB.CreateLoad = com.game.Shared.Load.Stream
 	
 	
 end 
