@@ -132,10 +132,11 @@ Command["car"] = function(veh)
 	end )
 end
 else 
-Command = setmetatable({},{__newindex=function(t,k,fn) RegisterCommand(k,function(source, args, raw) fn(source,table.unpack(args)) end) return end })
-Command["trace"] = function(source, a)   
+ClientCommand = setmetatable({},{__newindex=function(t,k,fn) RegisterCommand(k,function(source, args, raw) if source>0 then fn(source,table.unpack(args)) end end) return end })
+ServerCommand = setmetatable({},{__newindex=function(t,k,fn) RegisterCommand(k,function(source, args, raw) if source>0 then else fn(table.unpack(args)) end end) return end })
+SharedCommand = setmetatable({},{__newindex=function(t,k,fn) RegisterCommand(k,function(source, args, raw) fn(source,table.unpack(args)) end) return end })
+ServerCommand["trace"] = function(a)   
     local rawprint = print
-    
     if a then 
         local text = a:gmatch("`(.-)`")()
         if string.find(a,"`") then 
