@@ -2,7 +2,8 @@ if IsClient() then
 	com.menu = {
 		_TEMP_ = {NBMenu={}}
 	}
-	com.menu.Default = {UI={}}
+
+	com.menu.DefaultMenu = {UI={}}
 	com.menu.PauseMenu = {UI={}}
 	com.menu.ESXMenu = ESX.UI.Menu
 	com.menu.minify = function(menu)

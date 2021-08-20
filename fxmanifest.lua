@@ -21,12 +21,13 @@ shared_scripts {
 	'com/menu/example.lua',
 	'com/events/init.lua',
 	'com/events/scripts/*.lua',
-	'com/define.lua',
+	'com/nb-link.lua',
 	"import.lua",
 	"nb-core.lua"
 }
 
 client_scripts {
+	
 	'client/events.lua',
 	'client/functions.lua',
 	'client/player.lua'

@@ -18,7 +18,7 @@ if IsClient() then
 			local _,lastindex,newmenu = TableInsert("menus",newMenu)
 			CurrentMenu = newmenu --Get("menus")[#Get("menus")]
 			CurrentMenu.index = lastindex
-			CurrentMenu.updateRender = nil --com.menu.DefaultMenu.UI.Render
+			CurrentMenu.updateRender = com.menu.DefaultMenu.UI.Render
 			if CurrentMenu.updateRender then 
 				local simplymenu = com.menu.minify(CurrentMenu)
 				CurrentMenu.updateRender(simplymenu)
@@ -34,27 +34,38 @@ if IsClient() then
 						switch(input)(
 							case("MENU_LEFT")(function()
 								CurrentMenu.button.left()
+								PlaySound(-1, "NAV_UP_DOWN", "HUD_FRONTEND_DEFAULT_SOUNDSET", 0, 0, 1)
 							end),
 							case("MENU_RIGHT")(function()
 								CurrentMenu.button.right()
+								PlaySound(-1, "NAV_UP_DOWN", "HUD_FRONTEND_DEFAULT_SOUNDSET", 0, 0, 1)
 							end),
 							
 							case("MENU_UP")(function()
 								CurrentMenu.button.up()
+								PlaySound(-1, "NAV_UP_DOWN", "HUD_FRONTEND_DEFAULT_SOUNDSET", 0, 0, 1)
+								
 							end),
 							case("MENU_DOWN")(function()
 								CurrentMenu.button.down()
+								PlaySound(-1, "NAV_UP_DOWN", "HUD_FRONTEND_DEFAULT_SOUNDSET", 0, 0, 1)
+								
 							end),
 							case("MENU_MOUSE_LEFT_CLICK")(function()
 							end),
 							case("MENU_ENTER","MENU_SELECT")(function()
 								CurrentMenu.button.enter() 
+								PlaySound(-1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET", 0, 0, 1)
+								
 							end),
 							case("MENU_BACK")(function()
 								CurrentMenu.button.back()
+								PlaySound(-1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET", 0, 0, 1)
+								
 							end),
 							case("MENU_ESCAPE")(function()
 								CurrentMenu.button.esc()
+								PlaySound(-1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET", 0, 0, 1)
 							end),
 							default(function()
 							end)
@@ -79,13 +90,14 @@ if IsClient() then
 			com.menu.UnRegisterKeyEvent("Menu"..MENUTYPE)
 
 			ThreadCreated = nil
-			--[=[
+			
 			if com.menu.DefaultMenu.UI.RenderStop then 
 				com.menu.DefaultMenu.UI.RenderStop()
 			end 
-			--]=]
+			
 			CurrentMenu = nil
 		end 
+		PlaySound(-1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET", 0, 0, 1)
 	end 
 	local open = function(namespace, name, data) --button = data.elements
 		local newMenu = com.menu.ESXMenu.DeepOpen(MENUTYPE,namespace, name)  --獲得目前最新的純表格並關閉
