@@ -329,14 +329,18 @@ if IsClient() then
 	com.menu.PauseMenu.UI.Render = function(simplymenu,isUpdate,slot)
 		PauseMenu.StartPauseMenu(PauseMenu.versionid.FE_MENU_VERSION_MP_CHARACTER_CREATION)
 		local render = simplymenu
+		--print_table_server(simplymenu)
 		if render then 
 			
 			local columnid = 1
+			
 			local elements = render.slots
 			local data_idx = 0
+			
 			if slot then 
 				data_idx = slot - 1
 				local item = elements[slot]
+				
 				if slot == #elements then 
 					if item.type == 'footer' then 
 						PauseMenu.SetOrUpdateNormalDataSlot(columnid, data_idx, PauseMenu.menuid.CREATION_HERITAGE, data_idx, item.lefttext, " " , 2, 1, isUpdate);
@@ -356,6 +360,7 @@ if IsClient() then
 
 				for i=1,#elements do 
 					local item = elements[i]
+					
 					if i == #elements then 
 						if item.type == 'footer' then 
 							PauseMenu.SetOrUpdateNormalDataSlot(columnid, data_idx, PauseMenu.menuid.CREATION_HERITAGE, data_idx, item.lefttext, " " , 2, 1, isUpdate);

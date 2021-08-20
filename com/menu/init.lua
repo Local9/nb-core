@@ -19,12 +19,21 @@ if IsClient() then
 			result.slots[i].lefttext = v.label
 			result.slots[i].righttext = v.righttext
 			result.slots[i].selection = false
+			if v.selected then 
+				result.slots[i].selected = true 
+				if v.description then 
+					result.slots[i].description = v.description
+				end 
+			end 
 			if buttons[i].type == 'slider' then 
 				local options = v.options 
 				for k,c in pairs(options) do 
 					if c.selected then 
 						result.slots[i].righttext = c.label 
 						result.slots[i].selection = true
+						if c.description then 
+							result.slots[i].description = c.description
+						end 
 						break
 					end 
 				end 

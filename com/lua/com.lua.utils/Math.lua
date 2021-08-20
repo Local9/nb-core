@@ -9,8 +9,29 @@ com.lua.utils.Math.round = math.round
 com.lua.utils.Math.Generator = ESX.GetRandomInt
 
 com.lua.utils.Math.getRandomNumber = function(min, max)
-      local num = math.floor(math.random() * (max - min + 1)) + min;
-      return num;
+	if IsClient() then 
+		local seed = GetCloudTimeAsInt()+GetGameTimer()
+		math.randomseed(math.floor(math.abs(seed)))
+	end 
+	if IsServer() then 
+		local seed = os.time()+GetGameTimer()
+		math.randomseed(math.floor(math.abs(seed)))
+	end 
+	local num = math.floor(math.random() * (max - min + 1)) + min;
+	return num;
+end 
+
+com.lua.utils.Math.getRandomFloat = function(min, max)
+	if IsClient() then 
+		local seed = GetCloudTimeAsInt()+GetGameTimer()
+		math.randomseed(math.floor(math.abs(seed)))
+	end 
+	if IsServer() then 
+		local seed = os.time()+GetGameTimer()
+		math.randomseed(math.floor(math.abs(seed)))
+	end 
+	local num = math.random() * (max - min + 1) + min;
+	return num;
 end 
 
 com.lua.utils.Math.toFixedRound = function(num, fractionDigits)

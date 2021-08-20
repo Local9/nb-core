@@ -20,12 +20,16 @@ if IsClient() then
 	local menuOpen = function(currentMenu,isUpdate)
 		
 		NB.Threads.CreateThreadOnce(function()
-			NB.Threads.CreateLoop("Menu"..MENUTYPE,333,function(Break)
+			NB.Threads.CreateLoopOnce("Menu"..MENUTYPE,333,function(Break)
 				if N_0x2e22fefa0100275e() then 
 					local pos = GetPos()
 					local currentmenu = Get("currentmenu")
 					if pos and currentmenu then 
 						currentmenu.select(pos)
+						if com.menu.PauseMenu.UI.Render then 
+							local simplymenu = com.menu.minify(Get("currentmenu"))
+							com.menu.PauseMenu.UI.Render(simplymenu,true,currentmenu.getcurrentselection())
+						end 
 					end 
 				end 
 			end)
@@ -36,9 +40,10 @@ if IsClient() then
 						if currentmenu then 
 							currentmenu.button.left()
 							if com.menu.PauseMenu.UI.Render then 
-								local simplymenu = com.menu.minify(currentmenu)
+								local simplymenu = com.menu.minify(Get("currentmenu"))
 								com.menu.PauseMenu.UI.Render(simplymenu,true,currentmenu.getcurrentselection())
 							end 
+							
 						end 
 					end),
 					case("MENU_RIGHT")(function()
@@ -46,7 +51,7 @@ if IsClient() then
 						if currentmenu then 
 							currentmenu.button.right()
 							if com.menu.PauseMenu.UI.Render then 
-								local simplymenu = com.menu.minify(currentmenu)
+								local simplymenu = com.menu.minify(Get("currentmenu"))
 								com.menu.PauseMenu.UI.Render(simplymenu,true,currentmenu.getcurrentselection())
 							end 
 						end 
@@ -92,18 +97,30 @@ if IsClient() then
 						local currentmenu = Get("currentmenu")
 						if currentmenu then 
 						currentmenu.button.enter()
+						if com.menu.PauseMenu.UI.Render then 
+										local simplymenu = com.menu.minify(currentmenu)
+										com.menu.PauseMenu.UI.Render(simplymenu,true,currentmenu.getcurrentselection())
+									end 
 						end 
 					end),
 					case("MENU_BACK")(function()
 						local currentmenu = Get("currentmenu")
 						if currentmenu then 
 						currentmenu.button.back()
+						if com.menu.PauseMenu.UI.Render then 
+										local simplymenu = com.menu.minify(currentmenu)
+										com.menu.PauseMenu.UI.Render(simplymenu,true,currentmenu.getcurrentselection())
+									end 
 						end 
 					end),
 					case("MENU_ESCAPE")(function()
 						local currentmenu = Get("currentmenu")
 						if currentmenu then 
 						currentmenu.button.esc()
+						if com.menu.PauseMenu.UI.Render then 
+										local simplymenu = com.menu.minify(currentmenu)
+										com.menu.PauseMenu.UI.Render(simplymenu,true,currentmenu.getcurrentselection())
+									end 
 						end 
 					end),
 					default(function()

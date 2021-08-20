@@ -1,18 +1,21 @@
 com.lua = {}
 com.lua.bridges = {}
-com.lua.utils = {}
+com.lua.utils = {
+	Async = {},
+	Colour = {},
+	Csv = {},
+	Debug = {},
+	Encryption = {},
+	Flow = {},
+	Math = {},
+	Random = {},
+	Remote = {},
+	SpawnManager = {},
+	Table = {},
+	Text = {}
+}
 com.lua.threads = {}
-com.lua.utils.Async = {}
-com.lua.utils.Colour = {}
-com.lua.utils.Csv = {}
-com.lua.utils.Debug = {}
-com.lua.utils.Encryption = {}
-com.lua.utils.Flow = {}
-com.lua.utils.Math = {}
-com.lua.utils.Remote = {}
-com.lua.utils.SpawnManager = {}
-com.lua.utils.Table = {}
-com.lua.utils.Text = {}
+
 
 com.lua.utils.Colour.HUD_COLOURS = {}
 com.lua.utils.Colour.HUD_COLOURS['HUD_COLOUR_PURE_WHITE'] = 0

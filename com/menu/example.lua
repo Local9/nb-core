@@ -3,7 +3,7 @@ if IsClient() then
 		Wait(1000)
 		local menu2
 		local Salle = {
-			{label="Apple",value="Apple"},
+			{label="Apple",value="Apple",description="App"},
 			{label="选择水果",type="slider",options={
 				{label="apple"},
 				{label="banana"},

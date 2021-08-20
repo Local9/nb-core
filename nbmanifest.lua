@@ -41,7 +41,9 @@ ratioX = function(x) x = (x * (1.777778 / GetAspectRatio(0)));return x; end
 
 export = exports; 
 
-export('GetSharedObject',function() return NB end)
+export('GetSharedObject',function() 
+
+return NB end)
 
 
 
