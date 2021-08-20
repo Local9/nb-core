@@ -28,7 +28,7 @@ if IsClient() then
 			{label="保存",value="Save",type="footer"},
 		}
 		local menu = com.menu.ESXMenu.Open(
-			'pausemenu', GetCurrentResourceName(), 'shop',
+			'default', GetCurrentResourceName(), 'shop',
 			{--data
 			css =  'superete',
 			title =  'Magasin',
@@ -68,7 +68,7 @@ if IsClient() then
 
 		}
 		local menu = com.menu.ESXMenu.Open(
-			'pausemenu', GetCurrentResourceName(), 'shop2',
+			'default', GetCurrentResourceName(), 'shop2',
 			{--data
 			css =  'superete3',
 			title =  'Magasin2',
