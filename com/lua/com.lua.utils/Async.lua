@@ -3,7 +3,7 @@ local Async = {}
 com.lua.utils.Async = Async
 function Async.parallel(tasks, cb)
 	if #tasks == 0 then
-		if cb then cb({}) end 
+		if cb then cb({}) else error("Async cb",2)  end 
 		return
 	end
 	local remaining = #tasks
@@ -14,7 +14,7 @@ function Async.parallel(tasks, cb)
 				table.insert(results, result)
 				remaining = remaining - 1;
 				if remaining == 0 then
-					if cb then cb(results) end 
+					if cb then cb(results) else error("Async cb",2) end 
 					return
 				end
 				return
@@ -25,7 +25,7 @@ function Async.parallel(tasks, cb)
 end
 function Async.parallelLimit(tasks, limit, cb)
 	if #tasks == 0 then
-		if cb then cb({}) end 
+		if cb then cb({}) else error("Async cb",2)  end 
 		return
 	end
 	local remaining = #tasks
@@ -47,7 +47,11 @@ function Async.parallelLimit(tasks, limit, cb)
 				remaining = remaining - 1;
 				running   = running - 1
 				if remaining == 0 then
-					if cb then cb(results) end 
+					if cb then 
+						cb(results)
+					else 
+						error("Async cb",2) 
+					end 
 					return
 				end
 				return
@@ -59,9 +63,11 @@ function Async.parallelLimit(tasks, limit, cb)
 	processQueue()
 end
 function Async.series(tasks, cb)
+	if not cb then  error("Async cb",2)  end 
 	Async.parallelLimit(tasks, 1, cb)
 end
 function Async.waterfall(tasks, cb)
+	if not cb then  error("Async cb",2)  end 
 	local nextArg = {}
 	for i, v in pairs(tasks) do
 		local error = false
@@ -76,3 +82,122 @@ function Async.waterfall(tasks, cb)
 	end
 	cb(nil, table.unpack(nextArg))
 end
+
+com.lua.utils.Async.Tasks = {}
+com.lua.utils.Async.CanRun = false
+
+com.lua.utils.Async.CreateLimit = function(namespace,limit,fn,CB)
+	local task = function(cb) 
+		CreateThread(function() 
+			
+			local result = fn()
+			cb(result)
+			CB(result)
+		end) 
+	end 
+	table.insert(com.lua.utils.Async.Tasks, task)
+	if IsClient() then 
+		if not com.lua.utils.Async.Busy then 
+			BeginTextCommandBusyspinnerOn("MP_SPINLOADING")
+			EndTextCommandBusyspinnerOn(3)
+			com.lua.utils.Async.Busy = true 
+		end 
+	end 
+	if #com.lua.utils.Async.Tasks <= limit and com.lua.utils.Async.CanRun==false then 
+		com.lua.utils.Async.CanRun = true 
+		com.lua.threads.CreateLoopOnce("CreateAsyncCheck"..namespace,333,function(Break)
+			if com.lua.utils.Async.CanRun then 
+				if #com.lua.utils.Async.Tasks > 0 then 
+					com.lua.utils.Async.CanRun = false
+					com.lua.utils.Async.parallelLimit(com.lua.utils.Async.Tasks,limit,  function(results)
+						--print(json.encode(results))
+						com.lua.utils.Async.Tasks = {}
+						com.lua.utils.Async.CanRun = true
+						if IsClient() then 
+							if BusyspinnerIsOn() then
+								BeginTextCommandBusyspinnerOn("FM_COR_AUTOD")
+								EndTextCommandBusyspinnerOn(4)
+								
+								CreateThread(function() Wait(50)
+									--print('off spin')
+									BusyspinnerOff()
+									com.lua.utils.Async.Busy = false 
+								end)
+							end 
+						end 
+					end)
+				else 
+					Break()
+					com.lua.utils.Async.Tasks = {}
+					com.lua.utils.Async.CanRun = false
+					 
+				 
+				end 
+			end 
+		end)
+	end 
+end 
+
+com.lua.utils.Async.CreateSeries = function(namespace,fn,CB)
+	local task = function(cb) 
+		CreateThread(function() 
+			local result = fn()
+			cb(result)
+			CB(result)
+		end) 
+	end 
+	table.insert(com.lua.utils.Async.Tasks, task)
+ 
+	if #com.lua.utils.Async.Tasks <= 1 and com.lua.utils.Async.CanRun==false then 
+		com.lua.utils.Async.CanRun = true 
+		com.lua.threads.CreateLoopOnce("CreateAsyncCheck"..namespace,333,function(Break)
+
+			if com.lua.utils.Async.CanRun then 
+				if #com.lua.utils.Async.Tasks > 0 then 
+					com.lua.utils.Async.CanRun = false
+					com.lua.utils.Async.parallelLimit(com.lua.utils.Async.Tasks,1,  function(results)
+						--print(json.encode(results))
+						com.lua.utils.Async.Tasks = {}
+						com.lua.utils.Async.CanRun = true
+						
+					end)
+				else 
+					Break()
+					com.lua.utils.Async.Tasks = {}
+					com.lua.utils.Async.CanRun = false
+					 
+				 
+				end 
+			end 
+		end)
+	end 
+end 
+
+
+--[=[
+local tasks = {}
+
+for i = 1, 100, 1 do
+	local task = function(cb)
+		SetTimeout(1000, function()
+			local result = math.random(1, 50000)
+
+			cb(result)
+		end)
+	end
+
+	table.insert(tasks, task)
+end
+
+Async.parallel(tasks, function(results)
+	print(json.encode(results))
+end)
+
+Async.parallelLimit(tasks, 2, function(results)
+	print(json.encode(results))
+end)
+
+Async.series(tasks, function(results)
+	print(json.encode(results))
+end)
+--]=]

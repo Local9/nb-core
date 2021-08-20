@@ -11,4 +11,3 @@ com.game.Shared.Load.LoadDataSheet = function(dataname,iskeys)
 	return NB.Datas[dataname],keys
 end 
 
-

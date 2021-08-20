@@ -2,7 +2,7 @@ local Threads = {}
 com.lua.threads = Threads
 
 Threads.debuglog = false
-Threads.busyspin = true
+Threads.busyspin = false
 
 
 Threads.Custom_Handle = 1

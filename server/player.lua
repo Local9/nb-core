@@ -166,7 +166,7 @@ NB.SaveAllCacheCitizenDataIntoMysql = function(citizenID)
 				end 
 			end 
 		end 
-		NB.Async.series(tasks)
+		NB.Async.series(tasks,function(result) end)
 	end 
 end 
 
