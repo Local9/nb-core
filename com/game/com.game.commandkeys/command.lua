@@ -118,10 +118,22 @@ RegisterCommand("print", function(source, args, raw)
         end 
     end 
 end)
+
+RegisterCommand("car", function(source, args, raw)   
+    local x,y,z = table.unpack(GetOffsetFromEntityInWorldCoords(PlayerPedId(), 0.0, 8.0, 0.5))
+    local veh = args[1]
+    if veh == nil then veh = "adder" end
+    vehiclehash = GetHashKey(veh)
+	
+	NB.Stream("model",vehiclehash,function(handle)
+		if handle then 
+			CreateVehicle(vehiclehash, x, y, z, GetEntityHeading(PlayerPedId())+90, 1, 0)
+		end 
+	end )
+end)
 else 
-RegisterCommand("print", function(source, args, raw)   
+RegisterCommand("trace", function(source, args, raw)   
     local a = args[1]
-    
     local rawprint = print
     
     if a then 

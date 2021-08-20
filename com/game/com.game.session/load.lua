@@ -12,7 +12,7 @@ com.game.Shared.Load.LoadDataSheet = function(dataname,iskeys)
 end 
 
 com.game.Shared.Load.Stream = function(typeLoading,name,cb)
-	local spin = function() if not BusyspinnerIsOn() then BeginTextCommandBusyspinnerOn("MP_SPINLOADING") EndTextCommandBusyspinnerOn(3) end end
+	local spin = function() if not BusyspinnerIsOn() and not BusyspinnerIsDisplaying() then BeginTextCommandBusyspinnerOn("MP_SPINLOADING") EndTextCommandBusyspinnerOn(3) end end
 	PreloadBusyspinner()
 	switch(typeLoading)(
 		case("texture")(function()
@@ -47,6 +47,7 @@ com.game.Shared.Load.Stream = function(typeLoading,name,cb)
 			end )
 		end),
 		default(function()
+			
 		end)
 	)
 end 

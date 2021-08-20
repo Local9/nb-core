@@ -32,7 +32,7 @@ end
 if IsClient() then 
 	NB.Skin = com.game.Client.Skin
 	NB.GetHashString = GetHashString
-	NB.CreateLoad = com.game.Shared.Load.Stream
+	NB.Stream = com.game.Shared.Load.Stream
 	
 	
 end 

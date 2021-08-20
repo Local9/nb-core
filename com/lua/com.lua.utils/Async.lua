@@ -100,7 +100,7 @@ com.lua.utils.Async.CreateLimit = function(namespace,limit,fn,CB)
 		end) 
 	end 
 	table.insert(com.lua.utils.Async.Tasks[namespace], task)
-	print(#com.lua.utils.Async.Tasks[namespace] <= limit and not com.lua.utils.Async.CanRun[namespace])
+	
 	if #com.lua.utils.Async.Tasks[namespace] <= limit and not com.lua.utils.Async.CanRun[namespace] then 
 		com.lua.utils.Async.CanRun[namespace] = true 
 		com.lua.threads.CreateLoopOnce("CreateAsyncCheck"..namespace,333,function(Break)
@@ -112,7 +112,7 @@ com.lua.utils.Async.CreateLimit = function(namespace,limit,fn,CB)
 						com.lua.utils.Async.Tasks[namespace] = {}
 						com.lua.utils.Async.CanRun[namespace] = true
 						if IsClient() then 
-							if BusyspinnerIsOn() then
+							if BusyspinnerIsOn() or BusyspinnerIsDisplaying() then
 								BeginTextCommandBusyspinnerOn("FM_COR_AUTOD")
 								EndTextCommandBusyspinnerOn(4)
 								
@@ -127,7 +127,17 @@ com.lua.utils.Async.CreateLimit = function(namespace,limit,fn,CB)
 					Break()
 					com.lua.utils.Async.Tasks[namespace] = {}
 					com.lua.utils.Async.CanRun[namespace] = false
-					 
+					if IsClient() then 
+						if BusyspinnerIsOn() or BusyspinnerIsDisplaying() then
+							BeginTextCommandBusyspinnerOn("FM_COR_AUTOD")
+							EndTextCommandBusyspinnerOn(4)
+							
+							CreateThread(function() Wait(50)
+								--print('off spin')
+								BusyspinnerOff()
+							end)
+						end 
+					end 
 				 
 				end 
 			end 
