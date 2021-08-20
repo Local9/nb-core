@@ -11,18 +11,8 @@ NB.CreateLoad = function(typeLoading,name,cb)
 	local spin = function() if not BusyspinnerIsOn() then BeginTextCommandBusyspinnerOn("MP_SPINLOADING") EndTextCommandBusyspinnerOn(3) end end
 	PreloadBusyspinner()
 	switch(typeLoading)(
-		case("scaleform")(function()
-			NB.AsyncLimit("typeLoading"..name,8,function()
-				local _,attempt,handle = RequestScaleformMovie(name),0
-				repeat Wait(33) spin(); handle,attempt = HasScaleformMovieLoaded(_),attempt+1 until handle or attempt > 50
-				if not handle then print(name.." not found.Please report it.") end 
-				return handle 
-			end,function(handle)
-				cb(handle)
-			end )
-		end),
 		case("texture")(function()
-			NB.AsyncLimit("typeLoading"..name,8,function()
+			NB.AsyncLimit("typeLoading"..typeLoading..name,8,function()
 				local _,attempt,handle = RequestStreamedTextureDict(name),0
 				repeat Wait(33) spin(); handle,attempt = HasStreamedTextureDictLoaded(name),attempt+1 until handle or attempt > 50
 				if not handle then print(name.." not found.Please report it.") end 
@@ -32,7 +22,7 @@ NB.CreateLoad = function(typeLoading,name,cb)
 			end )
 		end),
 		case("model")(function()
-			NB.AsyncLimit("typeLoading"..name,8,function()
+			NB.AsyncLimit("typeLoading"..typeLoading..name,8,function()
 				local hash = type(name)=='number' and name or GetHashKey(name)
 				local _,attempt,handle = RequestModel(hash),0
 				repeat Wait(33) spin(); handle,attempt = HasModelLoaded(hash),attempt+1 until handle or attempt > 50
@@ -42,11 +32,21 @@ NB.CreateLoad = function(typeLoading,name,cb)
 				cb(handle)
 			end )
 		end),
+		case("scaleform")(function()
+			NB.AsyncLimit("typeLoading"..typeLoading..name,8,function()
+				local _,attempt,handle = RequestScaleformMovie(name),0
+				repeat Wait(33) spin(); handle,attempt = HasScaleformMovieLoaded(_),attempt+1 until handle or attempt > 50
+				if not handle then print(name.." not found.Please report it.") end 
+				return handle 
+			end,function(handle)
+				cb(handle)
+			end )
+		end),
 		default(function()
 		end)
 	)
 end 
---[=[
+
 CreateThread(function()
 	for i=1,21 do 
 		NB.CreateLoad("model","dlc_sol",function(handle)
@@ -60,4 +60,3 @@ CreateThread(function()
 		end )
 	end 
 end)
---]=]

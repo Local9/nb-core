@@ -84,9 +84,13 @@ function Async.waterfall(tasks, cb)
 end
 
 com.lua.utils.Async.Tasks = {}
-com.lua.utils.Async.CanRun = false
+com.lua.utils.Async.CanRun = {}
 
 com.lua.utils.Async.CreateLimit = function(namespace,limit,fn,CB)
+	if not com.lua.utils.Async.Tasks[namespace] then 
+		com.lua.utils.Async.Tasks[namespace] = {} 
+	end 
+	
 	local task = function(cb) 
 		CreateThread(function() 
 			
@@ -95,24 +99,18 @@ com.lua.utils.Async.CreateLimit = function(namespace,limit,fn,CB)
 			CB(result)
 		end) 
 	end 
-	table.insert(com.lua.utils.Async.Tasks, task)
-	if IsClient() then 
-		if not com.lua.utils.Async.Busy then 
-			BeginTextCommandBusyspinnerOn("MP_SPINLOADING")
-			EndTextCommandBusyspinnerOn(3)
-			com.lua.utils.Async.Busy = true 
-		end 
-	end 
-	if #com.lua.utils.Async.Tasks <= limit and com.lua.utils.Async.CanRun==false then 
-		com.lua.utils.Async.CanRun = true 
+	table.insert(com.lua.utils.Async.Tasks[namespace], task)
+	print(#com.lua.utils.Async.Tasks[namespace] <= limit and not com.lua.utils.Async.CanRun[namespace])
+	if #com.lua.utils.Async.Tasks[namespace] <= limit and not com.lua.utils.Async.CanRun[namespace] then 
+		com.lua.utils.Async.CanRun[namespace] = true 
 		com.lua.threads.CreateLoopOnce("CreateAsyncCheck"..namespace,333,function(Break)
-			if com.lua.utils.Async.CanRun then 
-				if #com.lua.utils.Async.Tasks > 0 then 
-					com.lua.utils.Async.CanRun = false
-					com.lua.utils.Async.parallelLimit(com.lua.utils.Async.Tasks,limit,  function(results)
+			if com.lua.utils.Async.CanRun[namespace] then 
+				if #com.lua.utils.Async.Tasks[namespace] > 0 then 
+					com.lua.utils.Async.CanRun[namespace] = false
+					com.lua.utils.Async.parallelLimit(com.lua.utils.Async.Tasks[namespace],limit,  function(results)
 						--print(json.encode(results))
-						com.lua.utils.Async.Tasks = {}
-						com.lua.utils.Async.CanRun = true
+						com.lua.utils.Async.Tasks[namespace] = {}
+						com.lua.utils.Async.CanRun[namespace] = true
 						if IsClient() then 
 							if BusyspinnerIsOn() then
 								BeginTextCommandBusyspinnerOn("FM_COR_AUTOD")
@@ -121,15 +119,14 @@ com.lua.utils.Async.CreateLimit = function(namespace,limit,fn,CB)
 								CreateThread(function() Wait(50)
 									--print('off spin')
 									BusyspinnerOff()
-									com.lua.utils.Async.Busy = false 
 								end)
 							end 
 						end 
 					end)
 				else 
 					Break()
-					com.lua.utils.Async.Tasks = {}
-					com.lua.utils.Async.CanRun = false
+					com.lua.utils.Async.Tasks[namespace] = {}
+					com.lua.utils.Async.CanRun[namespace] = false
 					 
 				 
 				end 
@@ -139,38 +136,7 @@ com.lua.utils.Async.CreateLimit = function(namespace,limit,fn,CB)
 end 
 
 com.lua.utils.Async.CreateSeries = function(namespace,fn,CB)
-	local task = function(cb) 
-		CreateThread(function() 
-			local result = fn()
-			cb(result)
-			CB(result)
-		end) 
-	end 
-	table.insert(com.lua.utils.Async.Tasks, task)
- 
-	if #com.lua.utils.Async.Tasks <= 1 and com.lua.utils.Async.CanRun==false then 
-		com.lua.utils.Async.CanRun = true 
-		com.lua.threads.CreateLoopOnce("CreateAsyncCheck"..namespace,333,function(Break)
-
-			if com.lua.utils.Async.CanRun then 
-				if #com.lua.utils.Async.Tasks > 0 then 
-					com.lua.utils.Async.CanRun = false
-					com.lua.utils.Async.parallelLimit(com.lua.utils.Async.Tasks,1,  function(results)
-						--print(json.encode(results))
-						com.lua.utils.Async.Tasks = {}
-						com.lua.utils.Async.CanRun = true
-						
-					end)
-				else 
-					Break()
-					com.lua.utils.Async.Tasks = {}
-					com.lua.utils.Async.CanRun = false
-					 
-				 
-				end 
-			end 
-		end)
-	end 
+	return com.lua.utils.Async.CreateLimit(namespace,1,fn,CB)
 end 
 
 
