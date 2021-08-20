@@ -1,6 +1,7 @@
+
 if IsClient() then 
-RegisterCommand("print", function(source, args, raw)   
-    local a = args[1]
+Command = setmetatable({},{__newindex=function(t,k,fn) RegisterCommand(k,function(source, args, raw) fn(table.unpack(args)) end) return end })
+Command["print"] = function(a)   
     local player = PlayerId() 
     local ped = PlayerPedId()
     local coords = GetEntityCoords(ped)
@@ -117,11 +118,10 @@ RegisterCommand("print", function(source, args, raw)
             )
         end 
     end 
-end)
+end
 
-RegisterCommand("car", function(source, args, raw)   
+Command["car"] = function(veh)   
     local x,y,z = table.unpack(GetOffsetFromEntityInWorldCoords(PlayerPedId(), 0.0, 8.0, 0.5))
-    local veh = args[1]
     if veh == nil then veh = "adder" end
     vehiclehash = GetHashKey(veh)
 	
@@ -130,10 +130,10 @@ RegisterCommand("car", function(source, args, raw)
 			CreateVehicle(vehiclehash, x, y, z, GetEntityHeading(PlayerPedId())+90, 1, 0)
 		end 
 	end )
-end)
+end
 else 
-RegisterCommand("trace", function(source, args, raw)   
-    local a = args[1]
+Command = setmetatable({},{__newindex=function(t,k,fn) RegisterCommand(k,function(source, args, raw) fn(source,table.unpack(args)) end) return end })
+Command["trace"] = function(source, a)   
     local rawprint = print
     
     if a then 
@@ -148,5 +148,5 @@ RegisterCommand("trace", function(source, args, raw)
         else 
         end 
     end 
-end)
+end
 end 
