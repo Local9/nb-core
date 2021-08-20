@@ -32,7 +32,9 @@ if IsClient() then
 						result.slots[i].righttext = c.label 
 						result.slots[i].selection = true
 						if c.description then 
+							if not result.slots[i].description then 
 							result.slots[i].description = c.description
+							end
 						end 
 						break
 					end 
@@ -45,7 +47,8 @@ if IsClient() then
 		for i,v in pairs(buttons) do 
 			v._namespace = namespace 
 			v._name = name 
-			if not v.description then v.description = '' end 
+			
+			--if not v.description then v.description = '' end 
 			--if not v.righttext then v.righttext = '' end 
 			if not v.label then error("elements = {{label='apple'},{label='banana'}}",2) end 
 			if not v.value then v.value = v.label end 
@@ -57,7 +60,7 @@ if IsClient() then
 				if haskey then 
 					for k,c in pairs(options) do 
 						if not c.label then error("options = {{label='apple'},{label='banana'}} or {'apple','banana','orange'}",2) end 
-						if not c.description then c.description = '' end 
+						--if not c.description then c.description = '' end 
 						if not c.value then c.value = c.label end 
 						c.selected = false
 						c.index = k
@@ -66,7 +69,7 @@ if IsClient() then
 				else 
 					local tbl = options 
 					for k=1,#options do 
-						options[k] = {label=tbl[k],description='',value=tbl[k],selected = false,index=k,parentindex=i}
+						options[k] = {label=tbl[k],--[[description='',--]]value=tbl[k],selected = false,index=k,parentindex=i}
 					end 
 				end 
 				options[1].selected = true

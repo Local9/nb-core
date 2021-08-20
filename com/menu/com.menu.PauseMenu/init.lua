@@ -28,7 +28,7 @@ if IsClient() then
 						currentmenu.select(pos)
 						if com.menu.PauseMenu.UI.Render then 
 							local simplymenu = com.menu.minify(Get("currentmenu"))
-							com.menu.PauseMenu.UI.Render(simplymenu,true,currentmenu.getcurrentselection())
+							com.menu.PauseMenu.UI.Render(simplymenu,true,Get("currentmenu").getcurrentselection())
 						end 
 					end 
 				end 
@@ -97,30 +97,18 @@ if IsClient() then
 						local currentmenu = Get("currentmenu")
 						if currentmenu then 
 						currentmenu.button.enter()
-						if com.menu.PauseMenu.UI.Render then 
-										local simplymenu = com.menu.minify(currentmenu)
-										com.menu.PauseMenu.UI.Render(simplymenu,true,currentmenu.getcurrentselection())
-									end 
 						end 
 					end),
 					case("MENU_BACK")(function()
 						local currentmenu = Get("currentmenu")
 						if currentmenu then 
 						currentmenu.button.back()
-						if com.menu.PauseMenu.UI.Render then 
-										local simplymenu = com.menu.minify(currentmenu)
-										com.menu.PauseMenu.UI.Render(simplymenu,true,currentmenu.getcurrentselection())
-									end 
 						end 
 					end),
 					case("MENU_ESCAPE")(function()
 						local currentmenu = Get("currentmenu")
 						if currentmenu then 
 						currentmenu.button.esc()
-						if com.menu.PauseMenu.UI.Render then 
-										local simplymenu = com.menu.minify(currentmenu)
-										com.menu.PauseMenu.UI.Render(simplymenu,true,currentmenu.getcurrentselection())
-									end 
 						end 
 					end),
 					default(function()

@@ -9,12 +9,18 @@ if IsShared() then
     for i = 65,  90 do table.insert(Charset, string.char(i)) end
     for i = 97, 122 do table.insert(Charset, string.char(i)) end
     ESX.GetRandomString = function(length)
-        if IsClient() then 
-		local seed = GetCloudTimeAsInt()+GetGameTimer()
+       if IsClient() then 
+			local seed = GetCloudTimeAsInt()+GetGameTimer()
+			if seed >= (2 ^ 32) then
+				seed = seed - math.floor(seed / 2 ^ 32) * (2 ^ 32)
+			end
 			math.randomseed(math.floor(math.abs(seed)))
 		end 
 		if IsServer() then 
 			local seed = os.time()+GetGameTimer()
+			if seed >= (2 ^ 32) then
+				seed = seed - math.floor(seed / 2 ^ 32) * (2 ^ 32)
+			end
 			math.randomseed(math.floor(math.abs(seed)))
 		end 
         if length > 0 then
@@ -25,11 +31,17 @@ if IsShared() then
     end
     ESX.GetRandomInt = function(length)
         if IsClient() then 
-		local seed = GetCloudTimeAsInt()+GetGameTimer()
+			local seed = GetCloudTimeAsInt()+GetGameTimer()
+			if seed >= (2 ^ 32) then
+				seed = seed - math.floor(seed / 2 ^ 32) * (2 ^ 32)
+			end
 			math.randomseed(math.floor(math.abs(seed)))
 		end 
 		if IsServer() then 
 			local seed = os.time()+GetGameTimer()
+			if seed >= (2 ^ 32) then
+				seed = seed - math.floor(seed / 2 ^ 32) * (2 ^ 32)
+			end
 			math.randomseed(math.floor(math.abs(seed)))
 		end 
         if length > 0 then

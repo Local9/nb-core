@@ -11,10 +11,16 @@ com.lua.utils.Math.Generator = ESX.GetRandomInt
 com.lua.utils.Math.getRandomNumber = function(min, max)
 	if IsClient() then 
 		local seed = GetCloudTimeAsInt()+GetGameTimer()
+		if seed >= (2 ^ 32) then
+			seed = seed - math.floor(seed / 2 ^ 32) * (2 ^ 32)
+		end
 		math.randomseed(math.floor(math.abs(seed)))
 	end 
 	if IsServer() then 
 		local seed = os.time()+GetGameTimer()
+		if seed >= (2 ^ 32) then
+			seed = seed - math.floor(seed / 2 ^ 32) * (2 ^ 32)
+		end
 		math.randomseed(math.floor(math.abs(seed)))
 	end 
 	local num = math.floor(math.random() * (max - min + 1)) + min;
@@ -24,10 +30,16 @@ end
 com.lua.utils.Math.getRandomFloat = function(min, max)
 	if IsClient() then 
 		local seed = GetCloudTimeAsInt()+GetGameTimer()
+		if seed >= (2 ^ 32) then
+			seed = seed - math.floor(seed / 2 ^ 32) * (2 ^ 32)
+		end
 		math.randomseed(math.floor(math.abs(seed)))
 	end 
 	if IsServer() then 
 		local seed = os.time()+GetGameTimer()
+		if seed >= (2 ^ 32) then
+			seed = seed - math.floor(seed / 2 ^ 32) * (2 ^ 32)
+		end
 		math.randomseed(math.floor(math.abs(seed)))
 	end 
 	local num = math.random() * (max - min + 1) + min;

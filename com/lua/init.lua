@@ -12,7 +12,8 @@ com.lua.utils = {
 	Remote = {},
 	SpawnManager = {},
 	Table = {},
-	Text = {}
+	Text = {},
+	UUID = {}
 }
 com.lua.threads = {}
 
