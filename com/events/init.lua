@@ -2,21 +2,20 @@ Events = {}
 Events.Event = {}
 this = Events
 
-function Say(souceid,str,saybywho)
-    TriggerClientEvent("CreateSay",sourceid,str,saybywho)
+function Say(playerid,str,saybywho)
+    TriggerClientEvent("CreateSay",playerid,str,saybywho)
 end 
 
-function Select(souceid,...)
-    TriggerClientEvent("CreateSelection",sourceid,...)
+function Select(playerid,...)
+    TriggerClientEvent("CreateSelection",playerid,...)
 end 
 
-function StartEvent(eventid,souceid)
-    this.Event[eventid](souceid)
+function StartEvent(eventid,playerid)
+    this.Event[eventid](playerid)
 end 
 
 AddEventHandler('nb-core:StartEvent', function(eventid)
-	local _source = source
-	StartEvent(eventid,_source)
+	StartEvent(eventid)
 end)
 
 exports('StartEvent',function(eventid)

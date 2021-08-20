@@ -1,4 +1,4 @@
 this.EventID = 10003
-this.Event[this.EventID] = function(source)
-    print(3,"source:"..source)
+this.Event[this.EventID] = function(playerid)
+    print('this.Event',3)
 end

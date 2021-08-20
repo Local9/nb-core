@@ -16,7 +16,7 @@ if IsShared() then
 	NB.Cache.InsertPropSlot = function(...) return com.lua.utils.Table.InsertTableSomethingTable(NB["_CACHE_"],...) end
 	NB.Cache.RemovePropSlot = function(...) return com.lua.utils.Table.RemoveTableSomethingTable(NB["_CACHE_"],...) end
 	NB.Cache = setmetatable(NB.Cache,{__call = function(self,...) return NB.Cache.SetPropSlotValue(...) end })
-	NB.GetCache = function(...) if not NB.Cache.IsPropValueExist(...) then return nil end return NB.Cache.GetPropSlotValue(...) end 
+	NB.GetCache = NB.Cache.GetPropSlotValue
 	NB.LoadDataSheet = com.game.Shared.Load.LoadDataSheet
 	NB.Random = com.lua.utils.Math.getRandomNumber
 	NB.RandomFloat = com.lua.utils.Math.getRandomFloat
