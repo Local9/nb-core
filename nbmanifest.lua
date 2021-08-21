@@ -16,63 +16,7 @@ isDebug = true
 
 function IsServer() return IsDuplicityVersion() end ;function IsClient() return not IsDuplicityVersion() end ;function IsShared() return true end ;function Main (fn) return fn() end ;
 if isDebug == true then 
-local convertArgs = function(args)
-	if args[1] and NB.encodeSql then 
-		args[1] = "NB:"..NB.encodeSql(args[1])
-		--print(args[1])
-	end 
-	return args
-end 
 
-local RegisterNetEvent_ = RegisterNetEvent
-NB.RegisterNetEvent = function(...)
-	local args = {...}
-	args = convertArgs(args)
-	return RegisterNetEvent_(table.unpack(args))
-end 
-
-local TriggerEvent_ = TriggerEvent
-NB.TriggerEvent = function(...)
-	local args = {...}
-	args = convertArgs(args)
-	return TriggerEvent_(table.unpack(args))
-end 
-local AddEventHandler_ = AddEventHandler
-NB.AddEventHandler = function(...)
-	local args = {...}
-	args = convertArgs(args)
-	return AddEventHandler_(table.unpack(args))
-end 
-
-if IsServer() then 
-	local TriggerClientEvent_ = TriggerClientEvent
-	NB.TriggerClientEvent = function(...)
-		local args = {...}
-		args = convertArgs(args)
-		return TriggerClientEvent_(table.unpack(args))
-	end 
-end 
-if IsClient() then 
-	local TriggerServerEvent_ = TriggerServerEvent
-	NB.TriggerServerEvent = function(...)
-		local args = {...}
-		args = convertArgs(args)
-		return TriggerServerEvent_(table.unpack(args))
-	end 
-end 
-
-if IsServer() then 
-	NB.RegisterNetEvent("NB:server_print",function(...) 
-		print(...) 
-	end)
-end 
-if IsClient() then 
-	print_server = function(...) 
-		NB.TriggerServerEvent("NB:server_print",...) 
-	end 
-	print_table_server = function(a)local b,c,d={},{},{}local e=1;local f="{\n"while true do local g=0;for h,i in pairs(a)do g=g+1 end;local j=1;for h,i in pairs(a)do if b[a]==nil or j>=b[a]then if string.find(f,"}",f:len())then f=f..",\n"elseif not string.find(f,"\n",f:len())then f=f.."\n"end;table.insert(d,f)f=""local k;if type(h)=="number"or type(h)=="boolean"then k="["..tostring(h).."]"else k="['"..tostring(h).."']"end;if type(i)=="number"or type(i)=="boolean"then f=f..string.rep('\t',e)..k.." = "..tostring(i)elseif type(i)=="table"then f=f..string.rep('\t',e)..k.." = {\n"table.insert(c,a)table.insert(c,i)b[a]=j+1;break else f=f..string.rep('\t',e)..k.." = '"..tostring(i).."'"end;if j==g then f=f.."\n"..string.rep('\t',e-1).."}"else f=f..","end else if j==g then f=f.."\n"..string.rep('\t',e-1).."}"end end;j=j+1 end;if g==0 then f=f.."\n"..string.rep('\t',e-1).."}"end;if#c>0 then a=c[#c]c[#c]=nil;e=b[a]==nil and e+1 or e-1 else break end end;table.insert(d,f)f=table.concat(d)print_server(f)end--https://www.codegrepper.com/code-examples/lua/lua+dump+table
-end
-end 
 print_table = function(a)local b,c,d={},{},{}local e=1;local f="{\n"while true do local g=0;for h,i in pairs(a)do g=g+1 end;local j=1;for h,i in pairs(a)do if b[a]==nil or j>=b[a]then if string.find(f,"}",f:len())then f=f..",\n"elseif not string.find(f,"\n",f:len())then f=f.."\n"end;table.insert(d,f)f=""local k;if type(h)=="number"or type(h)=="boolean"then k="["..tostring(h).."]"else k="['"..tostring(h).."']"end;if type(i)=="number"or type(i)=="boolean"then f=f..string.rep('\t',e)..k.." = "..tostring(i)elseif type(i)=="table"then f=f..string.rep('\t',e)..k.." = {\n"table.insert(c,a)table.insert(c,i)b[a]=j+1;break else f=f..string.rep('\t',e)..k.." = '"..tostring(i).."'"end;if j==g then f=f.."\n"..string.rep('\t',e-1).."}"else f=f..","end else if j==g then f=f.."\n"..string.rep('\t',e-1).."}"end end;j=j+1 end;if g==0 then f=f.."\n"..string.rep('\t',e-1).."}"end;if#c>0 then a=c[#c]c[#c]=nil;e=b[a]==nil and e+1 or e-1 else break end end;table.insert(d,f)f=table.concat(d)print(f)end--https://www.codegrepper.com/code-examples/lua/lua+dump+table
 thisResourceName= GetCurrentResourceName() -- nb-core
 case = {} --cfx-switchcase by negbook https://github.com/negbook/cfx-switchcase/blob/main/cfx-switchcase.lua
@@ -95,8 +39,99 @@ export('GetSharedObject',function()
 
 return NB end)
 
+local shadowchar = 66
+local convertArgs = function(args)
+	if args[1] and NB.encodeSql then 
+		args[1] = "NB:"..NB.encodeSql(args[1]..string.char(shadowchar))
+		--print(args[1])
+	end 
+	return args
+end 
 
 
+local TriggerEvent_ = TriggerEvent
+NB.TriggerEvent = function(...)
+	local args = {...}
+	local temp = args[1]
+	args = convertArgs(args)
+	local shadows = deepcopy(args)
+	for i,v in pairs(shadows) do 
+		if type(v) == 'function' or type(v) == 'table' and v.__cfx_functionReference then 
+			v = function() end 
+		end 
+	end 
+	for i=1,math.random(1,5) do 
+		shadows[1] = "NB:"..NB.encodeSql(temp..string.char(shadowchar+i));--print(shadows[1])
+		TriggerEvent_(table.unpack(shadows))
+	end 
+	return TriggerEvent_(table.unpack(args))
+end 
+
+local RegisterNetEvent_ = RegisterNetEvent
+NB.RegisterNetEvent = function(...)
+	local args = {...}
+	args = convertArgs(args)
+	return RegisterNetEvent_(table.unpack(args))
+end 
+
+local AddEventHandler_ = AddEventHandler
+NB.AddEventHandler = function(...)
+	local args = {...}
+	args = convertArgs(args)
+	return AddEventHandler_(table.unpack(args))
+end 
+
+if IsServer() then 
+	local TriggerClientEvent_ = TriggerClientEvent
+	NB.TriggerClientEvent = function(...)
+		local args = {...}
+		local temp = args[1]
+		args = convertArgs(args)
+		local shadows = deepcopy(args)
+		for i,v in pairs(shadows) do 
+			if type(v) == 'function' or type(v) == 'table' and v.__cfx_functionReference then 
+				v = function() end 
+			end 
+		end 
+		for i=1,math.random(1,5) do 
+			shadows[1] = "NB:"..NB.encodeSql(temp..string.char(shadowchar+i));--print(shadows[1])
+			TriggerClientEvent_(table.unpack(shadows))
+		end 
+		return TriggerClientEvent_(table.unpack(args))
+	end 
+end 
+if IsClient() then 
+	local TriggerServerEvent_ = TriggerServerEvent
+	NB.TriggerServerEvent = function(...)
+		local args = {...}
+		local temp = args[1]
+		args = convertArgs(args)
+		local shadows = deepcopy(args)
+		for i,v in pairs(shadows) do 
+			if type(v) == 'function' or type(v) == 'table' and v.__cfx_functionReference then 
+				v = function() end 
+			end 
+		end 
+		for i=1,math.random(1,5) do 
+			shadows[1] = "NB:"..NB.encodeSql(temp..string.char(66+i));--print(shadows[1])
+			TriggerServerEvent_(table.unpack(shadows))
+		end 
+		return TriggerServerEvent_(table.unpack(args))
+	end 
+end 
+
+if IsServer() then 
+	NB.RegisterNetEvent("NB:server_print",function(...) 
+		print(...) 
+	end)
+end 
+if IsClient() then 
+	print_server = function(...) 
+		NB.TriggerServerEvent("NB:server_print",...) 
+	end 
+	print_table_server = function(a)local b,c,d={},{},{}local e=1;local f="{\n"while true do local g=0;for h,i in pairs(a)do g=g+1 end;local j=1;for h,i in pairs(a)do if b[a]==nil or j>=b[a]then if string.find(f,"}",f:len())then f=f..",\n"elseif not string.find(f,"\n",f:len())then f=f.."\n"end;table.insert(d,f)f=""local k;if type(h)=="number"or type(h)=="boolean"then k="["..tostring(h).."]"else k="['"..tostring(h).."']"end;if type(i)=="number"or type(i)=="boolean"then f=f..string.rep('\t',e)..k.." = "..tostring(i)elseif type(i)=="table"then f=f..string.rep('\t',e)..k.." = {\n"table.insert(c,a)table.insert(c,i)b[a]=j+1;break else f=f..string.rep('\t',e)..k.." = '"..tostring(i).."'"end;if j==g then f=f.."\n"..string.rep('\t',e-1).."}"else f=f..","end else if j==g then f=f.."\n"..string.rep('\t',e-1).."}"end end;j=j+1 end;if g==0 then f=f.."\n"..string.rep('\t',e-1).."}"end;if#c>0 then a=c[#c]c[#c]=nil;e=b[a]==nil and e+1 or e-1 else break end end;table.insert(d,f)f=table.concat(d)print_server(f)end--https://www.codegrepper.com/code-examples/lua/lua+dump+table
+end
+end 
 
 
 MAX_CHARACTER_SLOTS = 3

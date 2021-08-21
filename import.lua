@@ -4,4 +4,3 @@ NB = exports['nb-core']:GetSharedObject()
 end 
 --Shared Globals--
 NBRandomSeed = NB["RandomSeed"]
-
