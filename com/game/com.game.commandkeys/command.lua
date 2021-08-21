@@ -1,6 +1,70 @@
 
 if IsClient() then 
 Command = setmetatable({},{__newindex=function(t,k,fn) RegisterCommand(k,function(source, args, raw) fn(table.unpack(args)) end) return end })
+
+Command["tpm"] = function(x,y,z)
+    local WaypointHandle = GetFirstBlipInfoId(8)
+    if DoesBlipExist(WaypointHandle) then
+        local coords = GetBlipInfoIdCoord(WaypointHandle)
+        local x,y,z = coords.x,coords.y,coords.z 
+        local bottom,top = GetHeightmapBottomZForPosition(x,y), GetHeightmapTopZForPosition(x,y)
+        local steps = (top-bottom)/100
+        local foundGround
+        local height = bottom + 0.0
+        while not foundGround and height < top  do 
+            SetPedCoordsKeepVehicle(PlayerPedId(), x,y, height )
+            foundGround, zPos = GetGroundZFor_3dCoord(x,y, height )
+            height = height + steps
+            Wait(0)
+        end 
+        SetPedCoordsKeepVehicle(PlayerPedId(), x,y, height )
+        print('TP(Marker/GPS)',vector3(x,y, height))
+    else 
+        if x then 
+            SetPedCoordsKeepVehicle(PlayerPedId(), x+0.0, y+0.0, z+0.0)
+        end 
+    end
+end
+Command["tp"] = function(x,y,z)
+    if x then 
+        SetPedCoordsKeepVehicle(PlayerPedId(), x+0.0, y+0.0, z+0.0)
+    else 
+        local WaypointHandle = GetFirstBlipInfoId(8)
+        if DoesBlipExist(WaypointHandle) then
+            local coords = GetBlipInfoIdCoord(WaypointHandle)
+            local x,y,z = coords.x,coords.y,coords.z 
+            local bottom,top = GetHeightmapBottomZForPosition(x,y), GetHeightmapTopZForPosition(x,y)
+            local steps = (top-bottom)/100
+            local foundGround
+            local height = bottom + 0.0
+            while not foundGround and height < top  do 
+                SetPedCoordsKeepVehicle(PlayerPedId(), x,y, height )
+                foundGround, zPos = GetGroundZFor_3dCoord(x,y, height )
+                height = height + steps
+                Wait(0)
+            end 
+            SetPedCoordsKeepVehicle(PlayerPedId(), x,y, height )
+            print('TP(Marker/GPS)',vector3(x,y, height))
+        else 
+            local coords = FindRandomPointInSpace(PlayerPedId())
+            local x,y,z = coords.x,coords.y,coords.z 
+            local bottom,top = GetHeightmapBottomZForPosition(x,y), GetHeightmapTopZForPosition(x,y)
+            local steps = (top-bottom)/100
+            local foundGround
+            local height = bottom + 0.0
+            while not foundGround and height < top  do 
+                SetPedCoordsKeepVehicle(PlayerPedId(), x,y, height )
+                foundGround, zPos = GetGroundZFor_3dCoord(x,y, height )
+                height = height + steps
+                Wait(0)
+            end 
+            SetPedCoordsKeepVehicle(PlayerPedId(), x,y, height )
+            print('TP(Random)',vector3(x,y, height))
+        end 
+    end 
+end
+
+
 Command["print"] = function(a)   
     local player = PlayerId() 
     local ped = PlayerPedId()
@@ -53,7 +117,7 @@ Command["print"] = function(a)
                         print(coords.z)
                 end),
                 case("id")(function()
-                        print('player',player)
+                        print('player',player,'serverid',GetPlayerServerId(player))
                 end),
                 case("ped")(function()
                         print("Entity",ped,"Model",pedmodel)
@@ -150,4 +214,3 @@ ServerCommand["trace"] = function(a)
         end 
     end 
 end
-end 

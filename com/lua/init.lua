@@ -5,7 +5,6 @@ com.lua.utils = {
 	Colour = {},
 	Csv = {},
 	Debug = {},
-	Encryption = {},
 	Flow = {},
 	Math = {},
 	Random = {},
@@ -13,7 +12,8 @@ com.lua.utils = {
 	SpawnManager = {},
 	Table = {},
 	Text = {},
-	UUID = {}
+	UUID = {},
+	LibDeflate = {}
 }
 com.lua.threads = {}
 

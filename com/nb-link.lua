@@ -23,6 +23,9 @@ if IsShared() then
 	NB.AsyncLimit = com.lua.utils.Async.CreateLimit --namespace,limited,fnwithWaitAndReturnInside
 	NB.AsyncSeries = com.lua.utils.Async.CreateSeries --namespace,fnwithWaitAndReturnInside
 	NB.RandomSeed = com.lua.utils.Random.MakeSeed
+	NB.encode = com.lua.utils.LibDeflate.encode 
+	NB.decode = com.lua.utils.LibDeflate.decode
+
 	NBRandomSeed = NB.RandomSeed
 end 
 if IsServer() then 

@@ -243,7 +243,7 @@ com.lua.utils.Csv.LoadDataSheetDecode = function (name,returnkeys)
 			return a == b 
 		end 
 	end 
-	local filecontent = split(string.gsub(com.lua.utils.Encryption.SimpleDecrypt(LoadResourceFile(GetCurrentResourceName(),"/xls/table/"..name..".csv.code")),"\r",""),"\n") or {}
+	local filecontent = split(string.gsub(com.lua.utils.LibDeflate.decode(LoadResourceFile(GetCurrentResourceName(),"/xls/table/"..name..".csv.code")),"\r",""),"\n") or {}
 	local nowindex = 1
 	local keys = {}
 	local datasfull = {}
@@ -370,7 +370,7 @@ com.lua.utils.Csv.CreateDataSheetEncode = function (name,data,keys)
 			end 
 			local f,err = io.open(GetResourcePath(GetCurrentResourceName())..'/xls/table/pre-'..name..'.csv.code','w+')
 			if f then 
-				f:write(com.lua.utils.Encryption.SimpleEncrypt(content))
+				f:write(com.lua.utils.LibDeflate.encode(content))
 				f:close()
 			end 
 		end 
