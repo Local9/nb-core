@@ -57,7 +57,18 @@ if IsServer() then
     NB.RegisterNetEvent('ESX:triggerServerCallback', function(name, requestId, ...)
         local playerId = NB and NB.PlayerId and NB.PlayerId(source) or tonumber(source)
         ESX.TriggerServerCallback(name, requestId, playerId, function(...)
-            NB.TriggerClientEvent('ESX:serverCallback', playerId, requestId, ...)
+            local args = {...}
+			for i,v in pairs(args) do 
+				if type(v) == 'string' then 
+					local a = NB.encode(v)
+					args[i] = a
+				elseif type(v) == 'number'  then 
+					local a = NB.encodeNumber(v)
+					args[i] = a
+				end 
+			end 
+			NB.TriggerClientEvent('ESX:serverCallback', playerId, requestId, table.unpack(args))
+			
         end, ...)
     end)
     ESX.RegisterServerCallback = function(name, cb)
@@ -76,15 +87,28 @@ else
     ESX.TriggerServerCallback = function(name, cb, ...)
         ESX.ServerCallbacks[ESX.CurrentRequestId] = cb
         NB.TriggerServerEvent('ESX:triggerServerCallback', name, ESX.CurrentRequestId, ...)
+		
         if ESX.CurrentRequestId < 65534 then
             ESX.CurrentRequestId = ESX.CurrentRequestId + 1
         else
             ESX.CurrentRequestId = 1
         end
     end
-    NB.RegisterNetEvent('ESX:serverCallback')
-    NB.AddEventHandler('ESX:serverCallback', function(requestId, ...)
-        if ESX.ServerCallbacks[requestId] then ESX.ServerCallbacks[requestId](...) end 
+    NB.RegisterNetEvent('ESX:serverCallback', function(requestId, ...)
+        if ESX.ServerCallbacks[requestId] then 
+			
+			local args = {...}
+			for i,v in pairs(args) do 
+				if type(v) == 'string' then 
+					local a = NB.decode(v)
+					args[i] = a
+				elseif type(v) == 'number'  then 
+					local a = NB.decodeNumber(v)
+					args[i] = a
+				end 
+			end 
+			ESX.ServerCallbacks[requestId](table.unpack(args)) 
+		end 
         ESX.ServerCallbacks[requestId] = nil
     end)
 	--註冊一個Menu風格，以及它的開關 

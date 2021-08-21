@@ -6,7 +6,8 @@ end
 if IsServer() then 
 	CreateThread(function()
 		NB.RegisterServerCallback("NB:test",function(playerId,cb)
-			cb(NB.encode("test"))
+			cb("bad",9993.23332321,"a")
+			
 		end )
 	end)
 end 
@@ -27,8 +28,8 @@ if IsClient() then
 			end 
 
 		--]=]
-		NB.TriggerServerCallback('NB:test',function (result)
-			print(NB.decode(result))
+		NB.TriggerServerCallback('NB:test',function (...)
+			print(...)
 		end)
 	end)
 end 

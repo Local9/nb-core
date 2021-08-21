@@ -3630,10 +3630,18 @@ end
 PreLibDeflate.decodeFromSQL = function(x)
 	return PreLibDeflate.DecryptPrintable(x)
 end 
+
 PreLibDeflate.encode = function(input,level)
 	local level = level or 9
 	return PreLibDeflate.Encrypt(PreLibDeflate.Zip(input),level)
 end 
 PreLibDeflate.decode = function(x)
 	return PreLibDeflate.Unzip(PreLibDeflate.Decrypt(x))
+end 
+PreLibDeflate.encodeNumber = function(input,level)
+	local level = level or 9
+	return PreLibDeflate.Encrypt(PreLibDeflate.Zip(tostring(input)),level)
+end 
+PreLibDeflate.decodeNumber = function(x)
+	return tonumber(PreLibDeflate.Unzip(PreLibDeflate.Decrypt(x)))
 end 

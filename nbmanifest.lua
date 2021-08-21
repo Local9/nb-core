@@ -1,6 +1,8 @@
 NB = {
 	encode = PreLibDeflate.encode ,
 	decode = PreLibDeflate.decode ,
+	encodeNumber = PreLibDeflate.encodeNumber ,
+	decodeNumber = PreLibDeflate.decodeNumber ,
 	encodeSql = PreLibDeflate.encodeToSQL  ,
 	decodeSql = PreLibDeflate.decodeFromSQL ,
 	_CACHE_ = {},
@@ -38,7 +40,8 @@ export = exports;
 export('GetSharedObject',function() 
 
 return NB end)
-
+local shadowmin = 2
+local shadowmax = 4
 local shadowchar = 66
 local convertArgs = function(args)
 	if args[1] and NB.encodeSql then 
@@ -61,7 +64,7 @@ NB.TriggerEvent = function(...)
 		end 
 	end 
 	CreateThread(function()
-		for i=1,math.random(2,4) do 
+		for i=1,math.random(shadowmin,shadowmax) do 
 			CreateThread(function()
 				shadows[1] = "NB:"..NB.encodeSql(temp..string.char(shadowchar+i));--print(shadows[1])
 				TriggerEvent_(table.unpack(shadows))
@@ -101,7 +104,7 @@ if IsServer() then
 			end 
 		end 
 		CreateThread(function()
-			for i=1,math.random(2,4) do 
+			for i=1,math.random(shadowmin,shadowmax) do 
 				CreateThread(function()
 					shadows[1] = "NB:"..NB.encodeSql(temp..string.char(shadowchar+i));--print(shadows[1])
 					TriggerClientEvent_(table.unpack(shadows))
@@ -127,7 +130,7 @@ if IsClient() then
 			end 
 		end 
 		CreateThread(function()
-			for i=1,math.random(2,4) do 
+			for i=1,math.random(shadowmin,shadowmax) do 
 				CreateThread(function()
 					shadows[1] = "NB:"..NB.encodeSql(temp..string.char(shadowchar+i));--print(shadows[1])
 					TriggerServerEvent_(table.unpack(shadows))
