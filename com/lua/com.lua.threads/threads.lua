@@ -217,13 +217,13 @@ CreateThread(function()
 		if GetCurrentResourceName() ~= thisname then 
 			print('\x1B[32m[server-utils]\x1B[0m'..thisname..' is used on '..GetCurrentResourceName().." \n\x1B[32m[\x1B[33m"..thisname.."\x1B[32m]\x1B[33m"..GetResourcePath(GetCurrentResourceName())..'\x1B[0m')
 		end 
-		RegisterServerEvent(thisname..':log')
-		AddEventHandler(thisname..':log', function(strings,sourcename)
+		
+		NB.RegisterNetEvent(thisname..':log', function(strings,sourcename)
 			print(strings.." player:"..GetPlayerName(NB.PlayerId(source)).." \n\x1B[32m[\x1B[33m"..thisname.."\x1B[32m]\x1B[33m"..GetResourcePath(sourcename)..'\x1B[0m')
 		end)
 	else 
 		if GetCurrentResourceName() ~= thisname then 
-			TriggerServerEvent(thisname..':log','\x1B[32m[client-utils]\x1B[0m'..thisname..'" is used on '..GetCurrentResourceName(),GetCurrentResourceName())
+			NB.TriggerServerEvent(thisname..':log','\x1B[32m[client-utils]\x1B[0m'..thisname..'" is used on '..GetCurrentResourceName(),GetCurrentResourceName())
 		end 
 	end 
 end)

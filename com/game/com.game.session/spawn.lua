@@ -8,7 +8,7 @@ if IsClient() then
 			Wait(0)
 		end
 		DoScreenFadeOut(0)
-		TriggerServerEvent('NB:OnPlayerJoined')
+		NB.TriggerServerEvent('NB:OnPlayerJoined')
 		com.lua.utils.SpawnManager.SpawnFreeze(PlayerId(),true)
 		CreateThread(function()
 			Wait(5000)

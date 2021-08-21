@@ -105,7 +105,7 @@ local _COPYRIGHT = "LibDeflate " .. _VERSION ..
                      " Licensed under the zlib License"
 
 LibDeflate = {}
-com.lua.utils.LibDeflate = LibDeflate
+
 LibDeflate._VERSION = _VERSION
 LibDeflate._MAJOR = _MAJOR
 LibDeflate._MINOR = _MINOR
@@ -3585,55 +3585,55 @@ if io and os and debug and _G.arg then
     os.exit(0)
   end
 end
-
-com.lua.utils.LibDeflate.Encrypt = function(input,level)
+PreLibDeflate = {}
+PreLibDeflate.Encrypt = function(input,level)
 	local CCCC = LibDeflate:CompressDeflate(input, level and {level = 9})
 	return CCCC
 end 
-com.lua.utils.LibDeflate.Decrypt = function(CCCC) 
+PreLibDeflate.Decrypt = function(CCCC) 
 	local STRING = LibDeflate:DecompressDeflate(CCCC)
 	return STRING
 end 
-com.lua.utils.LibDeflate.EncryptEx = function(input,level)
+PreLibDeflate.EncryptEx = function(input,level)
 	local CCCC = LibDeflate:CompressDeflate(input, level and {level = 9})
 	local WWWW = LibDeflate:EncodeForWoWAddonChannel(CCCC)
 	return WWWW
 end 
-com.lua.utils.LibDeflate.DecryptEx = function(WWWW) 
+PreLibDeflate.DecryptEx = function(WWWW) 
 	local DWWWW = LibDeflate:DecodeForWoWAddonChannel(WWWW)
 	local STRING = LibDeflate:DecompressDeflate(DWWWW)
 	return STRING
 end 
-com.lua.utils.LibDeflate.EncryptPrintable = function(input,level)
+PreLibDeflate.EncryptPrintable = function(input,level)
 	local CCCC = LibDeflate:CompressDeflate(input, level and {level = 9})
 	local printable_compressed = LibDeflate:EncodeForPrint(CCCC)
 	return printable_compressed
 end 
-com.lua.utils.LibDeflate.DecryptPrintable = function(printable_compressed) 
+PreLibDeflate.DecryptPrintable = function(printable_compressed) 
 	local CCCC = LibDeflate:DecodeForPrint(printable_compressed)
 	local STRING = LibDeflate:DecompressDeflate(CCCC)
 	return STRING
 end 
-com.lua.utils.LibDeflate.Zip = function(input)
+PreLibDeflate.Zip = function(input)
 	local compress_zlib = LibDeflate:CompressZlib(input)
 	return compress_zlib
 end 
-com.lua.utils.LibDeflate.Unzip = function(compress_zlib) 
+PreLibDeflate.Unzip = function(compress_zlib) 
 	local decompress_zlib = LibDeflate:DecompressZlib(compress_zlib)
 	return decompress_zlib
 end 
 
-com.lua.utils.LibDeflate.encodeToSQL = function(input,level)
+PreLibDeflate.encodeToSQL = function(input,level)
 	local level = level or 9
-	return com.lua.utils.LibDeflate.EncryptPrintable(input,level)
+	return PreLibDeflate.EncryptPrintable(input,level)
 end 
-com.lua.utils.LibDeflate.decodeFromSQL = function(x)
-	return com.lua.utils.LibDeflate.DecryptPrintable(x)
+PreLibDeflate.decodeFromSQL = function(x)
+	return PreLibDeflate.DecryptPrintable(x)
 end 
-com.lua.utils.LibDeflate.encode = function(input,level)
+PreLibDeflate.encode = function(input,level)
 	local level = level or 9
-	return com.lua.utils.LibDeflate.Encrypt(com.lua.utils.LibDeflate.Zip(input),level)
+	return PreLibDeflate.Encrypt(PreLibDeflate.Zip(input),level)
 end 
-com.lua.utils.LibDeflate.decode = function(x)
-	return com.lua.utils.LibDeflate.Unzip(com.lua.utils.LibDeflate.Decrypt(x))
+PreLibDeflate.decode = function(x)
+	return PreLibDeflate.Unzip(PreLibDeflate.Decrypt(x))
 end 

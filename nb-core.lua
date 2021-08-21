@@ -35,7 +35,7 @@ if IsServer() then
 		else
 			deferrals.done()
 			Wait(1000)
-			TriggerEvent("connectqueue:playerConnect", name, setKickReason, deferrals)
+			NB.TriggerEvent("connectqueue:playerConnect", name, setKickReason, deferrals)
 		end
 	end 
 
@@ -58,7 +58,7 @@ if IsServer() then
 	end 
 
 	function OnPlayerLogin(playerid, license, citizenID)
-		TriggerClientEvent("NB:ReadyToSpawn",playerid) -- 出生，應該跟在上面的建立角色之後，目前先在這裡
+		NB.TriggerClientEvent("NB:ReadyToSpawn",playerid) -- 出生，應該跟在上面的建立角色之後，目前先在這裡
 		if OnPlayerSpawn then OnPlayerSpawn(playerid) end 
 	end 
 

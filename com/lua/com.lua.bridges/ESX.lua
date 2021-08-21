@@ -53,11 +53,11 @@ if IsShared() then
 end 
 if IsServer() then 
     ESX.ServerCallbacks = {}
-    RegisterServerEvent('ESX:triggerServerCallback')
-    AddEventHandler('ESX:triggerServerCallback', function(name, requestId, ...)
+
+    NB.RegisterNetEvent('ESX:triggerServerCallback', function(name, requestId, ...)
         local playerId = NB and NB.PlayerId and NB.PlayerId(source) or tonumber(source)
         ESX.TriggerServerCallback(name, requestId, playerId, function(...)
-            TriggerClientEvent('ESX:serverCallback', playerId, requestId, ...)
+            NB.TriggerClientEvent('ESX:serverCallback', playerId, requestId, ...)
         end, ...)
     end)
     ESX.RegisterServerCallback = function(name, cb)
@@ -75,15 +75,15 @@ else
     ESX.CurrentRequestId          = 1
     ESX.TriggerServerCallback = function(name, cb, ...)
         ESX.ServerCallbacks[ESX.CurrentRequestId] = cb
-        TriggerServerEvent('ESX:triggerServerCallback', name, ESX.CurrentRequestId, ...)
+        NB.TriggerServerEvent('ESX:triggerServerCallback', name, ESX.CurrentRequestId, ...)
         if ESX.CurrentRequestId < 65534 then
             ESX.CurrentRequestId = ESX.CurrentRequestId + 1
         else
             ESX.CurrentRequestId = 1
         end
     end
-    RegisterNetEvent('ESX:serverCallback')
-    AddEventHandler('ESX:serverCallback', function(requestId, ...)
+    NB.RegisterNetEvent('ESX:serverCallback')
+    NB.AddEventHandler('ESX:serverCallback', function(requestId, ...)
         if ESX.ServerCallbacks[requestId] then ESX.ServerCallbacks[requestId](...) end 
         ESX.ServerCallbacks[requestId] = nil
     end)

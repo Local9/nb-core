@@ -49,7 +49,7 @@ function CreatePlayer(playerId, license,citizenID)
 	self.variables = {}
 	self.citizenID = citizenID
 	self.triggerEvent = function(eventName, ...)
-		TriggerClientEvent(eventName, self.source, ...)
+		NB.TriggerClientEvent(eventName, self.source, ...)
 	end
 
 	self.kick = function(reason)
@@ -104,7 +104,7 @@ end
 
 
 
-RegisterNetEvent('NB:OnPlayerJoined', function() --called by com.game.session.spawn.lua/CreateThread
+NB.RegisterNetEvent('NB:OnPlayerJoined', function() --called by com.game.session.spawn.lua/CreateThread
 	local playerdata,playerId = NB.PlayerData(source)
 	if not playerdata then
 		local license = com.game.Server.License.Get(playerId)
@@ -241,25 +241,25 @@ NB.UserSomethingSeriousGenerator = function(name,tablename,checkfn)
 	return Something
 end
 
-RegisterNetEvent('NB:SavePlayerPosition', function(coords,heading)
+NB.RegisterNetEvent('NB:SavePlayerPosition', function(coords,heading)
 	if coords and heading then 
 		local x, y, z = table.unpack(coords)
 		local playerData = NB.PlayerData(tonumber(source))
 		local citizenID = playerData and playerData.citizenID 
 		if citizenID then 
 			NB.SetCheapCitizenData(citizenID,'characters','position',{x=x,y=y,z=z,heading=heading})
-			--TriggerEvent("NB:log","[Citizen:"..citizenID.."] position Saved")
+			--NB.TriggerEvent("NB:log","[Citizen:"..citizenID.."] position Saved")
 		end 
 	end 
 end) 
 
 
-RegisterNetEvent("NB:SaveCharacterSkin",function(result)
+NB.RegisterNetEvent("NB:SaveCharacterSkin",function(result)
 	local playerData = NB.PlayerData(playerid)
 	local citizenID = playerData.citizenID 
 	if citizenID and result then 
 		NB.SetCheapCitizenData(citizenID,'characters','Skin',result)
-		TriggerEvent("NB:log","[Citizen:"..citizenID.."] Skin Saved",true)
+		NB.TriggerEvent("NB:log","[Citizen:"..citizenID.."] Skin Saved",true)
 	end 
 end )
 

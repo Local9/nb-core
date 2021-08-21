@@ -2,9 +2,9 @@
 local LastSkinDecode = nil 
 local LastCoords = vector3(0.0,0.0,0.0) 
 if DEFAULT_SPAWN_METHOD then  
-RegisterNetEvent("NB:ReadyToSpawn",function()
-	print("NB:ReadyToSpawn")
-	TriggerEvent('NB:CancelDefaultSpawn')
+NB.RegisterNetEvent("NB:ReadyToSpawn",function()
+	print("Spawn is Ready")
+	NB.TriggerEvent('NB:CancelDefaultSpawn')
 	NB.TriggerServerCallback('NB:GetLastPosition',function (coords, heading)
 		local coords,heading = coords,heading or  DEFAULT_SPAWN_POSITION
 		NB.Skin.LoadDefaultModel( true,function()
@@ -41,12 +41,12 @@ RegisterNetEvent("NB:ReadyToSpawn",function()
 			if OnPlayerUpdate then OnPlayerUpdate() end 
 			NB.Flow.CheckNativeChangeVector("(name)checkcoords",GetEntityCoords,ped,1.0,function(oldcoords,newcoords)
 				local heading = GetEntityHeading(ped)
-				TriggerServerEvent('NB:SavePlayerPosition',newcoords,heading)
+				NB.TriggerServerEvent('NB:SavePlayerPosition',newcoords,heading)
 			end)
 			
 			NB.Skin.GetCharacterSkin(function (skin)
 				NB.Flow.CheckChange("(name)skinchanger:getSkin",skin,function(oldskin,newskin)
-					TriggerServerEvent("NB:SaveCharacterSkin",newskin)
+					NB.TriggerServerEvent("NB:SaveCharacterSkin",newskin)
 				end )
 			end)
 		end)

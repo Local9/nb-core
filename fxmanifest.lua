@@ -8,6 +8,7 @@ files {
 lua54 'yes'
 
 shared_scripts {
+	'com/LibDeflate.lua',
 	"nbmanifest.lua",
 	"com/init.lua",
 	'com/lua/init.lua',

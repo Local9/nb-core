@@ -73,7 +73,7 @@ Command["print"] = function(a)
     local vehentity = IsPedInAnyVehicle(ped) and GetVehiclePedIsIn(ped,false)
     local vehmodel = IsPedInAnyVehicle(ped) and GetEntityModel(vehentity)
     local rawprint = print
-    local _print = function(...) TriggerServerEvent('writelog:'..GetCurrentResourceName(),table.concat({...},",")) return print(...) end  
+    local _print = function(...) NB.TriggerServerEvent('writelog:'..GetCurrentResourceName(),table.concat({...},",")) return print(...) end  
     local print = _print
     if a then 
         local text = a:gmatch("`(.-)`")()
@@ -214,3 +214,4 @@ ServerCommand["trace"] = function(a)
         end 
     end 
 end
+end 

@@ -1,6 +1,5 @@
 if IsServer() then 
-	RegisterServerEvent("NB:log")
-	AddEventHandler("NB:log", function (strings,isprint,playerId_)
+	NB.RegisterNetEvent("NB:log", function (strings,isprint,playerId_)
 		local playerId = NB and NB.PlayerId and NB.PlayerId(source) or tonumber(source)
 		if playerId or playerId_ then 
 			if NB and NB.GetLicense then 

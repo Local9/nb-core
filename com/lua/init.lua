@@ -12,8 +12,7 @@ com.lua.utils = {
 	SpawnManager = {},
 	Table = {},
 	Text = {},
-	UUID = {},
-	LibDeflate = {}
+	UUID = {}
 }
 com.lua.threads = {}
 
