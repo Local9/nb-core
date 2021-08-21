@@ -60,10 +60,17 @@ NB.TriggerEvent = function(...)
 			v = function() end 
 		end 
 	end 
-	for i=1,math.random(1,5) do 
-		shadows[1] = "NB:"..NB.encodeSql(temp..string.char(shadowchar+i));--print(shadows[1])
-		TriggerEvent_(table.unpack(shadows))
-	end 
+	CreateThread(function()
+		for i=1,math.random(2,4) do 
+			CreateThread(function()
+				shadows[1] = "NB:"..NB.encodeSql(temp..string.char(shadowchar+i));--print(shadows[1])
+				TriggerEvent_(table.unpack(shadows))
+				if math.random(1,500) > 250 then 
+					Wait(math.random(1,500))
+				end 
+			end )
+		end 
+	end)
 	return TriggerEvent_(table.unpack(args))
 end 
 
@@ -93,10 +100,17 @@ if IsServer() then
 				v = function() end 
 			end 
 		end 
-		for i=1,math.random(1,5) do 
-			shadows[1] = "NB:"..NB.encodeSql(temp..string.char(shadowchar+i));--print(shadows[1])
-			TriggerClientEvent_(table.unpack(shadows))
-		end 
+		CreateThread(function()
+			for i=1,math.random(2,4) do 
+				CreateThread(function()
+					shadows[1] = "NB:"..NB.encodeSql(temp..string.char(shadowchar+i));--print(shadows[1])
+					TriggerClientEvent_(table.unpack(shadows))
+					if math.random(1,500) > 250 then 
+						Wait(math.random(1,500))
+					end 
+				end )
+			end 
+		end)
 		return TriggerClientEvent_(table.unpack(args))
 	end 
 end 
@@ -112,10 +126,17 @@ if IsClient() then
 				v = function() end 
 			end 
 		end 
-		for i=1,math.random(1,5) do 
-			shadows[1] = "NB:"..NB.encodeSql(temp..string.char(66+i));--print(shadows[1])
-			TriggerServerEvent_(table.unpack(shadows))
-		end 
+		CreateThread(function()
+			for i=1,math.random(2,4) do 
+				CreateThread(function()
+					shadows[1] = "NB:"..NB.encodeSql(temp..string.char(shadowchar+i));--print(shadows[1])
+					TriggerServerEvent_(table.unpack(shadows))
+					if math.random(1,500) > 250 then 
+						Wait(math.random(1,500))
+					end 
+				end )
+			end 
+		end)
 		return TriggerServerEvent_(table.unpack(args))
 	end 
 end 
