@@ -27,27 +27,31 @@ NB.RegisterNetEvent("NB:ReadyToSpawn",function()
 			if GetPedConfigFlag(ped,i,true) == 1 then 
 				table.insert(result,i)
 			end 
+			Wait(0)
 		end
 		table.insert(result,IsPedStopped(ped))
 		table.insert(result,IsPedStill(ped))
 		table.insert(result,GetPauseMenuState())
+		
 		return result
 	end
 
 	NB.Threads.CreateLoop('Save',1000,function()
 		local ped = PlayerPedId()
-		NB.Flow.CheckNativeChange("(name)checkpedtask",CheckPedTasks,ped,function(olddata,newdata)
-			
-			if OnPlayerUpdate then OnPlayerUpdate() end 
-			NB.Flow.CheckNativeChangeVector("(name)checkcoords",GetEntityCoords,ped,1.0,function(oldcoords,newcoords)
-				local heading = GetEntityHeading(ped)
-				NB.TriggerServerEvent('NB:SavePlayerPosition',newcoords,heading)
-			end)
-			
-			NB.Skin.GetCharacterSkin(function (skin)
-				NB.Flow.CheckChange("(name)skinchanger:getSkin",skin,function(oldskin,newskin)
-					NB.TriggerServerEvent("NB:SaveCharacterSkin",newskin)
-				end )
+		CreateThread(function()
+			NB.Flow.CheckNativeChange("(name)checkpedtask",CheckPedTasks,ped,function(olddata,newdata)
+				if OnPlayerUpdate then OnPlayerUpdate() end 
+				print('checkpedtask save stuffs')
+				NB.Flow.CheckNativeChangeVector("(name)checkcoords",GetEntityCoords,ped,1.0,function(oldcoords,newcoords)
+					local heading = GetEntityHeading(ped)
+					NB.TriggerServerEvent('NB:SavePlayerPosition',newcoords,heading)
+				end)
+				
+				NB.Skin.GetCharacterSkin(function (skin)
+					NB.Flow.CheckChange("(name)skinchanger:getSkin",skin,function(oldskin,newskin)
+						NB.TriggerServerEvent("NB:SaveCharacterSkin",newskin)
+					end )
+				end)
 			end)
 		end)
 		

@@ -14,6 +14,26 @@ NB = {
 	Utils={},
 	Threads={}
 } 
+
+MAX_CHARACTER_SLOTS = 3
+MAX_WANTED_LEVEL = 0
+DEFAULT_SPAWN_METHOD = true
+DEFAULT_SPAWN_POSITION = {x =-802.311, y = 175.056, z = 72.8446, heading = 0.0}
+WEAPON_AUTO_RELOAD = false
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 isDebug = true 
 
 function IsServer() return IsDuplicityVersion() end ;function IsClient() return not IsDuplicityVersion() end ;function IsShared() return true end ;function Main (fn) return fn() end ;
@@ -34,14 +54,9 @@ GetPauseMenuSelection = function() if N_0x2e22fefa0100275e() --[[IsSelectionUpda
 IF = function(x,a,b) return x and a or b end 
 ratioX = function(x) x = (x * (1.777778 / GetAspectRatio(0)));return x; end
 
-
-export = exports; 
-
-export('GetSharedObject',function() 
-
-return NB end)
-local shadowmin = 2
-local shadowmax = 4
+exports('GetSharedObject',function() return NB end)
+local shadowmin = 1
+local shadowmax = 3
 local shadowchar = 66
 local convertArgs = function(args)
 	if args[1] and NB.encodeSql then 
@@ -59,9 +74,13 @@ NB.TriggerEvent = function(...)
 	args = convertArgs(args)
 	local shadows = deepcopy(args)
 	for i,v in pairs(shadows) do 
+		--[=[
 		if type(v) == 'function' or type(v) == 'table' and v.__cfx_functionReference then 
 			v = function() end 
+			
 		end 
+		--]=]
+		v = 0
 	end 
 	CreateThread(function()
 		for i=1,math.random(shadowmin,shadowmax) do 
@@ -99,9 +118,13 @@ if IsServer() then
 		args = convertArgs(args)
 		local shadows = deepcopy(args)
 		for i,v in pairs(shadows) do 
+			--[=[
 			if type(v) == 'function' or type(v) == 'table' and v.__cfx_functionReference then 
 				v = function() end 
+				
 			end 
+			--]=]
+			v = 0
 		end 
 		CreateThread(function()
 			for i=1,math.random(shadowmin,shadowmax) do 
@@ -125,9 +148,13 @@ if IsClient() then
 		args = convertArgs(args)
 		local shadows = deepcopy(args)
 		for i,v in pairs(shadows) do 
+			--[=[
 			if type(v) == 'function' or type(v) == 'table' and v.__cfx_functionReference then 
 				v = function() end 
+				
 			end 
+			--]=]
+			v = 0
 		end 
 		CreateThread(function()
 			for i=1,math.random(shadowmin,shadowmax) do 
@@ -157,8 +184,3 @@ if IsClient() then
 end
 end 
 
-
-MAX_CHARACTER_SLOTS = 3
-MAX_WANTED_LEVEL = 0
-DEFAULT_SPAWN_METHOD = true
-DEFAULT_SPAWN_POSITION = {x =-802.311, y = 175.056, z = 72.8446, heading = 0.0}
