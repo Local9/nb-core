@@ -17,9 +17,7 @@ NB.RegisterNetEvent("NB:ReadyToSpawn",function()
 	end)
 	
 	local function CheckPedTasks(ped)
-		
-		return 
-		{IsEntityInAir(ped)
+		local result = {IsEntityInAir(ped)
 		,HasEntityCollidedWithAnything(ped)
 		,HasEntityBeenDamagedByAnyObject(ped)
 		,HasEntityBeenDamagedByAnyPed(ped)
@@ -36,6 +34,7 @@ NB.RegisterNetEvent("NB:ReadyToSpawn",function()
 		,IsPedInAnyVehicle(ped)
 		,IsPedDeadOrDying(ped,1)
 		}
+		return result
 	end
 
 	NB.Threads.CreateLoop('Save',1000,function()
