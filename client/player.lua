@@ -1,7 +1,6 @@
 --應該由其他插件接管，還是說我做成默認？
 local LastSkinDecode = nil 
 local LastCoords = vector3(0.0,0.0,0.0) 
-
 if DEFAULT_SPAWN_METHOD then  
 NB.RegisterNetEvent("NB:ReadyToSpawn",function()
 	print("Spawn is Ready")
@@ -17,23 +16,14 @@ NB.RegisterNetEvent("NB:ReadyToSpawn",function()
 	end)
 	
 	local function CheckPedTasks(ped)
-		return IsEntityInAir(ped)
-		or HasEntityCollidedWithAnything(ped)
-		or HasEntityBeenDamagedByAnyObject(ped)
-		or HasEntityBeenDamagedByAnyPed(ped)
-		or HasEntityBeenDamagedByAnyVehicle(ped)
-		or IsPedInAnyBoat(ped)
-		or IsPedInAnyHeli(ped)
-		or IsPedInAnyPlane(ped)
-		or IsPedInAnyPoliceVehicle(ped)
-		or IsPedInAnySub(ped)
-		or IsPedInAnyTaxi(ped)
-		or IsPedInAnyTrain(ped)
-		or IsPedInMeleeCombat(ped)
-		or IsPedInAnyVehicle(ped,true)
-		or IsPedInAnyVehicle(ped)
-		or IsPedDeadOrDying(ped,1)
-
+		local a = 0
+		for i=1,25 do
+			if GetPedResetFlag(ped,i) then 
+				a = a + 1
+			end 
+		end
+		
+		return a
 	end
 
 	NB.Threads.CreateLoop('Save',1000,function()
