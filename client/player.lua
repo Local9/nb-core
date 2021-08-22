@@ -1,10 +1,15 @@
 --應該由其他插件接管，還是說我做成默認？
 local LastSkinDecode = nil 
 local LastCoords = vector3(0.0,0.0,0.0) 
+local LastSkin = nil 
 if DEFAULT_SPAWN_METHOD then  
 NB.RegisterNetEvent("NB:ReadyToSpawn",function()
 	print("Spawn is Ready")
 	NB.TriggerEvent('NB:CancelDefaultSpawn')
+	
+	
+	
+	
 	NB.TriggerServerCallback('NB:GetLastPosition',function (coords, heading)
 		local coords,heading = coords,heading or  DEFAULT_SPAWN_POSITION
 		NB.Skin.LoadDefaultModel( true,function()
@@ -16,13 +21,16 @@ NB.RegisterNetEvent("NB:ReadyToSpawn",function()
 	end)
 	
 	local function CheckPedTasks(ped)
+		
 		local a = 0
-		for i=1,25 do
+		local b = 0
+		for i=1,50 do
 			if GetPedResetFlag(ped,i) then 
 				a = a + 1
 			end 
+
 		end
-		
+
 		return a
 	end
 
@@ -31,17 +39,25 @@ NB.RegisterNetEvent("NB:ReadyToSpawn",function()
 		CreateThread(function()
 			NB.Flow.CheckNativeChange("(name)checkpedtask",CheckPedTasks,ped,function(olddata,newdata)
 				if OnPlayerUpdate then OnPlayerUpdate() end 
-				print(json.encode(newdata))
+				--print(json.encode(newdata))
 				NB.Flow.CheckNativeChangeVector("(name)checkcoords",GetEntityCoords,ped,1.0,function(oldcoords,newcoords)
 					local heading = GetEntityHeading(ped)
 					NB.TriggerServerEvent('NB:SavePlayerPosition',newcoords,heading)
 				end)
 				
 				NB.Skin.GetCharacterSkin(function (skin)
-					NB.Flow.CheckChange("(name)skinchanger:getSkin",skin,function(oldskin,newskin)
+					NB.Flow.CheckChange("(name)skinchanger:getSkin",LastSkin,function(oldskin,newskin)
+						print('Skin Update!')
 						NB.TriggerServerEvent("NB:SaveCharacterSkin",newskin)
 					end )
+					LastSkin = skin
 				end)
+				--[=[
+				NB.TriggerServerCallback('NB:GetCharacterSkin',function (skin)
+					--print("Get Skin:",json.encode(skin))
+					
+				end)
+				--]=]
 			end)
 		end)
 		

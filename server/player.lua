@@ -67,43 +67,6 @@ function CreatePlayer(playerId, license,citizenID)
 	return self
 end
 
-function DB_IsUserExist(license)
-	local result = NB.Utils.Remote.mysql_scalar_sync('SELECT COUNT(*) as count FROM users WHERE license = @license', {
-		['@license'] = license
-	})
-	local r = not not (result and result > 0)
-	return r
-end 
-
-function DB_IsCharacterExist(citizenID)
-	local result = NB.Utils.Remote.mysql_scalar_sync('SELECT COUNT(*) as count FROM characters WHERE citizen_id = @citizen_id', {
-		['@citizen_id'] = citizenID
-	})
-	local r = not not (result and result > 0)
-	return r 
-end 
-
-function DB_GetCharacterLicense(citizenID)
-	--'SELECT u.license FROM users u inner join characters s on u.citizen_id = s.citizen_id WHERE u.citizen_id = @citizen_id'
-	local result = NB.Utils.Remote.mysql_scalar_sync('SELECT license FROM characters WHERE citizen_id = @citizen_id', {
-		['@citizen_id'] = citizenID
-	})
-	return result and result or nil
-end 
-
-function DB_GetCharactersByLicense(license,idx)
-	local result = NB.Utils.Remote.mysql_execute_sync('SELECT citizen_id FROM characters WHERE license = @license', {
-		['@license'] = license
-	})
-	if idx then 
-		return result and result[idx] and result[idx].citizen_id or nil
-	else
-		return result or nil 
-	end 
-end 
-
-
-
 NB.RegisterNetEvent('NB:OnPlayerJoined', function() --called by com.game.session.spawn.lua/CreateThread
 	local playerdata,playerId = NB.PlayerData(source)
 	if not playerdata then
@@ -133,98 +96,6 @@ NB.RegisterNetEvent('NB:OnPlayerJoined', function() --called by com.game.session
 	return false 
 end)
 
-NB.GetCheapCitizenData = function(citizenID,tablename,dataname)
-	return NB.Cache.GetPropSlotValue("CITIZEN",citizenID,tablename,dataname) or NB.GetExpensiveCitizenData(citizenID,tablename,dataname)
-end 
-
-NB.GetExpensiveCitizenData = function(citizenID,tablename,dataname)
-	local result = NB.Utils.Remote.mysql_scalar_sync('SELECT '..dataname..' FROM '..tablename..' WHERE citizen_id = @citizen_id', {
-		['@citizen_id'] = citizenID
-	})
-	local t = json.decodetable(result)
-	NB.Cache.SetPropSlotValue("CITIZEN",citizenID,tablename,dataname,t)
-	return t 
-end 
-
-NB.SaveAllCacheCitizenDataIntoMysql = function(citizenID)
-	if NB["_CACHE_"] and NB["_CACHE_"].CITIZEN then 
-		local tasks = {}
-		local forcedcitizenID = not (citizenID == nil)
-		for citizenidstr,tablenames in pairs(NB["_CACHE_"].CITIZEN) do 
-			if (forcedcitizenID and citizenidstr == citizenID) or (not forcedcitizenID) then 
-				for tablename,datanames in pairs(tablenames) do 
-					--for dataname,data in pairs(datanames) do 
-						if not NB.Cache.IsPropValueExist("CITIZEN",citizenidstr,tablename,"DontSaveToDatabase") then --dont save the table slots 
-							local task = function(cb)
-									NB.SetExpensiveCitizenData(citizenidstr,tablename,datanames)
-									--print(citizenidstr,tablename,dataname,data)
-								cb("Async")
-							end
-							table.insert(tasks, task)
-						end 
-					--end 
-				end 
-			end 
-		end 
-		NB.Async.series(tasks,function(result) end)
-	end 
-end 
-
-CreateThread(function()
-	Wait(10000)
-	while true do 
-		NB.SaveAllCacheCitizenDataIntoMysql()
-		Wait(600000)
-	end 
-end )
-
-
-
-
-
-NB.SetCheapCitizenData = function(citizenID,tablename,dataname,datas,dontSaveSql)
-	if dontSaveSql then 
-		NB.Cache.SetPropSlotValue("CITIZEN",citizenID,tablename,"DontSaveToDatabase",true)
-	end 
-	NB.Cache.SetPropSlotValue("CITIZEN",citizenID,tablename,dataname,datas)
-end 
-
-NB.SetExpensiveCitizenData = function(citizenID,tablename,dataname,datas,...)
-	
-	local covertDatas = function(cdata)
-		if cdata then 
-			if type(cdata) == 'table' then 
-				return json.encode(cdata)
-			else 
-				return tostring(cdata)
-			end 
-		end 
-	end 
-	if type(dataname) == 'table' then 
-		local querys = {}
-		local datadefines = {
-			['@citizen_id'] = citizenID
-		}
-		for dataname_,data_ in pairs(dataname) do 
-			table.insert(querys,dataname_..' = @'..dataname_)
-			datadefines['@'..dataname_..''] = covertDatas(data_)
-		end 
-		querys = table.concat(querys,",")
-		
-		NB.Utils.Remote.mysql_execute('UPDATE '..tablename..' SET '..querys..' WHERE citizen_id = @citizen_id', datadefines)
-	else 
-		local otherargs = {...}
-		local datas = datas 
-		if #otherargs > 0 then 
-			datas = {datas[1],...}
-		end 
-		NB.Utils.Remote.mysql_execute('UPDATE '..tablename..' SET '..dataname..' = @'..dataname..' WHERE citizen_id = @citizen_id', {
-			['@citizen_id'] = citizenID,
-			['@'..dataname..''] = covertDatas(datas)
-		})
-	end 
-	
-end 
 
 NB.UserSomethingSeriousGenerator = function(name,tablename,checkfn)
 	local SomethingExist = false
@@ -247,8 +118,8 @@ NB.RegisterNetEvent('NB:SavePlayerPosition', function(coords,heading)
 		local playerData = NB.PlayerData(tonumber(source))
 		local citizenID = playerData and playerData.citizenID 
 		if citizenID then 
-			NB.SetCheapCitizenData(citizenID,'characters','position',{x=x,y=y,z=z,heading=heading})
-			--NB.TriggerEvent("NB:log","[Citizen:"..citizenID.."] position Saved")
+			NB.SetCitizenPackedDataCache(citizenID,'characters','position',{x=x+0.0,y=y+0.0,z=z+0.0,heading=heading+0.0})
+			NB.TriggerEvent("NB:log","[Citizen:"..citizenID.."] position Saved")
 		end 
 	end 
 end) 
@@ -258,17 +129,25 @@ NB.RegisterNetEvent("NB:SaveCharacterSkin",function(result)
 	local playerData = NB.PlayerData(playerid)
 	local citizenID = playerData.citizenID 
 	if citizenID and result then 
-		NB.SetCheapCitizenData(citizenID,'characters','Skin',result)
-		NB.TriggerEvent("NB:log","[Citizen:"..citizenID.."] Skin Saved",true)
+		NB.SetCitizenPackedDataCache(citizenID,'characters','skin',NB.encodeSql(json.encode(result)))
+		NB.TriggerEvent("NB:log","[Citizen:"..citizenID.."] skin Saved",true)
 	end 
 end )
 
-
+NB.RegisterServerCallback("NB:GetCharacterSkin",function(playerId,cb)
+	local playerData = NB.PlayerData(playerId)
+	local citizenID = playerData.citizenID 
+	local skin = NB.GetCitizenPackedDataCache(citizenID,'characters','skin')
+	if skin then 
+		cb(json.decodetable(NB.decodeSql(skin)))
+		--cb(vector3(pos[1], pos[2], pos[3]), pos[4])
+	end 
+end )
 
 NB.RegisterServerCallback("NB:GetLastPosition",function(playerId,cb)
 	local playerData = NB.PlayerData(playerId)
 	local citizenID = playerData.citizenID 
-	local pos = NB.GetCheapCitizenData(citizenID,'characters','position')
+	local pos = NB.GetCitizenPackedDataCache(citizenID,'characters','position')
 	if pos then 
 		cb(vector3(pos.x, pos.y, pos.z), pos.heading)
 		--cb(vector3(pos[1], pos[2], pos[3]), pos[4])

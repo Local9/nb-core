@@ -10,13 +10,13 @@ if IsShared() then
 		end 
 		return NB.Threads.CreateLoop(name,time,_fn)
 	end 
-	NB.Cache.SetPropSlotValue  = function(...) return com.lua.utils.Table.SetTableSomething(NB["_CACHE_"],...) end
+	NB.Cache.Set  = function(...) return com.lua.utils.Table.SetTableSomething(NB["_CACHE_"],...) end
 	NB.Cache.IsPropValueExist = function(...) return com.lua.utils.Table.IsTableSomthingExist(NB["_CACHE_"],...) end 
-	NB.Cache.GetPropSlotValue = function(...) return com.lua.utils.Table.GetTableSomthing(NB["_CACHE_"],...) end  
+	NB.Cache.Get = function(...) return com.lua.utils.Table.GetTableSomthing(NB["_CACHE_"],...) end  
 	NB.Cache.InsertPropSlot = function(...) return com.lua.utils.Table.InsertTableSomethingTable(NB["_CACHE_"],...) end
 	NB.Cache.RemovePropSlot = function(...) return com.lua.utils.Table.RemoveTableSomethingTable(NB["_CACHE_"],...) end
-	NB.Cache = setmetatable(NB.Cache,{__call = function(self,...) return NB.Cache.SetPropSlotValue(...) end })
-	NB.GetCache = NB.Cache.GetPropSlotValue
+	NB.Cache = setmetatable(NB.Cache,{__call = function(self,...) return NB.Cache.Set(...) end })
+	NB.GetCache = NB.Cache.Get
 	NB.LoadDataSheet = com.game.Shared.Load.LoadDataSheet
 	NB.Random = com.lua.utils.Math.getRandomNumber
 	NB.RandomFloat = com.lua.utils.Math.getRandomFloat

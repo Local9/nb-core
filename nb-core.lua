@@ -45,10 +45,10 @@ if IsServer() then
 		}, function(result)
 			--下面是新建角色才會執行，目前先省略建立步驟
 			
-			NB.Utils.Remote.mysql_execute('INSERT INTO characters (citizen_id,license,position) VALUES (@citizen_id,@license,@position)', {
+			NB.Utils.Remote.mysql_execute('INSERT INTO characters (citizen_id,license,packeddata) VALUES (@citizen_id,@license,@packeddata)', {
 				['@citizen_id'] = citizenID,
 				['@license'] = license,
-				['@position'] = json.encode(DEFAULT_SPAWN_POSITION)
+				['@packeddata'] = json.encode({position=DEFAULT_SPAWN_POSITION})
 			}, function(result)
 				print("Created a character into database")
 				if OnPlayerLogin then OnPlayerLogin(playerid,citizenID) end 

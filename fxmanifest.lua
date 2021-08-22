@@ -36,6 +36,7 @@ client_scripts {
 }
 
 server_scripts{
+	'server/DB/*.lua',
 	'server/events.lua',
 	'server/functions.lua',
 	'server/player.lua'
