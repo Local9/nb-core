@@ -1,6 +1,7 @@
 --應該由其他插件接管，還是說我做成默認？
 local LastSkinDecode = nil 
 local LastCoords = vector3(0.0,0.0,0.0) 
+
 if DEFAULT_SPAWN_METHOD then  
 NB.RegisterNetEvent("NB:ReadyToSpawn",function()
 	print("Spawn is Ready")
@@ -16,24 +17,25 @@ NB.RegisterNetEvent("NB:ReadyToSpawn",function()
 	end)
 	
 	local function CheckPedTasks(ped)
-		local result = {}
-		for i=1,100 do
-			if GetIsTaskActive(ped, i) then 
-				table.insert(result,i)
-			end 
-			if GetPedConfigFlag(ped,i,false) == 1 then 
-				table.insert(result,i)
-			end 
-			if GetPedConfigFlag(ped,i,true) == 1 then 
-				table.insert(result,i)
-			end 
-			Wait(0)
-		end
-		table.insert(result,IsPedStopped(ped))
-		table.insert(result,IsPedStill(ped))
-		table.insert(result,GetPauseMenuState())
 		
-		return result
+		return 
+		{IsEntityInAir(ped)
+		,HasEntityCollidedWithAnything(ped)
+		,HasEntityBeenDamagedByAnyObject(ped)
+		,HasEntityBeenDamagedByAnyPed(ped)
+		,HasEntityBeenDamagedByAnyVehicle(ped)
+		,IsPedInAnyBoat(ped)
+		,IsPedInAnyHeli(ped)
+		,IsPedInAnyPlane(ped)
+		,IsPedInAnyPoliceVehicle(ped)
+		,IsPedInAnySub(ped)
+		,IsPedInAnyTaxi(ped)
+		,IsPedInAnyTrain(ped)
+		,IsPedInMeleeCombat(ped)
+		,IsPedInAnyVehicle(ped,true)
+		,IsPedInAnyVehicle(ped)
+		,IsPedDeadOrDying(ped,1)
+		}
 	end
 
 	NB.Threads.CreateLoop('Save',1000,function()
@@ -41,7 +43,7 @@ NB.RegisterNetEvent("NB:ReadyToSpawn",function()
 		CreateThread(function()
 			NB.Flow.CheckNativeChange("(name)checkpedtask",CheckPedTasks,ped,function(olddata,newdata)
 				if OnPlayerUpdate then OnPlayerUpdate() end 
-				print('checkpedtask save stuffs')
+				--print(json.encode(newdata))
 				NB.Flow.CheckNativeChangeVector("(name)checkcoords",GetEntityCoords,ped,1.0,function(oldcoords,newcoords)
 					local heading = GetEntityHeading(ped)
 					NB.TriggerServerEvent('NB:SavePlayerPosition',newcoords,heading)
