@@ -11,6 +11,7 @@ if IsShared() then
 		return NB.Threads.CreateLoop(name,time,_fn)
 	end 
 	NB.Cache.Set  = function(...) return com.lua.utils.Table.SetTableSomething(NB["_CACHE_"],...) end
+	NB.Cache.Clear  = function(...) return com.lua.utils.Table.ClearTableSomething(NB["_CACHE_"],...) end
 	NB.Cache.IsPropValueExist = function(...) return com.lua.utils.Table.IsTableSomthingExist(NB["_CACHE_"],...) end 
 	NB.Cache.Get = function(...) return com.lua.utils.Table.GetTableSomthing(NB["_CACHE_"],...) end  
 	NB.Cache.InsertPropSlot = function(...) return com.lua.utils.Table.InsertTableSomethingTable(NB["_CACHE_"],...) end
@@ -34,6 +35,7 @@ if IsServer() then
 	NB.IsIdentifierBanned = function(identifier) local banlist = NB.ReloadBans() return banlist[identifier] end
 	NB.IsPlayerBanned = function(playerid) return NB.IsIdentifierBanned(NB.GetLicense(playerid)) end 
 	NB.BanPlayer = function (playerid) local license = NB.GetLicense(playerid) if license then  NB.Ban(license) end return end 
+	NB.LoadWhitelist = com.game.Server.Load.LoadWhiteList
 end 
 if IsClient() then 
 	NB.Skin = com.game.Client.Skin

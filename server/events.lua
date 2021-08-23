@@ -12,9 +12,7 @@ AddEventHandler('playerDropped', function (reason)
 	local playerId = tonumber(source)
 	if playerId then 
 		NB.TriggerEvent('NB:log','Player Disconnected',false,playerId)
-		
-		
 		if OnPlayerDisconnect then OnPlayerDisconnect(playerId) end 
-		if NB.ReleasePlayer then NB.ReleasePlayer() end
+		if NB.ReleasePlayer then NB.ReleasePlayer(playerId) end
 	end 
 end)

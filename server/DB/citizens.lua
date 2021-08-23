@@ -37,7 +37,7 @@ DB.Citizen.CacheToSql = function(citizenID,tablename,dataslot)
 			if type(cdata) == 'table' then 
 				return json.encode(cdata)
 			else 
-				return (cdata)
+				return tostring(cdata)
 			end 
 		end 
 	end 
@@ -55,16 +55,16 @@ DB.Citizen.CacheToSql = function(citizenID,tablename,dataslot)
 		NB.Utils.Remote.mysql_execute('UPDATE '..tablename..' SET '..querys..' WHERE citizen_id = @citizen_id', datadefines)
 	end 
 end 
-DB.Citizen.AllCachesToSql = function(citizenID)
+DB.Citizen.AllCachesToSql = function(citizenID,isClear)
 	if NB["_CACHE_"] and NB["_CACHE_"]["CITIZEN"] then 
 		local CITIZENTABLE = NB["_CACHE_"]["CITIZEN"]
 		local tasks = {}
 		if citizenID then 
 			for tablename,citizendata in pairs(CITIZENTABLE[citizenID]) do 
 				local task = function(cb)
-						DB.Citizen.CacheToSql(citizenidstr,tablename,citizendata)
+						DB.Citizen.CacheToSql(citizenID,tablename,citizendata)
 						--print(citizenidstr,tablename,dataslot,data)
-					cb("Async")
+					cb("Async Saving"..citizenID..tablename..json.encode(citizendata).."Okay")
 				end
 				table.insert(tasks, task)
 			end 
@@ -74,13 +74,19 @@ DB.Citizen.AllCachesToSql = function(citizenID)
 					local task = function(cb)
 							DB.Citizen.CacheToSql(citizenidstr,tablename,citizendata)
 							--print(citizenidstr,tablename,dataslot,data)
-						cb("Async")
+						cb("Async Saving"..citizenidstr..tablename..json.encode(citizendata).."Okay")
 					end
 					table.insert(tasks, task)
 				end 
 			end 
 		end 
-		NB.Async.series(tasks,function(result) end)
+		NB.Async.series(tasks,function(result) 
+			if isClear then 
+				print('Data is clear.Raw:',json.encode(NB.Cache.Get("CITIZEN",citizenID)))
+				NB.Cache.Clear("CITIZEN",citizenID)
+			end 
+			
+		end)
 	end 
 end 
 DB.Citizen.Create = function(playerid, license, citizenID,cb)

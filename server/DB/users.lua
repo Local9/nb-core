@@ -7,6 +7,7 @@ DB.User.IsUserExist = function (license)
 end 
 
 DB.User.CreateUser = function (license,cb)
+	
 	NB.Utils.Remote.mysql_execute('INSERT INTO users (license) VALUES (@license)', {
 			['@license'] = license
 		}, function(result)

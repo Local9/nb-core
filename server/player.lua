@@ -24,10 +24,12 @@ end
 
 NB.SetPlayer = function(playerhandle)
 	NB.Players[NB.PlayerId()] = playerhandle
+	NB.Players[NB.PlayerId()].citizendata  = {}
+	
 end 
 
-NB.ReleasePlayer = function()
-	NB.Players[NB.PlayerId()] = nil 
+NB.ReleasePlayer = function(playerid)
+	NB.Players[playerid] = nil 
 end
 
 NB.GetPlayerFromIdentifier = function(identifier)

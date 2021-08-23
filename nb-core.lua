@@ -13,22 +13,31 @@ if IsServer() then
 		local license = NB.GetIdentifier(playerId)
 		local isLicenseAlreadyInUse = false 
 		local Banned = false 
+		local IsWhite = false 
 		deferrals.update(string.format("Hello %s. Validating Your Rockstar License", name))
 		if NB.GetPlayerFromIdentifier(NB.GetIdentifier(playerId)) then 
 			isLicenseAlreadyInUse = true 
 		end 
-		Wait(2500)
-		NB.ReloadBans()
-		Wait(50)
-		Banned = NB.IsIdentifierBanned(license)
+		Wait(2500) NB.ReloadBans()
+		Wait(50) Banned = NB.IsIdentifierBanned(license)
 		deferrals.update(string.format("Hello %s. We are checking if you are banned.", name))
 		
+		local whitelistlength,whitelist = NB.LoadWhitelist()
+		if whitelistlength > 0 then
+			Wait(2500) 
+			deferrals.update(string.format("Hello %s. We are checking if you are in allowlist.", name))
+			if whitelist and whitelist[license] then IsWhite = true end 
+		else 
+			IsWhite = true
+		end 
 		Wait(2500)
 		deferrals.update(string.format("Welcome %s to {Server Name}.", name))
 		if not license then
 			deferrals.done('No Valid Rockstar License Found')
 		elseif Banned then 
 			deferrals.done("You've got BANNED from this server")
+		elseif not IsWhite then 
+			deferrals.done("You are not in the allowlist from this server.")
 		elseif isLicenseAlreadyInUse then
 			deferrals.done('Duplicate Rockstar License in the Server Found')
 		else
@@ -38,9 +47,10 @@ if IsServer() then
 		end
 	end 
 	function OnPlayerRegister(playerId, license, citizenID)
-		DB.User.CreateUser(license, function(result)
+		DB.User.CreateUser(license, function()
 			--下面是新建角色才會執行，目前先省略建立步驟
-			DB.Citizen.Create(playerId, license, citizenID,function(result)
+			
+			DB.Citizen.Create(playerId, license, citizenID,function()
 				print("Created a character into database")
 				if OnPlayerLogin then OnPlayerLogin(playerId,citizenID) end 
 			end )
@@ -83,7 +93,7 @@ if IsServer() then
 		local playerData = NB.PlayerData(playerid)
 		local citizenID = playerData and playerData.citizenID 
 		if citizenID then 
-			DB.Citizen.AllCachesToSql(citizenID)
+			DB.Citizen.AllCachesToSql(citizenID,true)
 			NB.SendClientMessageToAll(-1,GetPlayerName(playerid).."離開了服務器")
 		end 
 	end 

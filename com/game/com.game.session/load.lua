@@ -1,15 +1,15 @@
 if IsServer() then 
 	
 com.game.Server.Load.LoadBanList = function(identifier)
-	local f,err = io.open('nbcore_bans.txt','r')
-	local banned
+	local f,err = io.open('nbcore_bans.txt','a+')
+	local bannedcontent
 	local Banlist = {}
 	if f then 
-		banned = f:read "*a" -- *a or *all reads the whole file
+		bannedcontent = f:read "*a" -- *a or *all reads the whole file
 		f:close()
 	end 
-	if banned then
-		local b = com.lua.utils.Text.Split(banned, "\n")
+	if bannedcontent then
+		local b = com.lua.utils.Text.Split(bannedcontent, "\n")
 		for k,v in ipairs(b) do
 			if string.len(v) > 0 then 
 				Banlist[v] = true
@@ -31,7 +31,27 @@ com.game.Server.Load.AddBan = function(identifier)
 		return com.game.Server.Load.LoadBanList()
 	end 
 end
-	
+com.game.Server.Load.LoadWhiteList = function(identifier)
+	local f,err = io.open('nbcore_whilelist.txt','a+')
+	local Whitecontent
+	local Whitelist = {}
+	local length = 0
+	if f then 
+		Whitecontent = f:read "*a" -- *a or *all reads the whole file
+		f:close()
+	end 
+	if Whitecontent then
+		local b = com.lua.utils.Text.Split(Whitecontent, "\n")
+		for k,v in ipairs(b) do
+			if string.len(v) > 0 then 
+				Whitelist[v] = true
+				length = length + 1
+			end 
+		end
+	end
+	return length,Whitelist
+end
+
 end 
 
 com.game.Shared.Load.LoadDataSheet = function(dataname,iskeys)
