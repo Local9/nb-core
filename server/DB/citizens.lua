@@ -192,9 +192,9 @@ NB.RegisterServerCallback("NB:GetCharacterPackedData",function(playerId,cb,datat
 			end 
 		end 
 		if not found then return end 
-		local skin = NB.GetCitizenPackedDataCache(citizenID,'citizens',datatype,isCompress)
-		if skin then 
-			cb(skin)
+		local result = NB.GetCitizenPackedDataCache(citizenID,'citizens',datatype,isCompress)
+		if result then 
+			cb(result)
 			--cb(vector3(pos[1], pos[2], pos[3]), pos[4])
 		end 
 	end 
