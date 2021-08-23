@@ -3,14 +3,28 @@ NB.GetCitizenDataCache = function(citizenID,tablename,dataslot)
 end 
 
 NB.SetCitizenDataCache = function(citizenID,tablename,dataslot,datas)
+	--[=[
+	if type(datas) == "string" then 
+		datas = string.format("%q", datas)
+	elseif type(datas) == 'table' then 
+		for i,v in pairs(datas) do 
+			if type(v) == "string" then 
+				datas[i] = string.format("%q", v)
+			end 
+		end 
+	end 
+	--]=]
 	NB.Cache.Set("CITIZEN",citizenID,tablename,dataslot,datas)
 end 
---NB.SetCitizenDataCache("NFGT9NI218846462","characters","test",'120398190238091839" WHERE 1=1 --') try sql injection
+NB.SetCitizenDataCache("NFGT9NI218846462","characters","test",'WHERE 1=1 --')
 NB.GetCitizenPackedDataCache = function(citizenID,tablename,dataslot,isCompress)
 	local pd = NB.Cache.Get("CITIZEN",citizenID,tablename,"packeddata",dataslot)
 	local r = pd or NB.GetCitizenDataSQL_Table(citizenID,tablename,"packeddata")[dataslot] 
 	if isCompress then 
-		r = json.decodetable(NB.decodeSql(r))
+		if r then 
+			local rt = NB.decodeSql(r)
+			r = json.decodetable(rt)
+		end 
 	end 
 	return r
 end 
@@ -27,6 +41,7 @@ NB.SetCitizenPackedDataCache = function(citizenID,tablename,dataslot,datas,isCom
 	end 
 	
 	NB.Cache.Set("CITIZEN",citizenID,tablename,"packeddata",_data)
+	--NB.Cache.Set("CITIZEN",citizenID,tablename,"packeddata",dataslot,datas)
 end 
 
 NB.GetCitizenDataSQL_Table= function(citizenID,tablename,dataslot)
@@ -44,7 +59,7 @@ NB.SetCitizenDataSQL_Table = function(citizenID,tablename,dataslot)
 			if type(cdata) == 'table' then 
 				return json.encode(cdata)
 			else 
-				return tostring(cdata)
+				return (cdata)
 			end 
 		end 
 	end 
