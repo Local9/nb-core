@@ -48,6 +48,32 @@ uuid.Gen2 = function()
     return str
 end
 
+uuid.GenByTemplate = function(template) 
+	local template = template
+	print(template)
+	if IsClient() then 
+		local seed = GetCloudTimeAsInt()+GetGameTimer()
+		if seed >= (2 ^ 32) then
+			seed = seed - math.floor(seed / 2 ^ 32) * (2 ^ 32)
+		end
+		math.randomseed(math.floor(math.abs(seed)))
+	end 
+	if IsServer() then 
+		local seed = os.time()+GetGameTimer()
+		if seed >= (2 ^ 32) then
+			seed = seed - math.floor(seed / 2 ^ 32) * (2 ^ 32)
+		end
+		math.randomseed(math.floor(math.abs(seed)))
+	end 
+	local str,len = string.gsub(template, '[xy]', function (c)
+		
+       local v = (c == 'x') and random(65, 90) or random(49, 57)
+	   
+        return string.format('%s', string.char(v):upper())
+    end)
+    return str
+end
+
 uuid.GenByString = function(str) 
 	local template ='xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
 	local hash = GetHashKey(str) --固定string 產生固定 hashkey

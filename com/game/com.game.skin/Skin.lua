@@ -143,19 +143,19 @@ end
 
 
 
-Skin.SetCharacterSkin = function(key, val)
+Skin.CitizenSetSkin = function(key, val)
   Character[key] = val
   if key == 'sex' then
-    Skin.LoadCharacterSkin(Character)
+    Skin.CitizenLoadSkin(Character)
   else
     Skin.ApplySkin(Character)
   end
 end
-Skin.GetCharacterSkin = function(cb)
+Skin.CitizenGetSkin = function(cb)
   cb(Character)
 end
 
-Skin.LoadCharacterSkin = function(skin, cb)
+Skin.CitizenLoadSkin = function(skin, cb)
   local characterModel
   if skin['sex'] ~= LastSex then
     LoadSkin = skin

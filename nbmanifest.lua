@@ -1,3 +1,4 @@
+DB = {User={},Citizen={}} --interface
 NB = {
 	encode = PreLibDeflate.encode ,
 	decode = PreLibDeflate.decode ,
@@ -6,7 +7,7 @@ NB = {
 	encodeSql = PreLibDeflate.encodeToSQL  ,
 	decodeSql = PreLibDeflate.decodeFromSQL ,
 	_CACHE_ = {},
-	_LOCAL_ = {},
+	_PLAYER_ = {},
 	_IMPORTED_ = {},
 	Cache={},
 	Datas={},

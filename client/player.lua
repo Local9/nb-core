@@ -14,7 +14,6 @@ NB.RegisterNetEvent("NB:ReadyToSpawn",function()
 			coords,heading = DEFAULT_SPAWN_POSITION
 		end 
 		NB.Skin.LoadDefaultModel( true,function()
-			--NB.Skin.LoadCharacterSkin(json.decodetable('{"hair_1":11,"face":0,"lipstick_1":0,"lipstick_4":0,"beard_4":0,"age_2":0,"skin":0,"beard_2":0,"makeup_3":0,"eyebrows_2":0,"hair_color_1":0,"eyebrows_4":0,"lipstick_2":0,"eyebrows_3":0,"eyebrows_1":0,"hair_2":0,"sex":0,"hair_color_2":0,"makeup_1":0,"makeup_2":0,"age_1":0,"beard_1":0,"beard_3":0,"makeup_4":0,"lipstick_3":0}'))
 			NB.Utils.SpawnManager.Spawn(coords, heading)
 		end )
 	end, "position", false)
@@ -31,11 +30,11 @@ NB.RegisterNetEvent("NB:ReadyToSpawn",function()
 				if OnPlayerUpdate then OnPlayerUpdate() end 
 				NB.Flow.CheckNativeChangeVector("(name)checkcoords",GetEntityCoords,ped,1.0,function(oldcoords,newcoords)
 					local heading = GetEntityHeading(ped)
-					NB.TriggerServerEvent('NB:SavePlayerPosition',newcoords,heading)
+					NB.TriggerServerEvent('NB:Citizen:SavePosition',newcoords,heading)
 				end)
-				NB.Skin.GetCharacterSkin(function (skin)
+				NB.Skin.CitizenGetSkin(function (skin)
 					NB.Flow.CheckChange("(name)skinchanger:getSkin",LastSkin,function(oldskin,newskin)
-						NB.TriggerServerEvent("NB:SaveCharacterSkin",newskin)
+						NB.TriggerServerEvent("NB:Citizen:SaveSkin",newskin)
 					end )
 					LastSkin = skin
 				end)
