@@ -6,18 +6,25 @@ NB.SetCitizenDataCache = function(citizenID,tablename,dataslot,datas)
 	NB.Cache.Set("CITIZEN",citizenID,tablename,dataslot,datas)
 end 
 
-NB.GetCitizenPackedDataCache = function(citizenID,tablename,dataslot)
+NB.GetCitizenPackedDataCache = function(citizenID,tablename,dataslot,isCompress)
 	local pd = NB.Cache.Get("CITIZEN",citizenID,tablename,"packeddata",dataslot)
-	return pd or NB.GetCitizenDataSQL_Table(citizenID,tablename,"packeddata")[dataslot] 
+	local r = pd or NB.GetCitizenDataSQL_Table(citizenID,tablename,"packeddata")[dataslot] 
+	if isCompress then 
+		r = json.decodetable(NB.decodeSql(r))
+	end 
+	return r
 end 
 
-NB.SetCitizenPackedDataCache = function(citizenID,tablename,dataslot,datas)
+NB.SetCitizenPackedDataCache = function(citizenID,tablename,dataslot,datas,isCompress)
 	local _data = NB.Cache.Get("CITIZEN",citizenID,tablename,"packeddata")
 	if not _data then NB.Cache.Set("CITIZEN",citizenID,tablename,"packeddata",{}) 
 		_data = {}
 	end 
-	
-	_data[dataslot] = datas
+	if isCompress then 
+		_data[dataslot] = NB.encodeSql(json.encode(datas))
+	else 
+		_data[dataslot] = datas
+	end 
 	
 	NB.Cache.Set("CITIZEN",citizenID,tablename,"packeddata",_data)
 	--NB.Cache.Set("CITIZEN",citizenID,tablename,"packeddata",dataslot,datas)

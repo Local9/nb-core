@@ -129,17 +129,26 @@ NB.RegisterNetEvent("NB:SaveCharacterSkin",function(result)
 	local playerData = NB.PlayerData(playerid)
 	local citizenID = playerData.citizenID 
 	if citizenID and result then 
-		NB.SetCitizenPackedDataCache(citizenID,'characters','skin',NB.encodeSql(json.encode(result)))
+		NB.SetCitizenPackedDataCache(citizenID,'characters','skin',result,true)
 		NB.TriggerEvent("NB:log","[Citizen:"..citizenID.."] skin Saved",true)
 	end 
 end )
 
-NB.RegisterServerCallback("NB:GetCharacterSkin",function(playerId,cb)
+NB.RegisterServerCallback("NB:GetCharacterPackedData",function(playerId,cb,datatype,isCompress)
 	local playerData = NB.PlayerData(playerId)
 	local citizenID = playerData.citizenID 
-	local skin = NB.GetCitizenPackedDataCache(citizenID,'characters','skin')
+	local ava = {"position","skin"}
+	local found = false 
+	for i=1,#ava do 
+		if datatype == ava[i] then 
+			found = true 
+		end 
+	end 
+	if not found then return end 
+	print(citizenID,'characters',datatype,isCompress)
+	local skin = NB.GetCitizenPackedDataCache(citizenID,'characters',datatype,isCompress)
 	if skin then 
-		cb(json.decodetable(NB.decodeSql(skin)))
+		cb(skin)
 		--cb(vector3(pos[1], pos[2], pos[3]), pos[4])
 	end 
 end )
@@ -149,7 +158,7 @@ NB.RegisterServerCallback("NB:GetLastPosition",function(playerId,cb)
 	local citizenID = playerData.citizenID 
 	local pos = NB.GetCitizenPackedDataCache(citizenID,'characters','position')
 	if pos then 
-		cb(vector3(pos.x, pos.y, pos.z), pos.heading)
+		cb(pos)
 		--cb(vector3(pos[1], pos[2], pos[3]), pos[4])
 	end 
 end )
