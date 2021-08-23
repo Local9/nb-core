@@ -64,7 +64,7 @@ DB.Citizen.AllCachesToSql = function(citizenID,isClear)
 				local task = function(cb)
 						DB.Citizen.CacheToSql(citizenID,tablename,citizendata)
 						--print(citizenidstr,tablename,dataslot,data)
-					cb("Async Saving"..citizenID..tablename..json.encode(citizendata).."Okay")
+					cb({citizenID = citizenID,result = "Async Saving "..citizenID.." "..tablename.." "..json.encode(citizendata).." Okay"})
 				end
 				table.insert(tasks, task)
 			end 
@@ -74,17 +74,22 @@ DB.Citizen.AllCachesToSql = function(citizenID,isClear)
 					local task = function(cb)
 							DB.Citizen.CacheToSql(citizenidstr,tablename,citizendata)
 							--print(citizenidstr,tablename,dataslot,data)
-						cb("Async Saving"..citizenidstr..tablename..json.encode(citizendata).."Okay")
+						cb({citizenID = citizenidstr,result = "Async Saving "..citizenidstr.." "..tablename.." "..json.encode(citizendata).." Okay"})
 					end
 					table.insert(tasks, task)
 				end 
 			end 
 		end 
-		NB.Async.series(tasks,function(result) 
-			if isClear then 
-				print('Data is clear.Raw:',json.encode(NB.Cache.Get("CITIZEN",citizenID)))
-				NB.Cache.Clear("CITIZEN",citizenID)
+		NB.Async.series(tasks,function(results) 
+			for i=1,#results do 
+				if isClear then 
+					print('Citizen '..results[i].citizenID..' Data is saved and cleared.\n:',results[i].result)
+					NB.DeleteCitizenDataCache(results[i].citizenID)
+				else 
+					print('Citizen '..results[i].citizenID..' Data is saved.\n:',results[i].result)
+				end 
 			end 
+			
 			
 		end)
 	end 
@@ -107,6 +112,9 @@ CreateThread(function()
 	end 
 end )
 
+NB.DeleteCitizenDataCache = function(...)
+	return NB.Cache.Clear("CITIZEN",...)
+end 
 
 NB.GetCitizenDataCache = function(citizenID,tablename,dataslot)
 	return NB.Cache.Get("CITIZEN",citizenID,tablename,dataslot) or DB.Citizen.SqlToCache(citizenID,tablename,dataslot)
@@ -125,7 +133,7 @@ NB.SetCitizenDataCache = function(citizenID,tablename,dataslot,datas)
 	--]=]
 	NB.Cache.Set("CITIZEN",citizenID,tablename,dataslot,datas)
 end 
-NB.SetCitizenDataCache("NFGT9NI218846462","citizens","test",'WHERE 1=1 --')
+--NB.SetCitizenDataCache("NFGT9NI218846462","citizens","test",'WHERE 1=1 --')
 NB.GetCitizenPackedDataCache = function(citizenID,tablename,dataslot,isCompress)
 	local pd = NB.Cache.Get("CITIZEN",citizenID,tablename,"packeddata",dataslot)
 	local r = pd or DB.Citizen.SqlToCache(citizenID,tablename,"packeddata")[dataslot] 
