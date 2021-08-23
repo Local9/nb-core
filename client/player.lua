@@ -43,6 +43,7 @@ NB.RegisterNetEvent("NB:ReadyToSpawn",function()
 				NB.Skin.GetCharacterSkin(function (skin)
 					NB.Flow.CheckChange("(name)skinchanger:getSkin",LastSkin,function(oldskin,newskin)
 						print('Skin Update!')
+						
 						NB.TriggerServerEvent("NB:SaveCharacterSkin",newskin)
 					end )
 					LastSkin = skin

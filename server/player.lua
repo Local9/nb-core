@@ -125,13 +125,16 @@ NB.RegisterNetEvent('NB:SavePlayerPosition', function(coords,heading)
 end) 
 
 
-NB.RegisterNetEvent("NB:SaveCharacterSkin",function(result)
-	local playerData = NB.PlayerData(playerid)
-	local citizenID = playerData.citizenID 
-	if citizenID and result then 
-		NB.SetCitizenPackedDataCache(citizenID,'characters','skin',result,true)
-		NB.TriggerEvent("NB:log","[Citizen:"..citizenID.."] skin Saved",true)
+NB.RegisterNetEvent("NB:SaveCharacterSkin",function(skindata)
+	if skindata and type(skindata) == 'table' then 
+		local playerData = NB.PlayerData(tonumber(source))
+		local citizenID = playerData and playerData.citizenID 
+		if citizenID then 
+			NB.SetCitizenPackedDataCache(citizenID,'characters','skin',skindata,true)
+			NB.TriggerEvent("NB:log","[Citizen:"..citizenID.."] skin Saved",true)
+		end 
 	end 
+	
 end )
 
 NB.RegisterServerCallback("NB:GetCharacterPackedData",function(playerId,cb,datatype,isCompress)
