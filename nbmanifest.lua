@@ -7,7 +7,7 @@ NB = {
 	encodeSql = PreLibDeflate.encodeToSQL  ,
 	decodeSql = PreLibDeflate.decodeFromSQL ,
 	_CACHE_ = {},
-	_PLAYER_ = {},
+	_PLAYER_ = {BannedIdentifiers={}},
 	_IMPORTED_ = {},
 	Cache={},
 	Datas={},
@@ -167,6 +167,7 @@ end
 
 if IsServer() then 
 	NB.RegisterNetEvent("NB:server_print",function(...) print(...) end)
+	
 end 
 if IsClient() then 
 	print_server = function(...) NB.TriggerServerEvent("NB:server_print",...) end 

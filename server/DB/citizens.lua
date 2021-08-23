@@ -168,19 +168,21 @@ NB.RegisterNetEvent("NB:Citizen:SaveSkin",function(skindata)
 end )
 NB.RegisterServerCallback("NB:GetCharacterPackedData",function(playerId,cb,datatype,isCompress)
 	local playerData = NB.PlayerData(playerId)
-	local citizenID = playerData.citizenID 
-	local ava = {"position","skin"}
-	local found = false 
-	for i=1,#ava do 
-		if datatype == ava[i] then 
-			found = true 
+	local citizenID = playerData and playerData.citizenID 
+	if citizenID then 
+		local ava = {"position","skin"}
+		local found = false 
+		for i=1,#ava do 
+			if datatype == ava[i] then 
+				found = true 
+			end 
 		end 
-	end 
-	if not found then return end 
-	local skin = NB.GetCitizenPackedDataCache(citizenID,'citizens',datatype,isCompress)
-	if skin then 
-		cb(skin)
-		--cb(vector3(pos[1], pos[2], pos[3]), pos[4])
+		if not found then return end 
+		local skin = NB.GetCitizenPackedDataCache(citizenID,'citizens',datatype,isCompress)
+		if skin then 
+			cb(skin)
+			--cb(vector3(pos[1], pos[2], pos[3]), pos[4])
+		end 
 	end 
 end )
 

@@ -67,6 +67,56 @@ function CreatePlayer(playerId, license,citizenID)
 	return self
 end
 
+NB.LoadBans = function(identifier)
+	local f,err = io.open('nbcore_bans.txt','r')
+	local banned
+	NB._PLAYER_.BannedIdentifiers = {}
+	if f then 
+		banned = f:read "*a" -- *a or *all reads the whole file
+		f:close()
+	end 
+	if banned then
+		local b = com.lua.utils.Text.Split(banned, "\n")
+		for k,v in ipairs(b) do
+			if string.len(v) > 0 then 
+				NB._PLAYER_.BannedIdentifiers[v] = true
+			end 
+		end
+	end
+	return NB._PLAYER_.BannedIdentifiers
+end
+
+NB.ReloadBans = NB.LoadBans
+
+NB.IsIdentifierBanned = function(identifier)
+	return NB._PLAYER_.BannedIdentifiers[identifier]
+end
+
+NB.IsPlayerBanned = function(playerid)
+	return NB.IsIdentifierBanned(NB.GetPlayerLicense(playerid))
+end 
+
+NB.Ban = function(identifier)
+	if identifier then 
+		local f,err = io.open('nbcore_bans.txt','a+') 
+		if f then 
+			f:write(identifier .. "\n")
+			f:close()
+		else 
+			print(err)
+		end 
+		NB.ReloadBans()
+	end 
+end
+
+NB.BanPlayer = function (playerid)
+	local license = NB.GetPlayerLicense(playerid)
+	if license then 
+		NB.Ban(license)
+	end 
+	return 
+end 
+
 NB.RegisterNetEvent('NB:OnPlayerJoined', function() --called by com.game.session.spawn.lua/CreateThread
 	local source = tonumber(source)
 	local playerdata,playerId = NB.PlayerData(source)
@@ -75,3 +125,4 @@ NB.RegisterNetEvent('NB:OnPlayerJoined', function() --called by com.game.session
 end)
 
 
+NB.LoadBans()
