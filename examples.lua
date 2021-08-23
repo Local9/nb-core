@@ -4,12 +4,24 @@ if IsShared() then
 	end)
 end
 if IsServer() then 
+	--[=[
 	CreateThread(function()
 		NB.RegisterServerCallback("NB:test",function(playerId,cb)
 			cb("bad",9993.23332321,"a")
 			
 		end )
 	end)
+	--]=]
+	--[=[
+	CreateThread(function() 
+		while true do Wait(1000)
+			NB.TriggerClientCallback(2,"test",function(r)
+				print(r)
+			end )
+		end 
+	end )
+	--]=]
+
 end 
 if IsClient() then 
 	CreateThread(function()
@@ -28,8 +40,15 @@ if IsClient() then
 			end 
 
 		--]=]
+		--[=[
 		NB.TriggerServerCallback('NB:test',function (...)
 			print(...)
 		end)
+		--]=]
+		--[=[
+		NB.RegisterClientCallback("test",function(cb)
+			cb(123)
+		end)
+		--]=]
 	end)
 end 
