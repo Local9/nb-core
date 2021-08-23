@@ -34,6 +34,38 @@ if IsServer() then
             print(('[^3WARNING^7] Server callback ^5"%s"^0 does not exist. ^1Please Check The Server File for Errors!'):format(name))
         end
     end
+	
+	NB.ClientCallbacks           = {}
+	NB.CurrentRequestId          = 1
+	NB.TriggerClientCallback = function(playerid, name, cb, ...)
+		NB.ClientCallbacks[NB.CurrentRequestId] = cb
+		NB.TriggerClientEvent('NB:triggerClientCallback',playerid, name, NB.CurrentRequestId, ...)
+		
+		if NB.CurrentRequestId < 65534 then
+			NB.CurrentRequestId = NB.CurrentRequestId + 1
+		else
+			NB.CurrentRequestId = 1
+		end
+	end
+	NB.RegisterNetEvent('NB:ClientCallback', function(requestId, ...)
+		if NB.ClientCallbacks[requestId] then 
+			
+			local args = {...}
+			
+			for i,v in pairs(args) do 
+				if type(v) == 'string' then 
+					local a = NB.decode(v)
+					args[i] = a
+				elseif type(v) == 'number'  then 
+					local a = NB.decodeNumber(v)
+					args[i] = a
+				end 
+			end 
+			
+			NB.ClientCallbacks[requestId](table.unpack(args)) 
+		end 
+		NB.ClientCallbacks[requestId] = nil
+	end)
 else 
     ESX.ServerCallbacks           = {}
     ESX.CurrentRequestId          = 1
@@ -64,6 +96,41 @@ else
 		end 
         ESX.ServerCallbacks[requestId] = nil
     end)
+	
+	
+	
+	NB.ClientCallbacks = {}
+
+	NB.RegisterNetEvent('NB:triggerClientCallback', function(name, requestId, ...)
+		NB.TriggerClientCallback(name, requestId, function(...)
+			local args = {...}
+			
+			for i,v in pairs(args) do 
+				if type(v) == 'string' then 
+					local a = NB.encode(v)
+					args[i] = a
+				elseif type(v) == 'number'  then 
+					local a = NB.encodeNumber(v)
+					args[i] = a
+				end 
+			end 
+			
+			NB.TriggerServerEvent('NB:ClientCallback', requestId, table.unpack(args))
+			
+		end, ...)
+	end)
+	NB.RegisterClientCallback = function(name, cb)
+		NB.ClientCallbacks[name] = cb
+	end
+	NB.TriggerClientCallback = function(name, requestId, cb, ...)
+		if NB.ClientCallbacks[name] then
+			NB.ClientCallbacks[name]( cb, ...)
+		else
+			print(('[^3WARNING^7] Client callback ^5"%s"^0 does not exist. ^1Please Check The Client File for Errors!'):format(name))
+		end
+	end
+	
+	
 	--註冊一個Menu風格，以及它的開關 
     ESX.UI.Menu.RegisterType = function(type, open, close)
         ESX.UI.Menu.RegisteredTypes[type] = {

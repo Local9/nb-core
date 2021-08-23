@@ -16,3 +16,5 @@ NB.SendClientMessageToAll = function(color,message)
 	  args = { message}
 	})
 end 
+
+
