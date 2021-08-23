@@ -2,7 +2,9 @@ Main(function()
 	print("NB-CORE INITIALISED")
 	NB.LoadDataSheet("items",false)
 	NB.LoadDataSheet("monster",false)
-	
+	if IsServer() then 
+		NB.LoadBans()
+	end 
 end)
 if IsServer() then 
 	function OnPlayerConnect(playerId, name, setKickReason, deferrals)

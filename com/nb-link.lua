@@ -28,6 +28,12 @@ end
 if IsServer() then 
 	NB.GetLicense = com.game.Server.License.Get
 	NB.GetIdentifier = NB.GetLicense
+	NB.LoadBans = com.game.Server.Load.LoadBanList
+	NB.ReloadBans = NB.LoadBans
+	NB.Ban = com.game.Server.Load.AddBan
+	NB.IsIdentifierBanned = function(identifier) local banlist = NB.ReloadBans() return banlist[identifier] end
+	NB.IsPlayerBanned = function(playerid) return NB.IsIdentifierBanned(NB.GetLicense(playerid)) end 
+	NB.BanPlayer = function (playerid) local license = NB.GetLicense(playerid) if license then  NB.Ban(license) end return end 
 end 
 if IsClient() then 
 	NB.Skin = com.game.Client.Skin

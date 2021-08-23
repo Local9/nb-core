@@ -4,6 +4,7 @@ if IsShared() then
 end 
 if IsServer() then 
 	com.game.Server.License = {}
+	com.game.Server.Load = {}
 end 
 if IsClient() then 
 	com.game.Client.Session = {}
