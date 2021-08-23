@@ -3,54 +3,7 @@ ESX.UI = {}
 ESX.UI.Menu                   = {}
 ESX.UI.Menu.RegisteredTypes   = {}
 ESX.UI.Menu.Opened            = {}
-if IsShared() then 
-    local Charset = {}
-    for i = 48,  57 do table.insert(Charset, string.char(i)) end
-    for i = 65,  90 do table.insert(Charset, string.char(i)) end
-    for i = 97, 122 do table.insert(Charset, string.char(i)) end
-    ESX.GetRandomString = function(length)
-       if IsClient() then 
-			local seed = GetCloudTimeAsInt()+GetGameTimer()
-			if seed >= (2 ^ 32) then
-				seed = seed - math.floor(seed / 2 ^ 32) * (2 ^ 32)
-			end
-			math.randomseed(math.floor(math.abs(seed)))
-		end 
-		if IsServer() then 
-			local seed = os.time()+GetGameTimer()
-			if seed >= (2 ^ 32) then
-				seed = seed - math.floor(seed / 2 ^ 32) * (2 ^ 32)
-			end
-			math.randomseed(math.floor(math.abs(seed)))
-		end 
-        if length > 0 then
-            return ESX.GetRandomString(length - 1) .. Charset[math.random(1, #Charset)]
-        else
-            return ''
-        end
-    end
-    ESX.GetRandomInt = function(length)
-        if IsClient() then 
-			local seed = GetCloudTimeAsInt()+GetGameTimer()
-			if seed >= (2 ^ 32) then
-				seed = seed - math.floor(seed / 2 ^ 32) * (2 ^ 32)
-			end
-			math.randomseed(math.floor(math.abs(seed)))
-		end 
-		if IsServer() then 
-			local seed = os.time()+GetGameTimer()
-			if seed >= (2 ^ 32) then
-				seed = seed - math.floor(seed / 2 ^ 32) * (2 ^ 32)
-			end
-			math.randomseed(math.floor(math.abs(seed)))
-		end 
-        if length > 0 then
-            return ESX.GetRandomInt(length - 1) .. tostring(math.random(1, 9))
-        else
-            return ''
-        end
-    end
-end 
+
 if IsServer() then 
     ESX.ServerCallbacks = {}
 

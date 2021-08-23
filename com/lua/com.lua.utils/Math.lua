@@ -6,8 +6,6 @@ math.round = function(num)
 end
 com.lua.utils.Math.round = math.round
 
-com.lua.utils.Math.Generator = ESX.GetRandomInt
-
 com.lua.utils.Math.getRandomNumber = function(min, max)
 	if IsClient() then 
 		local seed = GetCloudTimeAsInt()+GetGameTimer()
