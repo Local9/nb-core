@@ -5,7 +5,7 @@ end
 NB.SetCitizenDataCache = function(citizenID,tablename,dataslot,datas)
 	NB.Cache.Set("CITIZEN",citizenID,tablename,dataslot,datas)
 end 
-
+--NB.SetCitizenDataCache("NFGT9NI218846462","characters","test",'120398190238091839" WHERE 1=1 --') try sql injection
 NB.GetCitizenPackedDataCache = function(citizenID,tablename,dataslot,isCompress)
 	local pd = NB.Cache.Get("CITIZEN",citizenID,tablename,"packeddata",dataslot)
 	local r = pd or NB.GetCitizenDataSQL_Table(citizenID,tablename,"packeddata")[dataslot] 
@@ -27,7 +27,6 @@ NB.SetCitizenPackedDataCache = function(citizenID,tablename,dataslot,datas,isCom
 	end 
 	
 	NB.Cache.Set("CITIZEN",citizenID,tablename,"packeddata",_data)
-	--NB.Cache.Set("CITIZEN",citizenID,tablename,"packeddata",dataslot,datas)
 end 
 
 NB.GetCitizenDataSQL_Table= function(citizenID,tablename,dataslot)
