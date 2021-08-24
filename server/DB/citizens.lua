@@ -108,7 +108,7 @@ CreateThread(function()
 	Wait(10000)
 	while true do 
 		DB.Citizen.AllCachesToSql()
-		Wait(60000)
+		Wait(300000)
 	end 
 end )
 

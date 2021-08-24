@@ -51,4 +51,18 @@ if IsClient() then
 		end)
 		--]=]
 	end)
+	
+	--[=[
+	local a = 0
+	local b,c
+	b = function()
+		SetTimeout(0, b)
+		
+	end
+	SetTimeout(0, b)
+	
+	--]=]
+	
+	
+	
 end 

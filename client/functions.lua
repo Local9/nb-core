@@ -8,8 +8,3 @@ NB.SpawnPlayerDefault = function()
 	end )
 end 
 
---[=[
-NB.RegisterClientCallback("test",function(cb)
-	cb(123)
-end)
---]=]
