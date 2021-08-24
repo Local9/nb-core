@@ -60,7 +60,9 @@ local loopit = function(_func,_timer,_name)
                         end 
                     end 
 				end 
+				
 				SetTimeout(vt,b)
+				
             end 
 			b()
 			

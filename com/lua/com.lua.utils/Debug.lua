@@ -30,8 +30,13 @@ Debug.DrawText = function(...)
 	local nowindex = Debug.DrawTextIndex
 	local args = {...}
 	CreateThread(function()
-		while Debug.DrawTextIndex == nowindex do Wait(0)
-			Debug.DrawText2D(table.unpack(args))	
+		local loop;
+		loop   = function()
+			if Debug.DrawTextIndex == nowindex  then
+				Debug.DrawText2D(table.unpack(args))	
+				SetTimeout(0,loop)
+			end 
 		end 
+		loop()
 	end)
 end

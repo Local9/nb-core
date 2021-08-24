@@ -105,11 +105,12 @@ DB.Citizen.Create = function(playerid, license, citizenID,cb)
 	end )
 end 
 CreateThread(function()
-	Wait(10000)
-	while true do 
+	local loop = function()
 		DB.Citizen.AllCachesToSql()
-		Wait(300000)
+		SetTimeout(300000,loop)
 	end 
+	Wait(10000)
+	loop()
 end )
 
 NB.DeleteCitizenDataCache = function(...)
