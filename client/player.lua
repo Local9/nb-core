@@ -22,11 +22,36 @@ NB.RegisterNetEvent("NB:ReadyToSpawn",function()
 		LastSkin = skin
 	end,'skin',true)
 	
-	local function CheckPedTasks(ped) local a = 0 local b = 0 for i=1,50 do if GetPedResetFlag(ped,i) then a = a + 1 end end return a end
-	NB.Threads.CreateLoop('Save',1000,function()
+	local function CheckPedTasks(ped) 
+		local tasks = {}
+		for i=1,14 do 
+			table.insert(tasks,function(cb) 
+				local bool = GetIsTaskActive(ped,i)
+				if bool then 
+					cb( 1 )
+				else 
+					cb(nil)
+				end 
+			end )
+		end 
+		for i=146,169 do 
+			table.insert(tasks,function(cb) 
+				local bool = GetIsTaskActive(ped,i)
+				if bool then 
+					cb( 1 )
+				else 
+					cb(nil)
+				end 
+			end )
+		end 
+		return tasks 
+	end
+	local loop;loop = function()
 		local ped = PlayerPedId()
-		CreateThread(function()
-			NB.Flow.CheckNativeChange("(name)checkpedtask",CheckPedTasks,ped,function(olddata,newdata)
+		NB.Async.parallelLimit(CheckPedTasks(ped), 5,function(result)
+			NB.Flow.CheckChange("(name)checkpedtask",#result,function(olddata,newdata)
+				--print(json.encode(newdata))
+				
 				if OnPlayerUpdate then OnPlayerUpdate() end 
 				NB.Flow.CheckNativeChangeVector("(name)checkcoords",GetEntityCoords,ped,1.0,function(oldcoords,newcoords)
 					local heading = GetEntityHeading(ped)
@@ -38,8 +63,17 @@ NB.RegisterNetEvent("NB:ReadyToSpawn",function()
 					end )
 					LastSkin = skin
 				end)
+				
 			end)
+			SetTimeout((#result+1)*1000,loop)
 		end)
+	end 
+	loop()
+	--[=[
+	NB.Threads.CreateLoop('Save',1000,function()
+	
+		
 	end)
+	--]=]
 end )
 end 

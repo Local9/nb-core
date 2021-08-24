@@ -103,7 +103,7 @@ com.lua.utils.Async.CreateLimit = function(namespace,limit,fn,CB)
 	
 	if #com.lua.utils.Async.Tasks[namespace] <= limit and not com.lua.utils.Async.CanRun[namespace] then 
 		com.lua.utils.Async.CanRun[namespace] = true 
-		com.lua.threads.CreateLoopOnce("CreateAsyncCheck"..namespace,50,function(Break)
+		NB.Threads.CreateLoopOnce("CreateAsyncCheck"..namespace,50,function(Break)
 			
 			if com.lua.utils.Async.CanRun[namespace] then 
 				if #com.lua.utils.Async.Tasks[namespace] > 0 then 
