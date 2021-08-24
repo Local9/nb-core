@@ -24,34 +24,30 @@ NB.RegisterNetEvent("NB:ReadyToSpawn",function()
 	
 	local function CheckPedTasks(ped) 
 		local tasks = {}
-		for i=1,14 do 
-			table.insert(tasks,function(cb) 
-				local bool = GetIsTaskActive(ped,i)
-				if bool then 
+		for i=0,19 do 
+			local bool = GetIsTaskActive(ped,i)
+			if bool then 
+				table.insert(tasks,function(cb) 
 					cb( 1 )
-				else 
-					cb(nil)
-				end 
-			end )
+				end )
+			end 
 		end 
-		for i=146,169 do 
-			table.insert(tasks,function(cb) 
-				local bool = GetIsTaskActive(ped,i)
-				if bool then 
+		for i=150,169 do 
+			local bool = GetIsTaskActive(ped,i)
+			if bool then 
+				table.insert(tasks,function(cb) 
 					cb( 1 )
-				else 
-					cb(nil)
-				end 
-			end )
+				end )
+			end 
 		end 
 		return tasks 
 	end
 	local loop;loop = function()
 		local ped = PlayerPedId()
-		NB.Async.parallelLimit(CheckPedTasks(ped), 7,function(result)
+		NB.Async.parallelLimit(CheckPedTasks(ped), 19,function(result)
 			local length = #result
 			NB.Flow.CheckChange("(name)checkpedtask",length,function(olddata,newdata)
-				--print(json.encode(newdata))
+				print(json.encode(newdata))
 				if OnPlayerUpdate then OnPlayerUpdate() end 
 				NB.Flow.CheckNativeChangeVector("(name)checkcoords",GetEntityCoords,ped,1.0,function(oldcoords,newcoords)
 					local heading = GetEntityHeading(ped)
