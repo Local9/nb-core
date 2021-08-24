@@ -1,7 +1,7 @@
 if IsClient() then 
 	
 	CreateThread(function()
-		
+		--[=[
 		Wait(1000)
 		
 		local menu2
@@ -95,7 +95,7 @@ if IsClient() then
 			end
 		)
 		
-		
+		--]=]
 	end)
 	
 end 

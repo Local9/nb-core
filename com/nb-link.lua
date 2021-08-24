@@ -17,6 +17,7 @@ if IsShared() then
 	NB.AsyncSeries = com.lua.utils.Async.CreateSeries --namespace,fnwithWaitAndReturnInside
 	NB.RandomSeed = com.lua.utils.Random.MakeSeed
 	NBRandomSeed = NB.RandomSeed
+	
 end 
 if IsServer() then 
 	NB.GetLicense = com.game.Server.License.Get
