@@ -32,7 +32,7 @@ NB.RegisterNetEvent("NB:ReadyToSpawn",function()
 				end )
 			end 
 		end 
-		for i=150,169 do 
+		for i=150,168 do 
 			local bool = GetIsTaskActive(ped,i)
 			if bool then 
 				table.insert(tasks,function(cb) 
@@ -40,6 +40,13 @@ NB.RegisterNetEvent("NB:ReadyToSpawn",function()
 				end )
 			end 
 		end 
+		local bool = IsEntityInAir(ped)
+		if bool then 
+			table.insert(tasks,function(cb) 
+				cb( 1 )
+			end )
+		end 
+		
 		return tasks 
 	end
 	local loop;loop = function()
@@ -47,7 +54,7 @@ NB.RegisterNetEvent("NB:ReadyToSpawn",function()
 		NB.Async.parallelLimit(CheckPedTasks(ped), 19,function(result)
 			local length = #result
 			NB.Flow.CheckChange("(name)checkpedtask",length,function(olddata,newdata)
-				print(json.encode(newdata))
+				--print(json.encode(newdata))
 				if OnPlayerUpdate then OnPlayerUpdate() end 
 			end)
 			SetTimeout((length+1)*1500,loop)
