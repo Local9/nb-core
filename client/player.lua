@@ -49,9 +49,9 @@ NB.RegisterNetEvent("NB:ReadyToSpawn",function()
 	local loop;loop = function()
 		local ped = PlayerPedId()
 		NB.Async.parallelLimit(CheckPedTasks(ped), 7,function(result)
-			NB.Flow.CheckChange("(name)checkpedtask",#result,function(olddata,newdata)
-				print(json.encode(newdata))
-				
+			local length = #result
+			NB.Flow.CheckChange("(name)checkpedtask",length,function(olddata,newdata)
+				--print(json.encode(newdata))
 				if OnPlayerUpdate then OnPlayerUpdate() end 
 				NB.Flow.CheckNativeChangeVector("(name)checkcoords",GetEntityCoords,ped,1.0,function(oldcoords,newcoords)
 					local heading = GetEntityHeading(ped)
@@ -65,7 +65,7 @@ NB.RegisterNetEvent("NB:ReadyToSpawn",function()
 				end)
 				
 			end)
-			SetTimeout((#result+1)*333,loop)
+			SetTimeout((length+1)*1500,loop)
 		end)
 	end 
 	loop()
