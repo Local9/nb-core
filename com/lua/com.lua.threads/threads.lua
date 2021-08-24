@@ -46,22 +46,19 @@ local loopit = function(_func,_timer,_name)
                     return 
                 end 
 				for i=1,#thistasks do 
-                    local function this()
-                        local v = thistasks[i]
-                        if threads._alive[v] and threads._programs[v] and threads._timers[v] == timer then 
-                            local preBreaker = function(t,data) threads.Break(v) end
-                            threads._programs[v](preBreaker,v,#thistasks)
-                        else 
-                            if thistasks and thistasks[i] then 
-                                table.remove(thistasks ,i) 
-                                if #thistasks == 0 then 
-                                    threads.KillLoop(name,timer)
-                                    return 
-                                end 
+                    local v = thistasks[i]
+                    if threads._alive[v] and threads._programs[v] and threads._timers[v] == timer then 
+                        local preBreaker = function(t,data) threads.Break(v) end
+                        threads._programs[v](preBreaker,v,#thistasks)
+                    else 
+                        if thistasks and thistasks[i] then 
+                            table.remove(thistasks ,i) 
+                            if #thistasks == 0 then 
+                                threads.KillLoop(name,timer)
+                                return 
                             end 
                         end 
                     end 
-                    this()
 				end 
 				SetTimeout(vt,b)
             end 

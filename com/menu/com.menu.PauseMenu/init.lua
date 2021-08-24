@@ -30,7 +30,7 @@ if IsClient() then
 		end 
 		NB.Threads.CreateThreadOnce(MENUTYPE,function()
 			--只會建立一次
-			NB.Threads.CreateLoop("Menu"..MENUTYPE,333,function(Break)
+			NB.Threads.CreateLoop("Menu"..MENUTYPE,50,function(Break)
 				if CurrentMenu then 
 					if N_0x2e22fefa0100275e() then 
 						local pos = GetPos()

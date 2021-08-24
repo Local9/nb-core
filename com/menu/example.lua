@@ -1,5 +1,5 @@
 if IsClient() then 
-	--[=[
+	
 	CreateThread(function()
 		
 		Wait(1000)
@@ -96,5 +96,5 @@ if IsClient() then
 		)
 		
 	end)
-	--]=]
+	
 end 
