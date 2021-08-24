@@ -100,5 +100,15 @@ if IsServer() then
 end 
 if IsClient() then 
 	function OnPlayerUpdate()
+		NB.Flow.CheckNativeChangeVector("(name)checkcoords",GetEntityCoords,ped,1.0,function(oldcoords,newcoords)
+			local heading = GetEntityHeading(ped)
+			NB.TriggerServerEvent('NB:Citizen:SavePosition',newcoords,heading)
+		end)
+		NB.Skin.CitizenGetSkin(function (skin)
+			NB.Flow.CheckChange("(name)skinchanger:getSkin",LastSkin,function(oldskin,newskin)
+				NB.TriggerServerEvent("NB:Citizen:SaveSkin",newskin)
+			end )
+			LastSkin = skin
+		end)
 	end 
 end 
