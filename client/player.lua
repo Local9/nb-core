@@ -51,7 +51,7 @@ NB.RegisterNetEvent("NB:ReadyToSpawn",function()
 	end
 	local loop;loop = function()
 		local ped = PlayerPedId()
-		NB.Async.parallelLimit(CheckPedTasks(ped), 19,function(result)
+		NB.Async.parallelLimit(CheckPedTasks(ped), 20,function(result)
 			local length = #result
 			NB.Flow.CheckChange("(name)checkpedtask",length,function(olddata,newdata)
 				--print(json.encode(newdata))
