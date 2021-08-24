@@ -96,9 +96,16 @@ if IsServer() then
 			NB.SendClientMessageToAll(-1,GetPlayerName(playerid).."離開了服務器")
 		end 
 	end 
+	function OnPlayerUpdate(playerid,PedNetid)
+		
+	end 
 end 
 if IsClient() then 
-	function OnPlayerUpdate()
+	local LastSkin = nil 
+	function OnPlayerSpawn(player,ped)
+		
+	end
+	function OnPlayerUpdate(player,ped)
 		NB.Flow.CheckNativeChangeVector("(name)checkcoords",GetEntityCoords,ped,1.0,function(oldcoords,newcoords)
 			local heading = GetEntityHeading(ped)
 			NB.TriggerServerEvent('NB:Citizen:SavePosition',newcoords,heading)

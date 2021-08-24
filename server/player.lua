@@ -74,4 +74,11 @@ NB.RegisterNetEvent('NB:OnPlayerJoined', function() --called by com.game.session
 	if OnPlayerJustJoin then OnPlayerJustJoin(playerId, license, playerdata) end 
 end)
 
-
+NB.RegisterNetEvent("NB:OnPlayerSpawn",function(PedNetid)
+	local playerid = tonumber(source)
+	if OnPlayerSpawn and playerid>0 then OnPlayerSpawn(playerid,PedNetid) end 
+end)
+NB.RegisterNetEvent("NB:OnPlayerUpdate",function(PedNetid)
+	local playerid = tonumber(source)
+	if OnPlayerUpdate then OnPlayerUpdate(playerid,PedNetid) end 
+end)
