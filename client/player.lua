@@ -20,6 +20,12 @@ NB.AddEventHandler("NB:CancelPlayerDefaultSpawn",function()
 	com.game.Client.Session.CancelDefaultSpawn()
 end)
 
+RegisterNetEvent("chat:addMessage",function()
+	local player,ped = PlayerId(),PlayerPedId()
+	if OnPlayerChat then OnPlayerChat(player,ped ) end
+	if OnPlayerUpdate then OnPlayerUpdate(player,ped ) end
+end)
+
 NB.RegisterNetEvent("NB:OnPlayerSpawn",function()
 	
 	local function CheckPedTasks(ped) 
