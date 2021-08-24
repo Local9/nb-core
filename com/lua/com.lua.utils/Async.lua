@@ -35,7 +35,7 @@ function Async.parallelLimit(tasks, limit, cb)
 	for i=1, #tasks, 1 do
 		table.insert(queue, tasks[i])
 	end
-	local function processQueue()
+	local processQueue;processQueue = function()
 		if #queue == 0 then
 			return
 		end
