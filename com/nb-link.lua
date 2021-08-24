@@ -2,14 +2,6 @@ if IsShared() then
 	NB.Async = com.lua.utils.Async
 	NB.Utils = com.lua.utils
 	NB.Flow = com.lua.utils.Flow
-	NB.Threads = com.lua.threads
-	NB.Threads.CreateSpecialLoop = function(name,time,fn)
-		local _fn = function(...)
-			com.lua.utils.Random.MakeSeed()
-			return fn(...)
-		end 
-		return NB.Threads.CreateLoop(name,time,_fn)
-	end 
 	NB.Cache.Set  = function(...) return com.lua.utils.Table.SetTableSomething(NB["_CACHE_"],...) end
 	NB.Cache.Clear  = function(...) return com.lua.utils.Table.ClearTableSomething(NB["_CACHE_"],...) end
 	NB.Cache.IsPropValueExist = function(...) return com.lua.utils.Table.IsTableSomthingExist(NB["_CACHE_"],...) end 

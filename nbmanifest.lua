@@ -13,7 +13,7 @@ NB = {
 	Datas={},
 	Players={},
 	Utils={},
-	Threads={}
+	Threads=Threads
 } 
 
 MAX_CHARACTER_SLOTS = 3

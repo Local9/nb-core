@@ -8,6 +8,7 @@ files {
 lua54 'yes'
 
 shared_scripts {
+	'@threads/threads.lua',
 	'com/LibDeflate.lua',
 	"nbmanifest.lua",
 	"com/init.lua",
@@ -47,5 +48,6 @@ dependencies {
 	'chat',
 	'ghmattimysql',
 	'connectqueue',
-	'skinchanger'
+	'skinchanger',
+	'threads'
 }
