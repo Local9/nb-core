@@ -1,5 +1,5 @@
 if IsClient() then 
-	local ct = CreateThread
+
 	com.menu.DefaultMenu.UI.RenderStop = function()
 		print('renderStop')
 	end 

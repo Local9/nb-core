@@ -50,7 +50,7 @@ Skin.LoadDefaultModel = function(malePed, cb)
     characterModel = GetHashKey('mp_f_freemode_01')
   end
   RequestModel(characterModel)
-  Citizen.CreateThread(function()
+  CreateThread(function()
     while not HasModelLoaded(characterModel) do
       RequestModel(characterModel)
       Citizen.Wait(0)
@@ -174,7 +174,7 @@ Skin.CitizenLoadSkin = function(skin, cb)
     end
   end
   LastSex = skin['sex']
-  Citizen.CreateThread(function()
+  CreateThread(function()
     while not HasModelLoaded(characterModel) do
       RequestModel(characterModel)
       Citizen.Wait(0)

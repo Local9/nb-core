@@ -1,4 +1,25 @@
 --應該由其他插件接管，還是說我做成默認？
+NB.SpawnPlayer = function(coords, heading)
+	NB.Utils.SpawnManager.Spawn(coords, heading)
+	local playerid,ped = PlayerId(),PlayerPedId()
+	if OnPlayerSpawn then OnPlayerSpawn(playerid,ped) end 
+	NB.TriggerEvent('NB:OnPlayerSpawn')
+	NB.TriggerServerEvent('NB:OnPlayerSpawn',PedToNet(ped))
+end 
+
+NB.SpawnPlayerDefault = function()
+	local player = PlayerId()
+	SetPlayerControl(player, true, false)
+	local coords,heading = DEFAULT_SPAWN_POSITION
+	NB.Skin.LoadDefaultModel(true,function()
+		NB.SpawnPlayer(coords, heading)
+	end )
+end 
+
+NB.AddEventHandler("NB:CancelPlayerDefaultSpawn",function()
+	com.game.Client.Session.CancelDefaultSpawn()
+end)
+
 NB.RegisterNetEvent("NB:OnPlayerSpawn",function()
 	
 	local function CheckPedTasks(ped) 
@@ -46,9 +67,9 @@ end)
 
 
 if DEFAULT_SPAWN_METHOD then  
-NB.RegisterNetEvent("NB:ReadyToSpawn",function()
-	print("CancelDefaultSpawn with Default Spawn Method Example")
-	NB.TriggerEvent('NB:CancelDefaultSpawn')
+NB.RegisterNetEvent("NB:PlayerReadyToSpawn",function()
+	NB.TriggerEvent('NB:CancelPlayerDefaultSpawn')
+	--print("CancelPlayerDefaultSpawn with Default Spawn Method Example")
 	
 	NB.TriggerServerCallback('NB:GetCharacterPackedData',function (pos)
 		local coords,heading 
@@ -61,10 +82,11 @@ NB.RegisterNetEvent("NB:ReadyToSpawn",function()
 			NB.SpawnPlayer(coords, heading) -- using SpawnManager to spawn,trigger Event NB:OnPlayerSpawn
 		end )
 	end, "position", false)
+	--[=[
 	NB.TriggerServerCallback('NB:GetCharacterPackedData',function (skin)
-		print("Get Skin:",json.encode(skin))
-		LastSkin = skin
+		--print("Get Skin:",json.encode(skin))
 	end,'skin',true)
+	--]=]
 end )
 end 
 

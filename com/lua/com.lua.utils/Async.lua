@@ -57,7 +57,11 @@ function Async.parallelLimit(tasks, limit, cb)
 				return
 			end)
 		end
-		CreateThread(processQueue)
+		if processQueue then
+			CreateThread(function()
+				 processQueue()
+			end) 
+		end 
 		return 
 	end
 	processQueue()
