@@ -4,8 +4,13 @@ local LastCoords = vector3(0.0,0.0,0.0)
 local LastSkin = nil 
 if DEFAULT_SPAWN_METHOD then  
 NB.RegisterNetEvent("NB:ReadyToSpawn",function()
-	print("Spawn is Ready")
+	print("CancelDefaultSpawn with Default Spawn Method Example")
 	NB.TriggerEvent('NB:CancelDefaultSpawn')
+	if OnPlayerSpawn then OnPlayerSpawn(playerid) end 
+	NB.TriggerEvent('NB:OnPlayerSpawn')
+	NB.TriggerServerEvent('NB:OnPlayerSpawn')
+end )
+NB.RegisterNetEvent("NB:OnPlayerSpawn",function()
 	NB.TriggerServerCallback('NB:GetCharacterPackedData',function (pos)
 		local coords,heading 
 		if pos then 
@@ -51,16 +56,14 @@ NB.RegisterNetEvent("NB:ReadyToSpawn",function()
 	end
 	local loop;loop = function()
 		local ped = PlayerPedId()
-		NB.Async.parallelLimit(CheckPedTasks(ped), 20,function(result)
+		NB.Async.parallelLimit(CheckPedTasks(ped), 10,function(result)
 			local length = #result
 			NB.Flow.CheckChange("(name)checkpedtask",length,function(olddata,newdata)
-				--print(json.encode(newdata))
 				if OnPlayerUpdate then OnPlayerUpdate() end 
 			end)
-			SetTimeout((length+1)*1500,loop)
+			SetTimeout((length+1)*500,loop)
 		end)
 	end 
 	loop()
-
-end )
+end)
 end 

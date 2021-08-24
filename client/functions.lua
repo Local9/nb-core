@@ -5,6 +5,9 @@ NB.SpawnPlayerDefault = function()
 	local coords,heading = DEFAULT_SPAWN_POSITION
 	NB.Skin.LoadDefaultModel(true,function()
 		NB.Utils.SpawnManager.Spawn(coords, heading)
+		if OnPlayerSpawn then OnPlayerSpawn(playerid) end 
+		NB.TriggerEvent('NB:OnPlayerSpawn')
+		NB.TriggerServerEvent('NB:OnPlayerSpawn')
 	end )
 end 
 
