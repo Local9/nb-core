@@ -3,6 +3,5 @@ if GetCurrentResourceName() ~= "nb-core" then --a must, otherwise function becom
 NB = exports['nb-core']:GetSharedObject()
 end 
 
-
 --Shared Globals--
 NBRandomSeed = NB["RandomSeed"]

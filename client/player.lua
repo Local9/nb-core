@@ -7,7 +7,7 @@ NB.SpawnPlayer = function(coords, heading)
 	NB.TriggerServerEvent('NB:OnPlayerSpawn',PedToNet(ped))
 end 
 
-NB.SpawnPlayerDefault = function()
+NB_LOCAL.SpawnPlayerDefault = function()
 	local player = PlayerId()
 	SetPlayerControl(player, true, false)
 	local coords,heading = DEFAULT_SPAWN_POSITION

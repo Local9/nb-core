@@ -1,4 +1,5 @@
 DB = {User={},Citizen={}} --interface
+NB_LOCAL = {}
 NB = {
 	encode = PreLibDeflate.encode ,
 	decode = PreLibDeflate.decode ,
@@ -50,7 +51,7 @@ GetHashString = StringCopy
 GetPauseMenuSelection = function() if N_0x2e22fefa0100275e() --[[IsSelectionUpdated]] then return GetPauseMenuSelectionData() end end
 IF = function(x,a,b) return x and a or b end 
 ratioX = function(x) x = (x * (1.777778 / GetAspectRatio(0)));return x; end
-exports('GetSharedObject',function() return NB end)
+exports('GetSharedObject',function(x) return x and NB[x] or NB end)
 
 
 local shadowmin,shadowmax,shadowchar = 1,3,66

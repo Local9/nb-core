@@ -18,7 +18,7 @@ if IsClient() then
 					Citizen.Wait(0)
 				end
 				if not DefaultSpawnCanceled then 
-					NB.SpawnPlayerDefault()
+					NB_LOCAL.SpawnPlayerDefault()
 					print("Default Spawned Player due to no any spawn script handled.")
 				else 
 					

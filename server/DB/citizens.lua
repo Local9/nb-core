@@ -160,7 +160,7 @@ end
 
 NB.RegisterNetEvent('NB:Citizen:SavePosition', function(coords,heading)
 	if coords and heading then 
-		local playerData = NB.PlayerData(tonumber(source))
+		local playerData = NB.GetPlayerDataFromId(tonumber(source))
 		local citizenID = playerData and playerData.citizenID 
 		if citizenID then 
 			local x, y, z = table.unpack(coords)
@@ -176,7 +176,7 @@ NB.RegisterNetEvent('NB:Citizen:SavePosition', function(coords,heading)
 end) 
 NB.RegisterNetEvent("NB:Citizen:SaveSkin",function(skindata)
 	if skindata and type(skindata) == 'table' then 
-		local playerData = NB.PlayerData(tonumber(source))
+		local playerData = NB.GetPlayerDataFromId(tonumber(source))
 		local citizenID = playerData and playerData.citizenID 
 		if citizenID then 
 			NB.SetCitizenPackedDataCache(citizenID,'citizens','skin',skindata,true)
@@ -185,7 +185,7 @@ NB.RegisterNetEvent("NB:Citizen:SaveSkin",function(skindata)
 	end 
 end )
 NB.RegisterServerCallback("NB:GetCharacterPackedData",function(playerId,cb,datatype,isCompress)
-	local playerData = NB.PlayerData(playerId)
+	local playerData = NB.GetPlayerDataFromId(playerId)
 	local citizenID = playerData and playerData.citizenID 
 	if citizenID then 
 		local ava = {"position","skin"}
