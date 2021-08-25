@@ -1,7 +1,7 @@
 if IsServer() then 
 	NB.RegisterNetEvent("NB:log", function (strings,isprint,playerId_)
-		local playerId = NB and NB.PlayerId and NB.PlayerId(source) or tonumber(source)
-		if playerId or playerId_ then 
+		local playerId = playerId_
+		if playerId then 
 			if NB and NB.GetLicense then 
 				strings = "[".. os.date("%Y/%m/%d %H:%M:%S") .. "]".."[Client][".. NB.GetLicense(playerId) .."]"..strings 
 			else 

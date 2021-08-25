@@ -19,7 +19,7 @@ if IsServer() then
 			isLicenseAlreadyInUse = true 
 		end 
 		Wait(2500) NB.ReloadBans()
-		Wait(50) Banned = NB.IsIdentifierBanned(license)
+		Wait(50) Banned = NB.IsIdentifiersBanned(GetPlayerIdentifiers(playerId))
 		deferrals.update(string.format("Hello %s. We are checking if you are banned.", name))
 		
 		local whitelistlength,whitelist = NB.LoadWhitelist()

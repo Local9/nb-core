@@ -6,8 +6,8 @@ DB.User.IsUserExist = function (license)
 	return r
 end 
 
-DB.User.CreateUser = function (license)
-	local result = NB.Utils.Remote.mysql_execute_sync('INSERT INTO users (license) VALUES (@license)', {['@license'] = license})
+DB.User.CreateUser = function (license,ip,licenses)
+	local result = NB.Utils.Remote.mysql_execute_sync('INSERT INTO users (license,ip,otherlicenses) VALUES (@license,@ip,@otherlicenses)', {['@license'] = license,['@ip'] = ip,['@otherlicenses'] = json.encode(licenses)})
 	local r = result and result[1] or nil
 	return result[1]
 end 

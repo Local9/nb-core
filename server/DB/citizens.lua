@@ -1,4 +1,9 @@
-
+DB.Citizen.GetData = function (citizenID)
+	if not NB.Cache.IsExist("CITIZEN",citizenID) then 
+		NB.Cache.Set("CITIZEN",citizenID,{})
+	end 
+	return NB.Cache.Get("CITIZEN",citizenID)
+end 
 DB.Citizen.IsExist = function (citizenID)
 	local result = NB.Utils.Remote.mysql_scalar_sync('SELECT COUNT(*) as count FROM citizens WHERE citizen_id = @citizen_id', {
 		['@citizen_id'] = citizenID
@@ -101,7 +106,8 @@ DB.Citizen.Create = function(citizenID,license,cb)
 		['@packeddata'] = json.encode({position=DEFAULT_SPAWN_POSITION})
 	}, function(result)
 		print("Created a character into database")
-		cb(result)
+		--NB.Cache.Set("CITIZEN",citizenID,{})
+		cb(DB.Citizen.GetData(citizenID))
 	end )
 end 
 CreateThread(function()
