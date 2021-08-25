@@ -6,14 +6,10 @@ DB.User.IsUserExist = function (license)
 	return r
 end 
 
-DB.User.CreateUser = function (license,cb)
-	
-	NB.Utils.Remote.mysql_execute('INSERT INTO users (license) VALUES (@license)', {
-			['@license'] = license
-		}, function(result)
-			--下面是新建角色才會執行，目前先省略建立步驟
-			cb(result)
-	end )
+DB.User.CreateUser = function (license)
+	local result = NB.Utils.Remote.mysql_execute_sync('INSERT INTO users (license) VALUES (@license)', {['@license'] = license})
+	local r = result and result[1] or nil
+	return result[1]
 end 
 
 DB.User.DataSlotTemplateGenerator = function(genwhat,tablename,template)

@@ -22,12 +22,6 @@ NB.PlayerData = function(playerId)
 	return playerdata,playerid
 end 
 
-NB.SetPlayer = function(playerhandle)
-	NB.Players[NB.PlayerId()] = playerhandle
-	NB.Players[NB.PlayerId()].citizendata  = {}
-	
-end 
-
 NB.ReleasePlayer = function(playerid)
 	NB.Players[playerid] = nil 
 end
@@ -40,14 +34,12 @@ NB.GetPlayerFromIdentifier = function(identifier)
 	end
 end
 
-function CreatePlayer(playerId, license,citizenID)
+function CreatePlayerDatatable(playerId)
 	local self = {}
 	self.playerId = playerId
 	self.PlayerId = playerId
 	self.source = playerId
-	self.license = license
 	self.variables = {}
-	self.citizenID = citizenID
 	self.triggerEvent = function(eventName, ...)
 		NB.TriggerClientEvent(eventName, self.source, ...)
 	end
@@ -56,6 +48,10 @@ function CreatePlayer(playerId, license,citizenID)
 		DropPlayer(self.source, reason)
 	end
 
+	self.init = function(k, v)
+		self[k] = v
+	end
+	
 	self.set = function(k, v)
 		self.variables[k] = v
 	end
@@ -91,25 +87,34 @@ NB.RegisterNetEvent('NB:OnPlayerJoined', function() --called by com.game.session
 	end 
 end)
 NB.AddEventHandler("NB:OnPlayerRegister",function(playerId, license)
-	--local playerid = tonumber(source)
 	local license = license
-	local citizenID = DB.User.DataSlotTemplateGenerator('citizen_id','citizens','xxyyyyyyyyyx')
-	NB.SetPlayer(CreatePlayer(playerId, license, citizenID))
-	DB.User.CreateUser(license, function()
-		--下面是新建角色才會執行，目前先省略建立步驟
-		
+	
+	local PrePlayerData = CreatePlayerDatatable(playerId)
+	PrePlayerData.init("license",license)
+	local result = DB.User.CreateUser(license)
+	if result then 
+		if OnPlayerRegister and playerid>0 then OnPlayerRegister(playerId, license, citizenID) end 
+	end 
+	
+	--下面是新建角色才會執行，目前先省略建立步驟
+	local CreateChar = true 
+	if CreateChar then 
+		local citizenID = DB.User.DataSlotTemplateGenerator('citizen_id','citizens','xxyyyyyyyyyx')
 		DB.Citizen.Create(playerId, license, citizenID,function()
 			print("Created a character into database")
-			if OnPlayerLogin then OnPlayerLogin(playerId,citizenID) end 
+			PrePlayerData.init("citizenID",citizenID)
+			if OnPlayerLogin then OnPlayerLogin(playerId,license,citizenID) end 
 		end )
-	end )
-	if OnPlayerRegister and playerid>0 then OnPlayerRegister(playerId, license, citizenID) end 
+	end 
+	
+	
 end)
 NB.AddEventHandler("NB:OnPlayerLogin",function(playerId, license)
-	--local playerid = tonumber(source)
+	local PrePlayerData = CreatePlayerDatatable(playerId)
 	local license = license
 	local citizenID = DB.Citizen.GetIDFromLicense(license,1)
-	NB.SetPlayer(CreatePlayer(playerId, license, citizenID))
+	PrePlayerData.init("license",license)
+	PrePlayerData.init("citizenID",citizenID)
 	if OnPlayerLogin and playerid>0 then OnPlayerLogin(playerId, license, citizenID) end 
 end)
 NB.RegisterNetEvent("NB:OnPlayerSpawn",function(PedNetid)
