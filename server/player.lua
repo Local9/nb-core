@@ -71,9 +71,47 @@ NB.RegisterNetEvent('NB:OnPlayerJoined', function() --called by com.game.session
 	local source = tonumber(source)
 	local playerdata,playerId = NB.PlayerData(source)
 	local license = NB.GetLicense(playerId)
-	if OnPlayerJustJoin then OnPlayerJustJoin(playerId, license, playerdata) end 
+	local isNew
+	if not playerdata then
+		if license then 
+			if not DB.User.IsUserExist(license) then
+				isNew = true
+				NB.TriggerEvent('NB:OnPlayerRegister',playerId, license)				
+			else 
+				isNew = false 
+				NB.TriggerEvent('NB:OnPlayerLogin',playerId, license)
+			end
+		else 
+			DropPlayer(playerId, 'Your license could not be found,the cause of this error is not known.')
+			return false 
+		end 
+	end
+	if not (isNew ==  nil) then 
+		if OnPlayerJustJoin then OnPlayerJustJoin(playerId, license, isNew) end 
+	end 
 end)
-
+NB.AddEventHandler("NB:OnPlayerRegister",function(playerId, license)
+	--local playerid = tonumber(source)
+	local license = license
+	local citizenID = DB.User.DataSlotTemplateGenerator('citizen_id','citizens','xxyyyyyyyyyx')
+	NB.SetPlayer(CreatePlayer(playerId, license, citizenID))
+	DB.User.CreateUser(license, function()
+		--下面是新建角色才會執行，目前先省略建立步驟
+		
+		DB.Citizen.Create(playerId, license, citizenID,function()
+			print("Created a character into database")
+			if OnPlayerLogin then OnPlayerLogin(playerId,citizenID) end 
+		end )
+	end )
+	if OnPlayerRegister and playerid>0 then OnPlayerRegister(playerId, license, citizenID) end 
+end)
+NB.AddEventHandler("NB:OnPlayerLogin",function(playerId, license)
+	--local playerid = tonumber(source)
+	local license = license
+	local citizenID = DB.Citizen.GetIDFromLicense(license,1)
+	NB.SetPlayer(CreatePlayer(playerId, license, citizenID))
+	if OnPlayerLogin and playerid>0 then OnPlayerLogin(playerId, license, citizenID) end 
+end)
 NB.RegisterNetEvent("NB:OnPlayerSpawn",function(PedNetid)
 	local playerid = tonumber(source)
 	if OnPlayerSpawn and playerid>0 then OnPlayerSpawn(playerid,PedNetid) end 

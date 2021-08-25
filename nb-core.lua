@@ -47,43 +47,22 @@ if IsServer() then
 		end
 	end 
 	function OnPlayerRegister(playerId, license, citizenID)
-		DB.User.CreateUser(license, function()
-			--下面是新建角色才會執行，目前先省略建立步驟
-			
-			DB.Citizen.Create(playerId, license, citizenID,function()
-				print("Created a character into database")
-				if OnPlayerLogin then OnPlayerLogin(playerId,citizenID) end 
-			end )
-		end )
+		
 	end 
 	function OnPlayerLogin(playerid, license, citizenID)
 		NB.TriggerClientEvent("NB:PlayerReadyToSpawn",playerid) -- 出生，應該跟在上面的建立角色之後，目前先在這裡
 	end 
-	function OnPlayerJustJoin(playerId, license, playerdata)
+	function OnPlayerJustJoin(playerId, license, isNew)
 		if NB.IsPlayerBanned(playerId) then 
 			DropPlayer(playerId,"You've got BANNED from this server")
 			return 
 		end 
-		if not playerdata then
-			if license then 
-				if not DB.User.IsUserExist(license) then
-					NB.SendClientMessageToAll(-1,"一個新玩家加入了服務器，正在進行選角")
-					local citizenID = DB.User.DataSlotTemplateGenerator('citizen_id','citizens','xxyyyyyyyyyx')
-					NB.SetPlayer(CreatePlayer(playerId, license, citizenID))
-					if OnPlayerRegister then OnPlayerRegister(playerId, license, citizenID) end 
-					return NB.GetPlayers(playerId)
-				else 
-					NB.SendClientMessageToAll(-1,"一個老玩家加入了服務器，正在進行選角")
-					local citizenID = DB.Citizen.GetIDFromLicense(license,1)
-					NB.SetPlayer(CreatePlayer(playerId, license, citizenID))
-					if OnPlayerLogin then OnPlayerLogin(playerId, license, citizenID) end 
-					return NB.GetPlayers(playerId)
-				end
-			else 
-				DropPlayer(playerId, 'Your license could not be found,the cause of this error is not known.')
-				return false 
-			end 
-		end
+		if isNew then 
+			NB.SendClientMessageToAll(-1,"一個新玩家加入了服務器，正在進行選角")
+		else 
+			NB.SendClientMessageToAll(-1,"一個老玩家加入了服務器，正在進行選角")
+		end 
+		return NB.GetPlayers(playerId)
 	end 
 	function OnPlayerSpawn(playerid)
 		NB.SendClientMessageToAll(-1,GetPlayerName(playerid).."出生了")
