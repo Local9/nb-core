@@ -160,11 +160,16 @@ end
 
 NB.RegisterNetEvent('NB:Citizen:SavePosition', function(coords,heading)
 	if coords and heading then 
-		local x, y, z = table.unpack(coords)
 		local playerData = NB.PlayerData(tonumber(source))
 		local citizenID = playerData and playerData.citizenID 
 		if citizenID then 
-			NB.SetCitizenPackedDataCache(citizenID,'citizens','position',{x=com.lua.utils.Math.toFixed(x+0.0,2),y=com.lua.utils.Math.toFixed(y+0.0,2),z=com.lua.utils.Math.toFixed(z+0.0,2),heading=com.lua.utils.Math.toFixed(heading+0.0,2)})
+			local x, y, z = table.unpack(coords)
+			x, y, z, heading = x , y , z , heading
+			x = com.lua.utils.Math.toFixed(x,2)
+			y = com.lua.utils.Math.toFixed(y,2)
+			z = com.lua.utils.Math.toFixed(z,2)
+			heading = com.lua.utils.Math.toFixed(heading,2)
+			NB.SetCitizenPackedDataCache(citizenID,'citizens','position',{x=x,y=y,z=z,heading=heading})
 			NB.TriggerEvent("NB:log","[Citizen:"..citizenID.."] position Saved")
 		end 
 	end 

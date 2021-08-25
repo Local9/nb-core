@@ -49,6 +49,7 @@ com.lua.utils.Math.toFixedRound = function(num, fractionDigits)
 end 
 
 com.lua.utils.Math.toFixed = function(num, fractionDigits, round)
+	local fractionDigits = fractionDigits or 2
       local pcs = 1;
       for i=1,fractionDigits,1 do 
          pcs = pcs * 10;
