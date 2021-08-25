@@ -78,21 +78,21 @@ NB.RegisterNetEvent("NB:PlayerReadyToSpawn",function()
 	print("CancelPlayerDefaultSpawn with Default Spawn Method Example")
 	
 	NB.TriggerServerCallback('NB:GetCharacterPackedData',function (pos)
-		print(json.encode(pos))
+		--print(json.encode(pos))
 		local coords,heading 
 		if pos then 
 			coords,heading = vector3(pos.x, pos.y, pos.z), pos.heading 
 		else 
 			coords,heading = DEFAULT_SPAWN_POSITION
 		end 
-		print(coords,heading )
+		--print(coords,heading )
 		NB.Skin.LoadDefaultModel( true,function()
 			NB.SpawnPlayer(coords, heading) -- using SpawnManager to spawn,trigger Event NB:OnPlayerSpawn
 		end )
 	end, "position", false)
 	
 	NB.TriggerServerCallback('NB:GetCharacterPackedData',function (skin)
-		print("Get Skin:",json.encode(skin))
+		--print("Get Skin:",json.encode(skin))
 	end,'skin',true)
 	
 end )
