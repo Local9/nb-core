@@ -8,8 +8,8 @@ NB.UpdatePlayerId = function(playerId)
 	if tonumber(playerId) then 
 		NB["_PLAYER_"].thisPlayerId = tonumber(playerId)
 	end 
-	local playerId = NB["_PLAYER_"].thisPlayerId
-	return playerId,NB.GetPlayers(playerId)
+	local playerid = NB["_PLAYER_"].thisPlayerId
+	return playerid,NB.GetPlayers(playerid)
 end
 
 NB.PlayerId = function(playerId)
@@ -22,8 +22,8 @@ NB.PlayerData = function(playerId)
 	return playerdata,playerid
 end 
 
-NB.ReleasePlayer = function(playerid)
-	NB.Players[playerid] = nil 
+NB.ReleasePlayer = function(playerId)
+	NB.Players[playerId] = nil 
 end
 
 NB.GetPlayerFromIdentifier = function(identifier)
@@ -59,31 +59,31 @@ function CreatePlayerDatatable(playerId)
 	self.get = function(k)
 		return self.variables[k]
 	end
-
+	NB.Players[playerId] = self
 	return self
 end
 
 NB.RegisterNetEvent('NB:OnPlayerJoined', function() --called by com.game.session.spawn.lua/CreateThread
 	local source = tonumber(source)
-	local playerdata,playerId = NB.PlayerData(source)
-	local license = NB.GetLicense(playerId)
+	local playerdata,playerid = NB.PlayerData(source)
+	local license = NB.GetLicense(playerid)
 	local isNew
 	if not playerdata then
 		if license then 
 			if not DB.User.IsUserExist(license) then
 				isNew = true
-				NB.TriggerEvent('NB:OnPlayerRegister',playerId, license)				
+				NB.TriggerEvent('NB:OnPlayerRegister',playerid, license)				
 			else 
 				isNew = false 
-				NB.TriggerEvent('NB:OnPlayerLogin',playerId, license)
+				NB.TriggerEvent('NB:OnPlayerLogin',playerid, license)
 			end
 		else 
-			DropPlayer(playerId, 'Your license could not be found,the cause of this error is not known.')
+			DropPlayer(playerid, 'Your license could not be found,the cause of this error is not known.')
 			return false 
 		end 
 	end
 	if not (isNew ==  nil) then 
-		if OnPlayerJustJoin then OnPlayerJustJoin(playerId, license, isNew) end 
+		if OnPlayerJustJoin then OnPlayerJustJoin(playerid, license, isNew) end 
 	end 
 end)
 NB.AddEventHandler("NB:OnPlayerRegister",function(playerId, license)
@@ -93,17 +93,17 @@ NB.AddEventHandler("NB:OnPlayerRegister",function(playerId, license)
 	PrePlayerData.init("license",license)
 	local result = DB.User.CreateUser(license)
 	if result then 
-		if OnPlayerRegister and playerid>0 then OnPlayerRegister(playerId, license, citizenID) end 
+		if OnPlayerRegister and playerId>0 then OnPlayerRegister(playerId, license) end 
 	end 
 	
 	--下面是新建角色才會執行，目前先省略建立步驟
 	local CreateChar = true 
 	if CreateChar then 
 		local citizenID = DB.User.DataSlotTemplateGenerator('citizen_id','citizens','xxyyyyyyyyyx')
-		DB.Citizen.Create(playerId, license, citizenID,function()
+		DB.Citizen.Create(citizenID,license,function()
 			print("Created a character into database")
 			PrePlayerData.init("citizenID",citizenID)
-			if OnPlayerLogin then OnPlayerLogin(playerId,license,citizenID) end 
+			if OnPlayerLogin then OnPlayerLogin(playerId,license) end 
 		end )
 	end 
 	
@@ -115,7 +115,7 @@ NB.AddEventHandler("NB:OnPlayerLogin",function(playerId, license)
 	local citizenID = DB.Citizen.GetIDFromLicense(license,1)
 	PrePlayerData.init("license",license)
 	PrePlayerData.init("citizenID",citizenID)
-	if OnPlayerLogin and playerid>0 then OnPlayerLogin(playerId, license, citizenID) end 
+	if OnPlayerLogin and playerId>0 then OnPlayerLogin(playerId, license, citizenID) end 
 end)
 NB.RegisterNetEvent("NB:OnPlayerSpawn",function(PedNetid)
 	local playerid = tonumber(source)
@@ -128,17 +128,17 @@ end)
 
 AddEventHandler('playerConnecting', function(name, setKickReason, deferrals)
 	if NB.PlayerId then 
-		local playerId = NB.PlayerId(source)
-		NB.TriggerEvent('NB:log','Player Connected',false,playerId)
-		if OnPlayerConnect then OnPlayerConnect(playerId, name, setKickReason, deferrals) end 
+		local playerid = NB.PlayerId(source)
+		NB.TriggerEvent('NB:log','Player Connected',false,playerid)
+		if OnPlayerConnect then OnPlayerConnect(playerid, name, setKickReason, deferrals) end 
 	end 
 end)
 
 AddEventHandler('playerDropped', function (reason)
-	local playerId = tonumber(source)
-	if playerId then 
-		NB.TriggerEvent('NB:log','Player Disconnected',false,playerId)
-		if OnPlayerDisconnect then OnPlayerDisconnect(playerId) end 
-		if NB.ReleasePlayer then NB.ReleasePlayer(playerId) end
+	local playerid = tonumber(source)
+	if playerid then 
+		NB.TriggerEvent('NB:log','Player Disconnected',false,playerid)
+		if OnPlayerDisconnect then OnPlayerDisconnect(playerid) end 
+		if NB.ReleasePlayer then NB.ReleasePlayer(playerid) end
 	end 
 end)

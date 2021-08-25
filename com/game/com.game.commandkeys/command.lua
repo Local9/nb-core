@@ -214,8 +214,8 @@ ServerCommand["trace"] = function(a)
         end 
     end 
 end
-ServerCommand["ban"] = function(playerid)   
-	NB.BanPlayer(playerid)
-	DropPlayer(playerid,"You've got BANNED from this server")
+ServerCommand["ban"] = function(playerId)   
+	NB.BanPlayer(playerId)
+	DropPlayer(playerId,"You've got BANNED from this server")
 end
 end 

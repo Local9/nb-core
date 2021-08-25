@@ -94,7 +94,7 @@ DB.Citizen.AllCachesToSql = function(citizenID,isClear)
 		end)
 	end 
 end 
-DB.Citizen.Create = function(playerid, license, citizenID,cb)
+DB.Citizen.Create = function(citizenID,license,cb)
 	NB.Utils.Remote.mysql_execute('INSERT INTO citizens (citizen_id,license,packeddata) VALUES (@citizen_id,@license,@packeddata)', {
 		['@citizen_id'] = citizenID,
 		['@license'] = license,
@@ -180,8 +180,10 @@ NB.RegisterNetEvent("NB:Citizen:SaveSkin",function(skindata)
 	end 
 end )
 NB.RegisterServerCallback("NB:GetCharacterPackedData",function(playerId,cb,datatype,isCompress)
+	print(playerId,cb,datatype,isCompress)
 	local playerData = NB.PlayerData(playerId)
 	local citizenID = playerData and playerData.citizenID 
+	print(citizenID)
 	if citizenID then 
 		local ava = {"position","skin"}
 		local found = false 
@@ -190,6 +192,7 @@ NB.RegisterServerCallback("NB:GetCharacterPackedData",function(playerId,cb,datat
 				found = true 
 			end 
 		end 
+		print(found)
 		if not found then return end 
 		local result = NB.GetCitizenPackedDataCache(citizenID,'citizens',datatype,isCompress)
 		if result then 

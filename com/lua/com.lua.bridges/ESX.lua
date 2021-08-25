@@ -8,8 +8,8 @@ if IsServer() then
     ESX.ServerCallbacks = {}
 
     NB.RegisterNetEvent('ESX:triggerServerCallback', function(name, requestId, ...)
-        local playerId = NB and NB.PlayerId and NB.PlayerId(source) or tonumber(source)
-        ESX.TriggerServerCallback(name, requestId, playerId, function(...)
+        local playerid = NB and NB.PlayerId and NB.PlayerId(source) or tonumber(source)
+        ESX.TriggerServerCallback(name, requestId, playerid, function(...)
             local args = {...}
 			for i,v in pairs(args) do 
 				if type(v) == 'string' then 
@@ -20,7 +20,7 @@ if IsServer() then
 					args[i] = a
 				end 
 			end 
-			NB.TriggerClientEvent('ESX:serverCallback', playerId, requestId, table.unpack(args))
+			NB.TriggerClientEvent('ESX:serverCallback', playerid, requestId, table.unpack(args))
 			
         end, ...)
     end)
@@ -37,9 +37,9 @@ if IsServer() then
 	
 	NB.ClientCallbacks           = {}
 	NB.CurrentRequestId          = 1
-	NB.TriggerClientCallback = function(playerid, name, cb, ...)
+	NB.TriggerClientCallback = function(playerId, name, cb, ...)
 		NB.ClientCallbacks[NB.CurrentRequestId] = cb
-		NB.TriggerClientEvent('NB:triggerClientCallback',playerid, name, NB.CurrentRequestId, ...)
+		NB.TriggerClientEvent('NB:triggerClientCallback',playerId, name, NB.CurrentRequestId, ...)
 		
 		if NB.CurrentRequestId < 65534 then
 			NB.CurrentRequestId = NB.CurrentRequestId + 1

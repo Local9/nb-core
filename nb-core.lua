@@ -46,11 +46,12 @@ if IsServer() then
 			NB.TriggerEvent("connectqueue:playerConnect", name, setKickReason, deferrals)
 		end
 	end 
-	function OnPlayerRegister(playerId, license, citizenID)
+	function OnPlayerRegister(playerId, license)
 		
 	end 
-	function OnPlayerLogin(playerid, license, citizenID)
-		NB.TriggerClientEvent("NB:PlayerReadyToSpawn",playerid) -- 出生，應該跟在上面的建立角色之後，目前先在這裡
+	function OnPlayerLogin(playerId, license)
+		print('onplayerlogin')
+		NB.TriggerClientEvent("NB:PlayerReadyToSpawn",playerId) -- 出生，應該跟在上面的建立角色之後，目前先在這裡
 	end 
 	function OnPlayerJustJoin(playerId, license, isNew)
 		if NB.IsPlayerBanned(playerId) then 
@@ -64,18 +65,18 @@ if IsServer() then
 		end 
 		return NB.GetPlayers(playerId)
 	end 
-	function OnPlayerSpawn(playerid)
-		NB.SendClientMessageToAll(-1,GetPlayerName(playerid).."出生了")
+	function OnPlayerSpawn(playerId)
+		NB.SendClientMessageToAll(-1,GetPlayerName(playerId).."出生了")
 	end 
-	function OnPlayerDisconnect(playerid)
-		local playerData = NB.PlayerData(playerid)
+	function OnPlayerDisconnect(playerId)
+		local playerData = NB.PlayerData(playerId)
 		local citizenID = playerData and playerData.citizenID 
 		if citizenID then 
 			DB.Citizen.AllCachesToSql(citizenID,true)
-			NB.SendClientMessageToAll(-1,GetPlayerName(playerid).."離開了服務器")
+			NB.SendClientMessageToAll(-1,GetPlayerName(playerId).."離開了服務器")
 		end 
 	end 
-	function OnPlayerUpdate(playerid,PedNetid)
+	function OnPlayerUpdate(playerId,PedNetid)
 		
 	end 
 end 
