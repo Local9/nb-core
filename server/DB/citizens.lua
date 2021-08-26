@@ -9,23 +9,23 @@ DB.Citizen.GetData = function (citizenID)
 	return NB.Cache.Get("CITIZEN",citizenID)
 end 
 DB.Citizen.IsExist = function (citizenID)
-	local result = NB.Utils.Remote.mysql_scalar_sync('SELECT COUNT(*) as count FROM citizens WHERE citizen_id = ?', {
-		citizenID
-	})
+	local result = NB.Utils.Remote.mysql_scalar_sync('SELECT COUNT(*) as count FROM citizens WHERE ?', {{
+		['citizen_id'] = citizenID
+	}})
 	local r = not not (result and result > 0)
 	return r 
 end 
 DB.Citizen.GetLicense = function (citizenID)
 	--'SELECT u.license FROM users u inner join citizens s on u.citizen_id = s.citizen_id WHERE u.citizen_id = @citizen_id'
-	local result = NB.Utils.Remote.mysql_scalar_sync('SELECT license FROM citizens WHERE citizen_id = ?', {
-		citizenID
-	})
+	local result = NB.Utils.Remote.mysql_scalar_sync('SELECT license FROM citizens WHERE ?', {{
+		['citizen_id'] = citizenID
+	}})
 	return result and result or nil
 end 
 DB.Citizen.GetIDFromLicense = function (license,idx)
-	local result = NB.Utils.Remote.mysql_execute_sync('SELECT citizen_id FROM citizens WHERE license = ?', {
-		 license
-	})
+	local result = NB.Utils.Remote.mysql_execute_sync('SELECT citizen_id FROM citizens WHERE ?', {{
+		 ['license'] = license
+	}})
 	if idx then 
 		return result and result[idx] and result[idx].citizen_id or nil
 	else
@@ -33,9 +33,9 @@ DB.Citizen.GetIDFromLicense = function (license,idx)
 	end 
 end 
 DB.Citizen.SqlToCache = function(citizenID,tablename,dataslot)
-	local result = NB.Utils.Remote.mysql_scalar_sync('SELECT '..dataslot..' FROM '..tablename..' WHERE citizen_id = ?', {
-		citizenID
-	})
+	local result = NB.Utils.Remote.mysql_scalar_sync('SELECT '..dataslot..' FROM '..tablename..' WHERE ?', {{
+		['citizen_id'] = citizenID
+	}})
 	local t = json.decodetable(result)
 	NB.Cache.Set("CITIZEN",citizenID,tablename,dataslot,t)
 	return t 
