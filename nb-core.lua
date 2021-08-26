@@ -7,13 +7,40 @@ Main(function()
 	end 
 end)
 if IsServer() then 
+
+	
 	function OnPlayerConnect(playerId, name, setKickReason, deferrals)
 		deferrals.defer()
 		Wait(0)
 		local license = NB.GetIdentifier(playerId)
 		local isLicenseAlreadyInUse = false 
 		local isLicenseBanned = false 
+		local isIPBanned = false 
 		local IsWhite = false 
+		local DoesIpInBanList = function(banslist,ip)
+		    local function banned(f,s)
+				local ipsplit=function(b,c)local b=string.gsub(b,"%.",",")if not c then c=","end;result={}for d in(b..c):gmatch("(.-)"..c)do table.insert(result,d)end;return result end
+				local ss = ipsplit (s)
+				local ff = ipsplit(f)
+				local found = false
+				for i=1,#ss do 
+				   if (ss[i] == ff[i] or ss[i] == "*") == false then 
+					  return nil
+				   end 
+				   
+				end 
+				return true
+			end 
+			local found = false
+			for i,v in pairs(banslist) do 
+				
+				if banned(ip,i) then 
+					return true 
+				end 
+				
+			end 
+			return found 
+		end 
 		
 		deferrals.update(string.format("Hello %s. Validating Your Rockstar License", name))
 		if NB.GetPlayerFromIdentifier(NB.GetIdentifier(playerId)) then 
@@ -21,6 +48,7 @@ if IsServer() then
 		end 
 		Wait(2500) local banslist = NB.ReloadBans()
 		Wait(50) isLicenseBanned = NB.IsIdentifiersBanned(GetPlayerIdentifiers(playerId))
+		isIPBanned = DoesIpInBanList(banslist,com.game.Server.License.GetIP(playerId)) == true
 		deferrals.update(string.format("Hello %s. We are checking if you are banned.", name))
 		
 		local whitelistlength,whitelist = NB.LoadWhitelist()
@@ -35,7 +63,7 @@ if IsServer() then
 		deferrals.update(string.format("Welcome %s to {Server Name}.", name))
 		if not license then
 			deferrals.done('No Valid Rockstar License Found')
-		elseif isLicenseBanned then 
+		elseif isLicenseBanned or isIPBanned then 
 			deferrals.done("You've got BANNED from this server")
 		elseif not IsWhite then 
 			deferrals.done("You are not in the allowlist from this server.")
