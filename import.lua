@@ -8,7 +8,7 @@ end
 --Shared Global Functions--
 if IsShared() then 
 	MakeRandomSeed = NB.RandomSeed  
-	printf = function(s,...) return io.write(s:format(...)) end
+	printf = function(s,...) return print(string.format(s,...)) end
 	strlen = string.len
 	strval = tonumber
 	strfind = string.find
@@ -42,7 +42,7 @@ if IsShared() then
 			end 
 		end 
 	end 
-	
+	printf("%s","test")
 	Ban = NB.BanPlayer
 end 
 if IsServer() then 
