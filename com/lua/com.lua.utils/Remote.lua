@@ -21,5 +21,14 @@ if IsServer() then
 		--NB.TriggerEvent('NB:log',json.encode(args))
 		return exports.ghmattimysql:scalarSync(...)
 	end 
-	
+	com.lua.utils.Remote.mysql_store = function(...)
+		--local args = {...}
+		--NB.TriggerEvent('NB:log',json.encode(args))
+		return exports.ghmattimysql:store(...)
+	end 
+	com.lua.utils.Remote.mysql_storeSync = function(...)
+		--local args = {...}
+		--NB.TriggerEvent('NB:log',json.encode(args))
+		return exports.ghmattimysql:storeSync(...)
+	end 
 end 

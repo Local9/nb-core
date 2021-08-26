@@ -1,3 +1,4 @@
+local CitizenSaveQueryid = {}
 DB.Citizen.GetData = function (citizenID)
 	if not NB.Cache.IsExist("CITIZEN",citizenID) then 
 		NB.Cache.Set("CITIZEN",citizenID,{})
@@ -49,14 +50,18 @@ DB.Citizen.CacheToSql = function(citizenID,tablename,dataslot)
 	if type(dataslot) == 'table' then 
 		local querys = {}
 		local datadefines = {
-			 citizenID
+			 
 		}
 		for dataslot_,data_ in pairs(dataslot) do 
-			table.insert(querys,dataslot_..' = ?')
-			table.insert(datadefines,covertDatas(data_))
+			datadefines[dataslot_] = covertDatas(data_)
+			print(dataslot_)
 		end 
 		querys = table.concat(querys,",")
-		NB.Utils.Remote.mysql_execute('UPDATE '..tablename..' SET '..querys..' WHERE citizen_id = ?', datadefines)
+		if not CitizenSaveQueryid[tablename] then 
+			CitizenSaveQueryid[tablename] = com.lua.utils.Remote.mysql_storeSync("UPDATE "..tablename.." SET ? WHERE ?")
+		end 
+		
+		NB.Utils.Remote.mysql_execute(CitizenSaveQueryid[tablename], {datadefines, {['citizen_id'] = citizenID}})
 	end 
 end 
 DB.Citizen.AllCachesToSql = function(citizenID,isClear)
@@ -111,7 +116,8 @@ DB.Citizen.Create = function(citizenID,license,cb)
 end 
 CreateThread(function()
 	Wait(10000)
-	NB.Threads.CreateLoop("saveAllCacheDB",60000,function()
+	
+	NB.Threads.CreateLoop("saveAllCacheDB",10000,function()
 		DB.Citizen.AllCachesToSql()
 	end)
 end )
