@@ -1,11 +1,19 @@
-
-NB.GetPlayers = function(id)
-	return not id and NB.Players or NB.Players[id]
+NB.GetPlayers = function()
+	return NB.Players
 end
-
 NB.GetPlayerDataFromId = function(playerId)
 	local playerdata = NB.Players[playerId]
 	return playerdata
+end 
+NB.GetCitizenDataFromId = function(playerId)
+	local playerdata = NB.GetPlayerDataFromId(playerId)
+	local citizendata
+	if playerdata and playerdata.citizenData then 
+		citizendata = playerdata.citizenData
+	else 
+		error("citizen data not loaded",2)
+	end 
+	return citizendata
 end 
 NB.ReleasePlayer = function(playerId)
 	NB.Players[playerId] = nil 
@@ -80,7 +88,6 @@ NB.AddEventHandler("NB:OnPlayerRegister",function(playerId, license)
 			print("Created a character into database")
 			PrePlayerData.init("citizenID",citizenID)
 			PrePlayerData.init("citizenData",citizenData)
-			
 			if OnPlayerLogin then OnPlayerLogin(playerId,license) end 
 		end )
 	end 
@@ -93,7 +100,6 @@ NB.AddEventHandler("NB:OnPlayerLogin",function(playerId, license)
 	local citizenData = DB.Citizen.GetData(citizenID)
 	PrePlayerData.init("citizenID",citizenID)
 	PrePlayerData.init("citizenData",citizenData)
-
 	if OnPlayerLogin and playerId>0 then OnPlayerLogin(playerId, license) end 
 end)
 NB.RegisterNetEvent("NB:OnPlayerSpawn",function(PedNetid)
@@ -119,4 +125,3 @@ AddEventHandler('playerDropped', function (reason)
 		if NB.ReleasePlayer then NB.ReleasePlayer(playerid) end
 	end 
 end)
-

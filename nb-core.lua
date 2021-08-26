@@ -12,14 +12,15 @@ if IsServer() then
 		Wait(0)
 		local license = NB.GetIdentifier(playerId)
 		local isLicenseAlreadyInUse = false 
-		local Banned = false 
+		local isLicenseBanned = false 
 		local IsWhite = false 
+		
 		deferrals.update(string.format("Hello %s. Validating Your Rockstar License", name))
 		if NB.GetPlayerFromIdentifier(NB.GetIdentifier(playerId)) then 
 			isLicenseAlreadyInUse = true 
 		end 
-		Wait(2500) NB.ReloadBans()
-		Wait(50) Banned = NB.IsIdentifiersBanned(GetPlayerIdentifiers(playerId))
+		Wait(2500) local banslist = NB.ReloadBans()
+		Wait(50) isLicenseBanned = NB.IsIdentifiersBanned(GetPlayerIdentifiers(playerId))
 		deferrals.update(string.format("Hello %s. We are checking if you are banned.", name))
 		
 		local whitelistlength,whitelist = NB.LoadWhitelist()
@@ -34,7 +35,7 @@ if IsServer() then
 		deferrals.update(string.format("Welcome %s to {Server Name}.", name))
 		if not license then
 			deferrals.done('No Valid Rockstar License Found')
-		elseif Banned then 
+		elseif isLicenseBanned then 
 			deferrals.done("You've got BANNED from this server")
 		elseif not IsWhite then 
 			deferrals.done("You are not in the allowlist from this server.")

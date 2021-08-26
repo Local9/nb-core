@@ -7,7 +7,10 @@ DB.User.IsUserExist = function (license)
 end 
 
 DB.User.CreateUser = function (license,ip,licenses)
-	local result = NB.Utils.Remote.mysql_execute_sync('INSERT INTO users (license,ip,otherlicenses) VALUES (@license,@ip,@otherlicenses)', {['@license'] = license,['@ip'] = ip,['@otherlicenses'] = json.encode(licenses)})
+	local result = NB.Utils.Remote.mysql_execute_sync('INSERT INTO users (license,ip,otherlicenses) VALUES (@license,@ip,@otherlicenses)', {['@license'] = license,['@ip'] = ip,['@otherlicenses'] = NB.encodeSql(json.encode(licenses))})
+	CreateThread(function()
+	NB.TriggerEvent("NB:log",NB.encodeSql(json.encode(licenses))..","..json.encode(licenses))
+	end)
 	local r = result and result[1] or nil
 	return result[1]
 end 
