@@ -53,12 +53,10 @@ DB.Citizen.CacheToSql = function(citizenID,tablename,dataslot)
 	if type(dataslot) == 'table' then 
 		local datastore = {}
 		local querys = {}
-		local datadefines = {
-			 citizenID
-		}
+		
 		for dataslot_,data_ in pairs(dataslot) do 
 			table.insert(querys,--[[dataslot_..' = ]]'?')
-			table.insert(datadefines,covertDatas(data_))
+			
 			table.insert(datastore,{[dataslot_] = covertDatas(data_)})
 		end 
 		querys = table.concat(querys,",")
