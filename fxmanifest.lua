@@ -25,6 +25,7 @@ shared_scripts {
 	'com/events/scripts/*.lua',
 	'com/events/example.lua',
 	'com/nb-link.lua',
+	--"import-simple.lua",
 	"import.lua",
 	"nb-core.lua",
 	"examples.lua"

@@ -9,6 +9,16 @@ end
 if IsShared() then 
 	MakeRandomSeed = NB.RandomSeed  
 	printf = function(s,...) return io.write(s:format(...)) end
+	strlen = string.len
+	strval = tonumber
+	strfind = string.find
+	strcmp = function(string1,string2,ignorecase)
+		local bool = false
+		if ignorecase then 
+			bool = string1:lower() == string2:lower()
+		end 
+		return string1 == string2
+	end 
 	Ban = NB.BanPlayer
 end 
 if IsServer() then 
@@ -236,7 +246,7 @@ if IsClient() then
 		TextDraws[handle].height = GetRenderedCharacterHeight(TextDraws[handle].textsizeY,0)
 	end 
 	
-	
+	--[=[
 	CreateThread(function()
 		local textdrawid = TextDrawCreate(0.5,0.5,"test")
 		Wait(3000)
@@ -260,5 +270,6 @@ if IsClient() then
 		Attach3DTextLabelToPlayer(textid,PlayerId(),0.0,0.5,0.5)
 		--Delete3DTextLabel(textid)
 	end)
+	--]=]
 	
 end 
