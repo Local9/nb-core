@@ -5,22 +5,22 @@ DB.Citizen.GetData = function (citizenID)
 	return NB.Cache.Get("CITIZEN",citizenID)
 end 
 DB.Citizen.IsExist = function (citizenID)
-	local result = NB.Utils.Remote.mysql_scalar_sync('SELECT COUNT(*) as count FROM citizens WHERE citizen_id = @citizen_id', {
-		['@citizen_id'] = citizenID
+	local result = NB.Utils.Remote.mysql_scalar_sync('SELECT COUNT(*) as count FROM citizens WHERE citizen_id = ?', {
+		citizenID
 	})
 	local r = not not (result and result > 0)
 	return r 
 end 
 DB.Citizen.GetLicense = function (citizenID)
 	--'SELECT u.license FROM users u inner join citizens s on u.citizen_id = s.citizen_id WHERE u.citizen_id = @citizen_id'
-	local result = NB.Utils.Remote.mysql_scalar_sync('SELECT license FROM citizens WHERE citizen_id = @citizen_id', {
-		['@citizen_id'] = citizenID
+	local result = NB.Utils.Remote.mysql_scalar_sync('SELECT license FROM citizens WHERE citizen_id = ?', {
+		citizenID
 	})
 	return result and result or nil
 end 
 DB.Citizen.GetIDFromLicense = function (license,idx)
-	local result = NB.Utils.Remote.mysql_execute_sync('SELECT citizen_id FROM citizens WHERE license = @license', {
-		['@license'] = license
+	local result = NB.Utils.Remote.mysql_execute_sync('SELECT citizen_id FROM citizens WHERE license = ?', {
+		 license
 	})
 	if idx then 
 		return result and result[idx] and result[idx].citizen_id or nil
@@ -29,8 +29,8 @@ DB.Citizen.GetIDFromLicense = function (license,idx)
 	end 
 end 
 DB.Citizen.SqlToCache = function(citizenID,tablename,dataslot)
-	local result = NB.Utils.Remote.mysql_scalar_sync('SELECT '..dataslot..' FROM '..tablename..' WHERE citizen_id = @citizen_id', {
-		['@citizen_id'] = citizenID
+	local result = NB.Utils.Remote.mysql_scalar_sync('SELECT '..dataslot..' FROM '..tablename..' WHERE citizen_id = ?', {
+		citizenID
 	})
 	local t = json.decodetable(result)
 	NB.Cache.Set("CITIZEN",citizenID,tablename,dataslot,t)
@@ -49,15 +49,14 @@ DB.Citizen.CacheToSql = function(citizenID,tablename,dataslot)
 	if type(dataslot) == 'table' then 
 		local querys = {}
 		local datadefines = {
-			['@citizen_id'] = citizenID
+			 citizenID
 		}
 		for dataslot_,data_ in pairs(dataslot) do 
-			table.insert(querys,dataslot_..' = @'..dataslot_)
-			datadefines['@'..dataslot_..''] = covertDatas(data_)
-			--print(covertDatas(data_))
+			table.insert(querys,dataslot_..' = ?')
+			table.insert(datadefines,covertDatas(data_))
 		end 
 		querys = table.concat(querys,",")
-		NB.Utils.Remote.mysql_execute('UPDATE '..tablename..' SET '..querys..' WHERE citizen_id = @citizen_id', datadefines)
+		NB.Utils.Remote.mysql_execute('UPDATE '..tablename..' SET '..querys..' WHERE citizen_id = ?', datadefines)
 	end 
 end 
 DB.Citizen.AllCachesToSql = function(citizenID,isClear)
@@ -100,10 +99,10 @@ DB.Citizen.AllCachesToSql = function(citizenID,isClear)
 	end 
 end 
 DB.Citizen.Create = function(citizenID,license,cb)
-	NB.Utils.Remote.mysql_execute('INSERT INTO citizens (citizen_id,license,packeddata) VALUES (@citizen_id,@license,@packeddata)', {
-		['@citizen_id'] = citizenID,
-		['@license'] = license,
-		['@packeddata'] = json.encode({position=DEFAULT_SPAWN_POSITION})
+	NB.Utils.Remote.mysql_execute('INSERT INTO citizens (citizen_id,license,packeddata) VALUES (?,?,?)', {
+		citizenID,
+		license,
+		json.encode({position=DEFAULT_SPAWN_POSITION})
 	}, function(result)
 		print("Created a character into database")
 		--NB.Cache.Set("CITIZEN",citizenID,{})
@@ -112,7 +111,7 @@ DB.Citizen.Create = function(citizenID,license,cb)
 end 
 CreateThread(function()
 	Wait(10000)
-	NB.Threads.CreateLoop("saveAllCacheDB",30000,function()
+	NB.Threads.CreateLoop("saveAllCacheDB",60000,function()
 		DB.Citizen.AllCachesToSql()
 	end)
 end )
