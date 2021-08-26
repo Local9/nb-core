@@ -42,7 +42,7 @@ if IsShared() then
 			end 
 		end 
 	end 
-	)
+	
 	Ban = NB.BanPlayer
 end 
 if IsServer() then 
