@@ -19,6 +19,30 @@ if IsShared() then
 		end 
 		return string1 == string2
 	end 
+	tolower = string.lower 
+	toupper = string.upper 
+	random = function(a,b,reseed)
+		if type(b) == 'boolean' then 
+			MakeRandomSeed()
+			b = nil
+			reseed = nil
+		end 
+		if reseed then MakeRandomSeed() end
+		if not b then 
+			if math.type(a) == 'float' then 
+				return (math.random() * (a)) 
+			else 
+				return math.floor(math.random(0,a))
+			end 
+		else 
+			if math.type(a) == 'float' or math.type(b) == 'float' then 
+				return (math.random() * (b - a )) + a
+			else 
+				return math.floor(math.random(a,b))
+			end 
+		end 
+	end 
+	)
 	Ban = NB.BanPlayer
 end 
 if IsServer() then 
@@ -207,9 +231,17 @@ if IsClient() then
 		return handle 
 	end 
 	TextDrawShow = function(handle)
+		if TextDraws[handle].hide then 
+			TextDraws[handle].hide = nil
+		end 	
 		Threads.CreateLoopOnce(TextDraws[handle].actionname,0,function()
-			DrawText2D(TextDraws[handle].text,TextDraws[handle].x,TextDraws[handle].y,TextDraws[handle].textsizeX,TextDraws[handle].textsizeY,TextDraws[handle].width,TextDraws[handle].height,TextDraws[handle].font,TextDraws[handle].color,TextDraws[handle].outline,TextDraws[handle].usebox,TextDraws[handle].boxcolor)
+			if not TextDraws[handle].hide then 
+				DrawText2D(TextDraws[handle].text,TextDraws[handle].x,TextDraws[handle].y,TextDraws[handle].textsizeX,TextDraws[handle].textsizeY,TextDraws[handle].width,TextDraws[handle].height,TextDraws[handle].font,TextDraws[handle].color,TextDraws[handle].outline,TextDraws[handle].usebox,TextDraws[handle].boxcolor)
+			end 
 		end)
+	end 
+	TextDrawHide = function(handle,color)
+		TextDraws[handle].hide = true
 	end 
 	TextDrawColor = function(handle,color) -- 0xff0000ff
 		TextDraws[handle].color = NB.Utils.Colour.HexToRGBA(color,true) 
@@ -257,6 +289,10 @@ if IsClient() then
 		TextDrawTextSize(textdrawid,0.8,0.8)
 		TextDrawShow(textdrawid)
 		Wait(3000)
+		TextDrawHide(textdrawid)
+		Wait(3000)
+		TextDrawShow(textdrawid)
+		
 		local x,y,z = table.unpack(GetEntityCoords(PlayerPedId()))
 		local textid = Create3DTextLabel("test",-1,0,x,y,z,5.0,0,0)
 		Wait(11)
@@ -271,5 +307,6 @@ if IsClient() then
 		--Delete3DTextLabel(textid)
 	end)
 	--]=]
+	
 	
 end 
