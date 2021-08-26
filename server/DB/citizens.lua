@@ -206,7 +206,7 @@ NB.RegisterNetEvent("NB:Citizen:SaveSkin",function(skindata)
 		end 
 	end 
 end )
-NB.RegisterServerCallback("NB:GetCharacterPackedData",function(playerId,cb,datatype,isCompress)
+RegisterServerCallback("NB:GetCharacterPackedData",function(playerId,cb,datatype,isCompress)
 	local playerData = NB.GetPlayerDataFromId(playerId)
 	local citizenID = playerData and playerData.citizenID 
 	if citizenID then 

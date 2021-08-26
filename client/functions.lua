@@ -1,1 +1,0 @@
-NB.TriggerServerCallback = ESX.TriggerServerCallback 

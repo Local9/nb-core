@@ -77,7 +77,7 @@ NB.RegisterNetEvent("NB:PlayerReadyToSpawn",function()
 	NB.TriggerEvent('NB:CancelPlayerDefaultSpawn')
 	print("CancelPlayerDefaultSpawn with Default Spawn Method Example")
 	
-	NB.TriggerServerCallback('NB:GetCharacterPackedData',function (pos)
+	TriggerServerCallback('NB:GetCharacterPackedData',function (pos)
 		--print(json.encode(pos))
 		local coords,heading 
 		if pos then 
@@ -91,7 +91,7 @@ NB.RegisterNetEvent("NB:PlayerReadyToSpawn",function()
 		end )
 	end, "position", false)
 	
-	NB.TriggerServerCallback('NB:GetCharacterPackedData',function (skin)
+	TriggerServerCallback('NB:GetCharacterPackedData',function (skin)
 		--print("Get Skin:",json.encode(skin))
 	end,'skin',true)
 	

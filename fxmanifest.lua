@@ -31,15 +31,11 @@ shared_scripts {
 }
 
 client_scripts {
-	'client/events.lua',
-	'client/functions.lua',
-	'client/player.lua',
+	'client/player.lua'
 	
 }
 
 server_scripts{
-	'server/events.lua',
-	'server/functions.lua',
 	'server/DB/*.lua',
 	'server/player.lua'
 }

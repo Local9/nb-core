@@ -87,21 +87,21 @@ if IsServer() then
 			return 
 		end 
 		if isNew then 
-			NB.SendClientMessageToAll(-1,"一個新玩家加入了服務器，正在進行選角")
+			SendClientMessageToAll(-1,"一個新玩家加入了服務器，正在進行選角")
 		else 
-			NB.SendClientMessageToAll(-1,"一個老玩家加入了服務器，正在進行選角")
+			SendClientMessageToAll(-1,"一個老玩家加入了服務器，正在進行選角")
 		end 
 		
 	end 
 	function OnPlayerSpawn(playerId)
-		NB.SendClientMessageToAll(-1,GetPlayerName(playerId).."出生了")
+		SendClientMessageToAll(-1,GetPlayerName(playerId).."出生了")
 	end 
 	function OnPlayerDisconnect(playerId)
 		local playerData = NB.GetPlayerDataFromId(playerId)
 		local citizenID = playerData and playerData.citizenID 
 		if citizenID then 
 			DB.Citizen.AllCachesToSql(citizenID,true)
-			NB.SendClientMessageToAll(-1,GetPlayerName(playerId).."離開了服務器")
+			SendClientMessageToAll(-1,GetPlayerName(playerId).."離開了服務器")
 		end 
 	end 
 	function OnPlayerUpdate(playerId,PedNetid)

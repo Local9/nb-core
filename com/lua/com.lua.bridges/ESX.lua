@@ -27,6 +27,7 @@ if IsServer() then
     ESX.RegisterServerCallback = function(name, cb)
         ESX.ServerCallbacks[name] = cb
     end
+	NB.RegisterServerCallback = ESX.RegisterServerCallback
     ESX.TriggerServerCallback = function(name, requestId, playerId, cb, ...)
         if ESX.ServerCallbacks[name] then
             ESX.ServerCallbacks[name](playerId, cb, ...)
@@ -47,6 +48,7 @@ if IsServer() then
 			NB.CurrentRequestId = 1
 		end
 	end
+	
 	NB.RegisterNetEvent('NB:ClientCallback', function(requestId, ...)
 		if NB.ClientCallbacks[requestId] then 
 			
@@ -79,6 +81,7 @@ else
             ESX.CurrentRequestId = 1
         end
     end
+	NB.TriggerServerCallback  = ESX.TriggerServerCallback
     NB.RegisterNetEvent('ESX:serverCallback', function(requestId, ...)
         if ESX.ServerCallbacks[requestId] then 
 			

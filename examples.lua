@@ -6,7 +6,7 @@ end
 if IsServer() then 
 	--[=[
 	CreateThread(function()
-		NB.RegisterServerCallback("NB:test",function(playerId,cb)
+		RegisterServerCallback("NB:test",function(playerId,cb)
 			cb("bad",9993.23332321,"a")
 			
 		end )
@@ -41,7 +41,7 @@ if IsClient() then
 
 		--]=]
 		--[=[
-		NB.TriggerServerCallback('NB:test',function (...)
+		TriggerServerCallback('NB:test',function (...)
 			print(...)
 		end)
 		--]=]
