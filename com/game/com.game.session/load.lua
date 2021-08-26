@@ -19,7 +19,7 @@ com.game.Server.Load.LoadBanList = function(identifier)
 	return Banlist
 end
 
-com.game.Server.Load.AddBan = function(identifier)
+com.game.Server.Load.AddBan = function(identifier,reason)
 	if identifier then 
 		local f,err = io.open('nbcore_bans.txt','a+') 
 		if f then 
@@ -27,6 +27,11 @@ com.game.Server.Load.AddBan = function(identifier)
 			f:close()
 		else 
 			print(err)
+		end 
+		if reason then 
+			NB.TriggerEvent('NB:log',identifier.."Got Banned.Reason: "..reason,true)
+		else 
+			NB.TriggerEvent('NB:log',identifier.."Got Banned.",true)
 		end 
 		return com.game.Server.Load.LoadBanList()
 	end 

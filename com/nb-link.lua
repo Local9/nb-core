@@ -37,7 +37,7 @@ if IsServer() then
 		return false
 	end
 	NB.IsPlayerBanned = function(playerId) return NB.IsIdentifiersBanned(GetPlayerIdentifiers(playerId)) end 
-	NB.BanPlayer = function (playerId) local license = NB.GetLicense(playerId) if license then  NB.Ban(license) end return end 
+	NB.BanPlayer = function (playerId,reason) local license = NB.GetLicense(playerId) if license then  NB.Ban(license,reason) end return end 
 	NB.LoadWhitelist = com.game.Server.Load.LoadWhiteList
 end 
 if IsClient() then 
