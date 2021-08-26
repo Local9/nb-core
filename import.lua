@@ -8,7 +8,7 @@ end
 --Shared Global Functions--
 if IsShared() then 
 	MakeRandomSeed = NB.RandomSeed  
-	printf = function(s,...) return print(string.format(s,...)) end
+	printf = function(s,...) return print(s:format(...)) end
 	strlen = string.len
 	strval = tonumber
 	strfind = string.find
