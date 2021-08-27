@@ -150,9 +150,11 @@ if IsClient() then
 		end 
 		menu.button = {
 			up = function()
+				
 				menu.select(menu.getcurrentselection()-1)
 			end,
 			down = function()
+				
 				menu.select(menu.getcurrentselection()+1)
 			end,
 			left = function()

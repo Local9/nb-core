@@ -10,7 +10,8 @@ if IsClient() then
 	local Keys = {
 		"menus",
 	}
-	local CurrentMenu = nil
+	com.menu._TEMP_[MENUTYPE] = {}
+	
 	local function GetPos() 
 		local a,b,c = GetPauseMenuSelectionData() 
 		return c ~= -1 and c+1 or 1 
@@ -19,35 +20,38 @@ if IsClient() then
 		if not isUpdate then 
 			local namespace, name, data = newMenu.namespace, newMenu.name, newMenu.data
 			local _,lastindex,newmenu = TableInsert("menus",newMenu)
-			CurrentMenu = newmenu --Get("menus")[#Get("menus")]
-			CurrentMenu.index = lastindex
-			CurrentMenu.updateRender = com.menu.PauseMenu.UI.Render
-			if CurrentMenu.updateRender then 
-				local simplymenu = com.menu.minify(CurrentMenu)
-				CurrentMenu.updateRender(simplymenu)
+			com.menu._TEMP_[MENUTYPE].CurrentMenu = newmenu --Get("menus")[#Get("menus")]
+			com.menu._TEMP_[MENUTYPE].CurrentMenu.index = lastindex
+			com.menu._TEMP_[MENUTYPE].CurrentMenu.updateRender = com.menu.PauseMenu.UI.Render
+			if com.menu._TEMP_[MENUTYPE].CurrentMenu.updateRender then 
+				local simplymenu = com.menu.minify(com.menu._TEMP_[MENUTYPE].CurrentMenu)
+				com.menu._TEMP_[MENUTYPE].CurrentMenu.updateRender(simplymenu)
 				--print_table_server(simplymenu)
 			end 
 		end 
 		NB.Threads.CreateThreadOnce(MENUTYPE,function()
 			--只會建立一次
 			NB.Threads.CreateLoop("Menu"..MENUTYPE,50,function(Break)
-				if CurrentMenu then 
+				if com.menu._TEMP_[MENUTYPE].CurrentMenu then 
 					if N_0x2e22fefa0100275e() then 
 						local pos = GetPos()
 						if pos then 
-							CurrentMenu.select(pos)
+							
+							if com.menu._TEMP_[MENUTYPE].CurrentMenu and com.menu._TEMP_[MENUTYPE].CurrentMenu.select then 
+							com.menu._TEMP_[MENUTYPE].CurrentMenu.select(pos)
+							end 
 						end 
 					end 
 				end 
 			end)
 			com.menu.RegisterKeyEvent('Menu'..MENUTYPE,function(input)
-				if CurrentMenu then 
+				if com.menu._TEMP_[MENUTYPE].CurrentMenu then 
 					switch(input)(
 						case("MENU_LEFT")(function()
-							CurrentMenu.button.left()
+							com.menu._TEMP_[MENUTYPE].CurrentMenu.button.left()
 						end),
 						case("MENU_RIGHT")(function()
-							CurrentMenu.button.right()
+							com.menu._TEMP_[MENUTYPE].CurrentMenu.button.right()
 						end),
 						--[=[
 						case("MENU_UP")(function()
@@ -66,12 +70,12 @@ if IsClient() then
 							local c = PauseMenu.GetValueFromMouse(0.375)
 							if c then 
 								if c == 1 then 
-									local currentmenu = CurrentMenu
+									local currentmenu = com.menu._TEMP_[MENUTYPE].CurrentMenu
 									if currentmenu then 
 										currentmenu.button.right()
 									end 
 								elseif c == -1 then 
-									local currentmenu = CurrentMenu
+									local currentmenu = com.menu._TEMP_[MENUTYPE].CurrentMenu
 									if currentmenu then 
 										currentmenu.button.left()
 									end 
@@ -79,13 +83,13 @@ if IsClient() then
 							end --]=]
 						end),
 						case("MENU_ENTER","MENU_SELECT")(function()
-							CurrentMenu.button.enter() 
+							com.menu._TEMP_[MENUTYPE].CurrentMenu.button.enter() 
 						end),
 						case("MENU_BACK")(function()
-							CurrentMenu.button.back()
+							com.menu._TEMP_[MENUTYPE].CurrentMenu.button.back()
 						end),
 						case("MENU_ESCAPE")(function()
-							CurrentMenu.button.esc()
+							com.menu._TEMP_[MENUTYPE].CurrentMenu.button.esc()
 						end),
 						default(function()
 						end)
@@ -96,13 +100,13 @@ if IsClient() then
 		return newMenu.index
 	end 
 	local menuClose = function()
-		local nowmenu = CurrentMenu
+		local nowmenu = com.menu._TEMP_[MENUTYPE].CurrentMenu
 		local _,lastindex,lastmenu= TableRemove("menus")
 		if lastmenu then 
-			CurrentMenu = lastmenu
-			if CurrentMenu.updateRender then 
-				local simplymenu = com.menu.minify(CurrentMenu)
-				CurrentMenu.updateRender(simplymenu)
+			com.menu._TEMP_[MENUTYPE].CurrentMenu = lastmenu
+			if com.menu._TEMP_[MENUTYPE].CurrentMenu.updateRender then 
+				local simplymenu = com.menu.minify(com.menu._TEMP_[MENUTYPE].CurrentMenu)
+				com.menu._TEMP_[MENUTYPE].CurrentMenu.updateRender(simplymenu)
 				--print_table_server(simplymenu)
 			end 
 		else 
@@ -112,7 +116,7 @@ if IsClient() then
 			if com.menu.PauseMenu.UI.RenderStop then 
 				com.menu.PauseMenu.UI.RenderStop()
 			end 
-			CurrentMenu = nil
+			com.menu._TEMP_[MENUTYPE].CurrentMenu = nil
 		end 
 	end 
 	local open = function(namespace, name, data) --button = data.elements

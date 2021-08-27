@@ -4,9 +4,12 @@ local function IsShared() return true end ;
 --IMPORT--
 if GetCurrentResourceName() ~= "nb-core" then --a must, otherwise function becomes table in main framework script
 NB = exports['nb-core']:GetSharedObject()
+load(LoadResourceFile("nb-core", 'com/selfishref/threads.lua'))()
 end 
 --Shared Global Functions--
 if IsShared() then 
+	
+	print('loaded')
 	MakeRandomSeed = NB.RandomSeed  
 	printf = function(s,...) return print(s:format(...)) end
 	strlen = string.len
@@ -20,7 +23,7 @@ if IsShared() then
 		return string1 == string2
 	end 
 	tolower = string.lower 
-	toupper = string.upper 
+	toupper = string.upper
 	random = function(a,b,reseed)
 		if type(b) == 'boolean' then 
 			MakeRandomSeed()
@@ -42,8 +45,10 @@ if IsShared() then
 			end 
 		end 
 	end 
-	printf("%s","test")
+	
 	Ban = NB.BanPlayer
+	
+	
 end 
 if IsServer() then 
 	RegisterServerCallback = NB.RegisterServerCallback 
@@ -67,8 +72,8 @@ if IsClient() then
 	local Draw3DTexts = {}
 	local Draw3DTextIndex = 0
 	Delete3DTextLabel = function(handle)
-		Threads.KillActionOfLoop(Draw3DTexts[handle].actionname)
-		Threads.ArrivalDelete(Draw3DTexts[handle].actionname)
+		NB.Threads.KillActionOfLoop(Draw3DTexts[handle].actionname)
+		NB.Threads.ArrivalDelete(Draw3DTexts[handle].actionname)
 	end 
 	local DrawText3D = function(coords, text, textsizeX,textsizeY,width,height,font,color,outline,usebox,boxcolor)
 		
@@ -106,10 +111,10 @@ if IsClient() then
 		Draw3DTexts[handle] = {actionname =  actionname,attachentity = nil,drawdistance=drawdistance,coords=coords,textsizeX=0.5,textsizeY=0.5,width=width,height=height,text = text,font = 0,color={255,255,255,255},outline = 1,usebox = 1,boxcolor={255,255,255,255} }
 
 		CreateThread(function()
-			if not Threads.IsArrivalExist(Draw3DTexts[handle].actionname) then 
-				Threads.AddPosition(Draw3DTexts[handle].actionname,Draw3DTexts[handle].coords,Draw3DTexts[handle].drawdistance+0.0,function(result)
+			if not NB.Threads.IsArrivalExist(Draw3DTexts[handle].actionname) then 
+				NB.Threads.AddPosition(Draw3DTexts[handle].actionname,Draw3DTexts[handle].coords,Draw3DTexts[handle].drawdistance+0.0,function(result)
 					if result.action == 'enter' then 
-						Threads.CreateLoopOnce(Draw3DTexts[handle].actionname,0,function(Break)
+						NB.Threads.CreateLoopOnce(Draw3DTexts[handle].actionname,0,function(Break)
 							local camCoords = GetGameplayCamCoords()
 							local distance = #(coords - camCoords)
 							if not font then font = 0 end
@@ -121,7 +126,7 @@ if IsClient() then
 							DrawText3D(Draw3DTexts[handle].coords, Draw3DTexts[handle].text, Draw3DTexts[handle].textsizeX*scale,Draw3DTexts[handle].textsizeY*scale,Draw3DTexts[handle].width*scale,Draw3DTexts[handle].height*scale,Draw3DTexts[handle].font,Draw3DTexts[handle].color,Draw3DTexts[handle].outline,Draw3DTexts[handle].usebox,Draw3DTexts[handle].boxcolor)	
 						end)
 					elseif  result.action == 'exit' then 
-						Threads.KillActionOfLoop(Draw3DTexts[handle].actionname)
+						NB.Threads.KillActionOfLoop(Draw3DTexts[handle].actionname)
 					end 
 				end)
 			end 
@@ -164,14 +169,14 @@ if IsClient() then
 	end 
 	Attach3DTextLabelToEntity = function(handle,entity,offsetX,offsetY,offsetZ)
 		Draw3DTexts[handle].attachentity = entity
-		if Threads.IsArrivalExist(Draw3DTexts[handle].actionname) then 
-			Threads.ArrivalDelete(Draw3DTexts[handle].actionname)
+		if NB.Threads.IsArrivalExist(Draw3DTexts[handle].actionname) then 
+			NB.Threads.ArrivalDelete(Draw3DTexts[handle].actionname)
 		end 
-		if Threads.IsActionOfLoopAlive(Draw3DTexts[handle].actionname) then 
-			Threads.KillActionOfLoop(Draw3DTexts[handle].actionname)
+		if NB.Threads.IsActionOfLoopAlive(Draw3DTexts[handle].actionname) then 
+			NB.Threads.KillActionOfLoop(Draw3DTexts[handle].actionname)
 		end 
 		if DoesEntityExist(Draw3DTexts[handle].attachentity) then 
-			Threads.CreateLoopOnce(Draw3DTexts[handle].actionname.."player",0,function(Break)
+			NB.Threads.CreateLoopOnce(Draw3DTexts[handle].actionname.."player",0,function(Break)
 				local entity = Draw3DTexts[handle].attachentity
 				if DoesEntityExist(entity) then 
 					Draw3DTexts[handle].coords = GetOffsetFromEntityInWorldCoords(entity ,offsetX ,offsetY ,offsetZ )
@@ -213,8 +218,8 @@ if IsClient() then
 		ClearDrawOrigin()
 	end
 	TextDrawDestroy = function(handle)
-		if Threads.IsActionOfLoopAlive(TextDraws[handle].actionname) then
-			Threads.KillActionOfLoop(TextDraws[handle].actionname)
+		if NB.Threads.IsActionOfLoopAlive(TextDraws[handle].actionname) then
+			NB.Threads.KillActionOfLoop(TextDraws[handle].actionname)
 		end
 		TextDraws[handle] = nil
 	end 
@@ -234,7 +239,7 @@ if IsClient() then
 		if TextDraws[handle].hide then 
 			TextDraws[handle].hide = nil
 		end 	
-		Threads.CreateLoopOnce(TextDraws[handle].actionname,0,function()
+		NB.Threads.CreateLoopOnce(TextDraws[handle].actionname,0,function()
 			if not TextDraws[handle].hide then 
 				DrawText2D(TextDraws[handle].text,TextDraws[handle].x,TextDraws[handle].y,TextDraws[handle].textsizeX,TextDraws[handle].textsizeY,TextDraws[handle].width,TextDraws[handle].height,TextDraws[handle].font,TextDraws[handle].color,TextDraws[handle].outline,TextDraws[handle].usebox,TextDraws[handle].boxcolor)
 			end 
@@ -277,36 +282,5 @@ if IsClient() then
 		TextDraws[handle].width = width
 		TextDraws[handle].height = GetRenderedCharacterHeight(TextDraws[handle].textsizeY,0)
 	end 
-	
-	--[=[
-	CreateThread(function()
-		local textdrawid = TextDrawCreate(0.5,0.5,"test")
-		Wait(3000)
-		TextDrawCreate(0.6,0.6,"test2")
-		TextDrawColor(textdrawid,0xff0000ff)
-		TextDrawUseBox(textdrawid,true)
-		TextDrawBoxColor(textdrawid,0x0000ffff)
-		TextDrawTextSize(textdrawid,0.8,0.8)
-		TextDrawShow(textdrawid)
-		Wait(3000)
-		TextDrawHide(textdrawid)
-		Wait(3000)
-		TextDrawShow(textdrawid)
-		
-		local x,y,z = table.unpack(GetEntityCoords(PlayerPedId()))
-		local textid = Create3DTextLabel("test",-1,0,x,y,z,5.0,0,0)
-		Wait(11)
-		local textid2 = Create3DTextLabel("test2",-1,0,x+0.1,y+0.1,z,5.0,0,0)
-		Wait(11)
-		Update3DTextLabelColor(textid,0xff0000ff)
-		Update3DTextLabelUseBox(textid,true)
-		Update3DTextLabelBoxColor(textid,0x0000ffff)
-		Update3DTextLabelTextSize(textid,0.8,0.8)
-		Wait(11)
-		Attach3DTextLabelToPlayer(textid,PlayerId(),0.0,0.5,0.5)
-		--Delete3DTextLabel(textid)
-	end)
-	--]=]
-	
-	
+
 end 

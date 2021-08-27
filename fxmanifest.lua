@@ -2,13 +2,13 @@ fx_version 'adamant'
 game 'gta5'
 
 files {
-	'xls/table/*.csv'
+	'xls/table/*.csv',
+	'com/threads.lua'
 }
 
 lua54 'yes'
 
 shared_scripts {
-	'@threads/threads.lua',
 	'com/LibDeflate.lua',
 	"nbmanifest.lua",
 	"com/init.lua",

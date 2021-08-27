@@ -44,6 +44,6 @@ if IsClient() then
 	NB.Skin = com.game.Client.Skin
 	NB.GetHashString = GetHashString
 	NB.Stream = com.game.Shared.Load.Stream
-	
+	NB.Menu = com.menu
 	
 end 
