@@ -93,7 +93,8 @@ if IsClient() then
 				end 
 			end)
 		end 
-		local index = com.menu.Indexs[invoking]
+		local index    = com.menu.Indexs[invoking]
+		menu.index 	   =   index
 		menu.type      = type
         menu.data      = data
         menu.submit    = submit
@@ -105,15 +106,19 @@ if IsClient() then
 			if #com.menu.Menus[invoking_] > 0 then 
 				if com.menu.RegisteredTypes[type].updaterender then 
 					local simplymenu = com.menu.Minify(com.menu.Menus[invoking_][index_])
-					com.menu.RegisteredTypes[type].updaterender(invoking_, index_, simplymenu, true) --update
-					print_table_server(simplymenu)
+					com.menu.RegisteredTypes[type].updaterender(menu, simplymenu, true) --update
+					--print_table_server(simplymenu)
 				end 
 			end 
 		end 
         menu.close = function()
-            com.menu.RegisteredTypes[type].close(invoking,index)
+			local islast = false 
+			if #com.menu.Menus[invoking] == 1 then 
+				islast = true
+			end 
+            com.menu.RegisteredTypes[type].close(menu,islast)
             if close then --callback of menus
-                close(invoking, index)
+                close(menu,islast)
             end
 
 			if #com.menu.Menus[invoking] > 0 then
@@ -123,12 +128,14 @@ if IsClient() then
 					menu.update()
 				end 
 			else 
+			
 				if com.menu.RegisteredTypes[type].updaterender then 
 					com.menu.RegisteredTypes[type].updaterender = nil
 				end 
 				com.menu.Menus[invoking] = nil
 				com.menu.Indexs[invoking] = 0
 			end 
+			
         end
 		menu.data.elements = com.menu.convertButtons(menu.data.elements,namespace,name)
 		menu.data.elementpos = {}
@@ -242,14 +249,13 @@ if IsClient() then
 		if com.menu.RegisteredTypes[type] then 
 	
 			if com.menu.RegisteredTypes[type].open then 
-				com.menu.RegisteredTypes[type].open(invoking, index, data)
+				com.menu.RegisteredTypes[type].open(menu, data)
 			else 
 				print("Registered Menu Not Any open")
 			end 
 			if com.menu.RegisteredTypes[type].updaterender then 
 				local simplymenu = com.menu.Minify(menu)
-				com.menu.RegisteredTypes[type].updaterender(invoking, index, simplymenu, false) --first open
-				print_table_server(simplymenu)
+				com.menu.RegisteredTypes[type].updaterender(menu, simplymenu, false) --first open
 			end 
 		else 
 			print("Not Registered Any Menu about "..type)
