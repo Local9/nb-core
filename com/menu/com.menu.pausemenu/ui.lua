@@ -14,8 +14,8 @@ function PauseMenu.StartPauseMenu(versionHash)
 			ActivateFrontendMenu(1399975061, false, -1);
 		end
 	end
-	repeat Wait(10) 
-		SuppressFrontendRenderingThisFrame();
+	repeat Wait(333) 
+		--SuppressFrontendRenderingThisFrame();
 		if GetCurrentFrontendMenuVersion() ~= 1399975061 then
 			SetFrontendActive(false)
 			ActivateFrontendMenu(1399975061, false, -1);
@@ -342,7 +342,7 @@ if IsClient() then
 			local elements = render.slots
 			local data_idx = 0
 			if slot then 
-				
+				print('here1')
 				data_idx = slot - 1
 				local item = elements[slot]
 				if item.description then 
@@ -361,7 +361,7 @@ if IsClient() then
 				end 
 			else 
 				if not isUpdate then 
-					print('here')
+					print('here2')
 					PauseMenu.StartPauseMenu(PauseMenu.versionid.FE_MENU_VERSION_MP_CHARACTER_CREATION) 
 					PauseMenu.SetDataSlotEmpty(columnid);
 				end 
@@ -383,6 +383,7 @@ if IsClient() then
 				PauseMenu.SetCurrentColumn(columnid)
 				PauseMenu.SetColumnFocus(columnid, 1, 1);
 				PauseMenu.SetColumnCanJump(columnid, 1);
+				
 				if not isUpdate then 
 					if #elements>7 then 
 						if columnid == 1 then 

@@ -9,7 +9,7 @@ if IsClient() then
 		--只會建立一次
 		
 		currentmenu_ = currentmenu
-		NB.Threads.CreateLoopOnce("pausemenu",50,function(Break)
+		NB.Threads.CreateLoopOnce("pausemenu",333,function(Break)
 			if currentmenu_ then 
 				if N_0x2e22fefa0100275e() then 
 					local pos = GetPos()
@@ -32,7 +32,7 @@ if IsClient() then
 	end
 	local updaterender = function(simplymenu, isupdate, updateslot)
 		--print('render simply menu',isupdate, invoking, index , json.encode(simplymenu))
-		com.menu.PauseMenu.UI.Render(simplymenu, isupdate, updateslot)
+		com.menu.PauseMenu.UI.Render(simplymenu, isupdate, isupdate and updateslot)
 	end 
 
 	local keylistener = function(currentmenu,input)

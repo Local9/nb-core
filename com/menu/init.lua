@@ -149,7 +149,7 @@ if IsClient() then
 			end 
 		end 
 		menu.pos = 1
-		menu.update()
+		menu.update(true)
 		menu.select = function(posVertical,posHorizontal)
 			if posVertical <= 0 then 
 				posVertical = (posVertical-1)%#menu.data.elements+1
