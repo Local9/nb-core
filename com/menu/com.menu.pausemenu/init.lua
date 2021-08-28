@@ -30,9 +30,9 @@ if IsClient() then
 		end 
 		
 	end
-	local updaterender = function(currentmenu , simplymenu, isupdate)
+	local updaterender = function(simplymenu, isupdate, updateslot)
 		--print('render simply menu',isupdate, invoking, index , json.encode(simplymenu))
-		com.menu.PauseMenu.UI.Render(simplymenu,isupdate,isupdate and currentmenu.pos)
+		com.menu.PauseMenu.UI.Render(simplymenu, isupdate, updateslot)
 	end 
 
 	local keylistener = function(currentmenu,input)

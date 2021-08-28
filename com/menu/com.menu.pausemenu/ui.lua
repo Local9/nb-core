@@ -337,10 +337,12 @@ if IsClient() then
 		--print_table_server(simplymenu)
 		if render then 
 			local columnid = 1
+			
 			PauseMenu.SetColumnTitle(columnid,render.title,render.description or "","");
 			local elements = render.slots
 			local data_idx = 0
 			if slot then 
+				
 				data_idx = slot - 1
 				local item = elements[slot]
 				if item.description then 
@@ -358,11 +360,12 @@ if IsClient() then
 					PauseMenu.SetOrUpdateNormalDataSlot(columnid, data_idx, PauseMenu.menuid.CREATION_HERITAGE, data_idx, item.lefttext, item.righttext , item.selection and 0 or 1, 4, isUpdate);
 				end 
 			else 
-				PauseMenu.SetCurrentColumn(-1)
 				if not isUpdate then 
+					print('here')
 					PauseMenu.StartPauseMenu(PauseMenu.versionid.FE_MENU_VERSION_MP_CHARACTER_CREATION) 
 					PauseMenu.SetDataSlotEmpty(columnid);
 				end 
+				PauseMenu.SetCurrentColumn(-1)
 				for i=1,#elements do 
 					local item = elements[i]
 					if i == #elements then 

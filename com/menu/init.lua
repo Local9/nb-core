@@ -100,13 +100,17 @@ if IsClient() then
         menu.submit    = submit
         menu.cancel    = cancel
         menu.change    = change
-		menu.update    = function()
+		menu.update    = function(refresh)
 			local index_ = #com.menu.Menus[invoking]
 			local invoking_ = invoking
 			if #com.menu.Menus[invoking_] > 0 then 
 				if com.menu.RegisteredTypes[type].updaterender then 
 					local simplymenu = com.menu.Minify(com.menu.Menus[invoking_][index_])
-					com.menu.RegisteredTypes[type].updaterender(menu, simplymenu, true) --update
+					if refresh then 
+						com.menu.RegisteredTypes[type].updaterender(simplymenu, true) --update
+					else 
+						com.menu.RegisteredTypes[type].updaterender(simplymenu, true, com.menu.Menus[invoking_][index_].pos)
+					end 
 					--print_table_server(simplymenu)
 				end 
 			end 
@@ -125,7 +129,7 @@ if IsClient() then
 				table.remove(com.menu.Menus[invoking])
 				com.menu.Indexs[invoking] = com.menu.Indexs[invoking] - 1
 				if #com.menu.Menus[invoking] > 0 then 
-					menu.update()
+					menu.update(true)
 				end 
 			else 
 			
@@ -255,7 +259,7 @@ if IsClient() then
 			end 
 			if com.menu.RegisteredTypes[type].updaterender then 
 				local simplymenu = com.menu.Minify(menu)
-				com.menu.RegisteredTypes[type].updaterender(menu, simplymenu, false) --first open
+				com.menu.RegisteredTypes[type].updaterender(simplymenu, false) --first open
 			end 
 		else 
 			print("Not Registered Any Menu about "..type)
