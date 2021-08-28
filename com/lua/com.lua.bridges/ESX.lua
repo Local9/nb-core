@@ -1,8 +1,5 @@
 ESX = {} -- https://github.com/esx-framework/esx-legacy
-ESX.UI = {}
-ESX.UI.Menu                   = {}
-ESX.UI.Menu.RegisteredTypes   = {}
-ESX.UI.Menu.Opened            = {}
+
 
 if IsServer() then 
     ESX.ServerCallbacks = {}
@@ -69,6 +66,7 @@ if IsServer() then
 		NB.ClientCallbacks[requestId] = nil
 	end)
 else 
+
     ESX.ServerCallbacks           = {}
     ESX.CurrentRequestId          = 1
     ESX.TriggerServerCallback = function(name, cb, ...)
@@ -133,7 +131,10 @@ else
 		end
 	end
 	
-	
+	ESX.UI = {}
+	ESX.UI.Menu                   = {}
+	ESX.UI.Menu.RegisteredTypes   = {}
+	ESX.UI.Menu.Opened            = {}
 	--註冊一個Menu風格，以及它的開關 
     ESX.UI.Menu.RegisterType = function(type, open, close)
         ESX.UI.Menu.RegisteredTypes[type] = {
@@ -205,7 +206,9 @@ else
             end
         end
         table.insert(ESX.UI.Menu.Opened, menu)
+		
         ESX.UI.Menu.RegisteredTypes[type].open(namespace, name, data)
+		
         return menu
     end
     ESX.UI.Menu.Close = function(type, namespace, name) --基本不會用到 除非這麼有責任心

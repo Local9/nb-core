@@ -3,7 +3,7 @@ game 'gta5'
 
 files {
 	'xls/table/*.csv',
-	'com/threads.lua'
+	'com/selfishref/threads.lua'
 }
 
 lua54 'yes'
@@ -20,7 +20,6 @@ shared_scripts {
 	'com/menu/com.menu.**/ui.lua',
 	'com/menu/com.menu.**/init.lua',
 	'com/menu/com.menu.**/main.lua',
-	'com/menu/example.lua',
 	'com/events/init.lua',
 	'com/events/scripts/*.lua',
 	'com/events/example.lua',

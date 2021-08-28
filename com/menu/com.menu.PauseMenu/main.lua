@@ -1,4 +1,0 @@
-if IsClient() then 
-	
-
-end 
