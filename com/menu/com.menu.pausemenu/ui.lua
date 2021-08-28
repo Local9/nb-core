@@ -5,18 +5,23 @@ PauseMenu.versionid = { FE_MENU_VERSION_SP_PAUSE=`FE_MENU_VERSION_SP_PAUSE`, FE_
 local start = BeginScaleformMovieMethodOnFrontend
 local send=function(...)local b={...}for c=1,#b do if type(b[c])=="number"then if math.type(b[c])=="integer"then ScaleformMovieMethodAddParamInt(b[c])else ScaleformMovieMethodAddParamFloat(b[c])end elseif type(b[c])=="string"then ScaleformMovieMethodAddParamTextureNameString(b[c])elseif type(b[c])=="boolean"then ScaleformMovieMethodAddParamBool(b[c])end end;EndScaleformMovieMethod()end
 function PauseMenu.StartPauseMenu(versionHash)
-	if (IsPauseMenuActive()  or  IsPauseMenuRestarting()) then
-		if GetCurrentFrontendMenuVersion() ~= 1399975061 then
-			SetFrontendActive(false)
-		end
-	else
+	if not (IsPauseMenuActive()  or  IsPauseMenuRestarting()) then
 		SetFrontendActive(false);
 		ActivateFrontendMenu(1399975061, false, -1);
-		
+	else
+		if GetCurrentFrontendMenuVersion() ~= 1399975061 then
+			SetFrontendActive(false)
+			ActivateFrontendMenu(1399975061, false, -1);
+		end
 	end
-	while func_1731() == -1 do Wait(10)
-		
-	end 
+	repeat Wait(10) 
+		SuppressFrontendRenderingThisFrame();
+		if GetCurrentFrontendMenuVersion() ~= 1399975061 then
+			SetFrontendActive(false)
+			ActivateFrontendMenu(1399975061, false, -1);
+		end
+		local last,new,id  = GetPauseMenuSelectionData();
+	until new == 71
 end
 function PauseMenu.InitColumnScroll(Param0, Param1, Param2, Param3, Param4, Param5)
 	if start("INIT_COLUMN_SCROLL") then 
@@ -320,15 +325,6 @@ function PauseMenu.SetSkillData(Param0, Param1, Param2, Param3, Param4, Param5)
 		EndScaleformMovieMethod();
 	end
 end
-
-function func_1731()
-
-	
-	
-	SuppressFrontendRenderingThisFrame();
-	local last,new,id  = GetPauseMenuSelectionData();
-	return last == 71 or new == 71 or -1
-end
 end
 if IsClient() then 
 	com.menu.PauseMenu = {}
@@ -337,19 +333,14 @@ if IsClient() then
 		SetFrontendActive(false);
 	end 
 	com.menu.PauseMenu.UI.Render = function(simplymenu,isUpdate,slot)
-		
 		local render = simplymenu
 		--print_table_server(simplymenu)
 		if render then 
-			
 			local columnid = 1
 			PauseMenu.SetColumnTitle(columnid,render.title,render.description or "","");
-			
-			
 			local elements = render.slots
 			local data_idx = 0
 			if slot then 
-				
 				data_idx = slot - 1
 				local item = elements[slot]
 				if item.description then 
@@ -367,7 +358,6 @@ if IsClient() then
 					PauseMenu.SetOrUpdateNormalDataSlot(columnid, data_idx, PauseMenu.menuid.CREATION_HERITAGE, data_idx, item.lefttext, item.righttext , item.selection and 0 or 1, 4, isUpdate);
 				end 
 			else 
-
 				PauseMenu.SetCurrentColumn(-1)
 				if not isUpdate then 
 					PauseMenu.StartPauseMenu(PauseMenu.versionid.FE_MENU_VERSION_MP_CHARACTER_CREATION) 
