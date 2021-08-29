@@ -101,7 +101,7 @@ if IsServer() then
 		local citizenID = playerData and playerData.citizenID 
 		if citizenID then 
 			DB.Citizen.AllCachesToSql(citizenID,true)
-			SendClientMessageToAll(-1,GetPlayerName(playerId).."離開了服務器")
+			SendClientMessageToAll(-1,playerData.citizenID .."離開了服務器")
 		end 
 	end 
 	function OnPlayerUpdate(playerId,PedNetid)
