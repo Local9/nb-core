@@ -155,34 +155,28 @@ NB.SetCitizenDataCache = function(citizenID,tablename,dataslot,datas)
 	NB.Cache.Set("CITIZEN",citizenID,tablename,dataslot,datas)
 end 
 --NB.SetCitizenDataCache("NFGT9NI218846462","citizens","test",'WHERE 1=1 --')
-NB.GetCitizenPackedDataCache = function(citizenID,tablename,isCompress)
-	--print(NB.Cache.IsExist("CITIZEN",citizenID,tablename,"packeddata"))
-	local pd = NB.Cache.Get("CITIZEN",citizenID,tablename,"packeddata")
-	local r = pd or DB.Citizen.SqlToCache(citizenID,tablename,"packeddata")
+NB.GetCitizenPackedDataCache = function(citizenID,tablename,dataslot,isCompress)
+	local pd = NB.Cache.Get("CITIZEN",citizenID,tablename,"packeddata",dataslot)
+	local r = pd or DB.Citizen.SqlToCache(citizenID,tablename,"packeddata")[dataslot] 
 	if isCompress then 
 		if r then 
 			local rt = NB.decodeSql(r)
-			print(json.encode(rt))
-			r = rt
+			r = json.decodetable(rt)
 		end 
 	end 
 	return r
 end 
 NB.SetCitizenPackedDataCache = function(citizenID,tablename,dataslot,datas,isCompress)
 	local _data = NB.Cache.Get("CITIZEN",citizenID,tablename,"packeddata")
-	--[[[
 	if not _data then NB.Cache.Set("CITIZEN",citizenID,tablename,"packeddata",{}) 
 		_data = {}
 	end 
-	--]]
-	if _data then 
-		if isCompress then 
-			_data[dataslot] = NB.encodeSql(json.encode(datas))
-		else 
-			_data[dataslot] = datas
-		end 
-		NB.Cache.Set("CITIZEN",citizenID,tablename,"packeddata",_data)
+	if isCompress then 
+		_data[dataslot] = NB.encodeSql(json.encode(datas))
+	else 
+		_data[dataslot] = datas
 	end 
+	NB.Cache.Set("CITIZEN",citizenID,tablename,"packeddata",_data)
 	--NB.Cache.Set("CITIZEN",citizenID,tablename,"packeddata",dataslot,datas)
 end 
 NB.RegisterNetEvent('NB:Citizen:SavePosition', function(coords,heading)
@@ -224,10 +218,9 @@ RegisterServerCallback("NB:GetCharacterPackedData",function(playerId,cb,datatype
 			end 
 		end 
 		if not found then return end 
-		local result = NB.GetCitizenPackedDataCache(citizenID,'citizens',isCompress)
+		local result = NB.GetCitizenPackedDataCache(citizenID,'citizens',datatype,isCompress)
 		if result then 
-			print(json.encode(result))
-			cb(result[datatype])
+			cb(result)
 			--cb(vector3(pos[1], pos[2], pos[3]), pos[4])
 		end 
 	end 

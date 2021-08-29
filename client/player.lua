@@ -22,7 +22,7 @@ end)
 RegisterNetEvent("chat:addMessage",function()
 	local player,ped = PlayerId(),PlayerPedId()
 	if OnPlayerChat then OnPlayerChat(player,ped ) end
-	if OnPlayerUpdate then OnPlayerUpdate(player,ped ) end
+	--if OnPlayerUpdate then OnPlayerUpdate(player,ped ) end
 end)
 
 NB.RegisterNetEvent("NB:OnPlayerSpawn",function()
@@ -88,14 +88,11 @@ NB.RegisterNetEvent("NB:PlayerReadyToSpawn",function()
 		NB.Skin.LoadDefaultModel( true,function()
 			NB.SpawnPlayer(coords, heading) -- using SpawnManager to spawn,trigger Event NB:OnPlayerSpawn
 		end )
-		
-		
-		TriggerServerCallback('NB:GetCharacterPackedData',function (skin)
-		--print("Get Skin:",json.encode(skin))
-		end,'skin',true)
 	end, "position", false)
 	
-	
+	TriggerServerCallback('NB:GetCharacterPackedData',function (skin)
+		--print("Get Skin:",json.encode(skin))
+	end,'skin',true)
 	
 end )
 end 

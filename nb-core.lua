@@ -112,17 +112,18 @@ if IsClient() then
 	local LastSkin = nil 
 	function OnPlayerSpawn(player,ped)
 		
+		
 	end
 	function OnPlayerUpdate(player,ped)
-		NB.Flow.CheckNativeChangeVector("(name)checkcoords",GetEntityCoords,ped,1.0,function(oldcoords,newcoords)
-			local heading = GetEntityHeading(ped)
-			NB.TriggerServerEvent('NB:Citizen:SavePosition',newcoords,heading)
-		end)
-		NB.Skin.CitizenGetSkin(function (skin)
-			NB.Flow.CheckChange("(name)skinchanger:getSkin",LastSkin,function(oldskin,newskin)
-				NB.TriggerServerEvent("NB:Citizen:SaveSkin",newskin)
-			end )
-			LastSkin = skin
-		end)
-	end 
+			NB.Flow.CheckNativeChangeVector("(name)checkcoords",GetEntityCoords,ped,1.0,function(oldcoords,newcoords)
+				local heading = GetEntityHeading(ped)
+				NB.TriggerServerEvent('NB:Citizen:SavePosition',newcoords,heading) --注意必須Loaded後
+			end)
+			NB.Skin.CitizenGetSkin(function (skin)
+				NB.Flow.CheckChange("(name)skinchanger:getSkin",LastSkin,function(oldskin,newskin)
+					NB.TriggerServerEvent("NB:Citizen:SaveSkin",newskin) --注意必須Loaded後
+				end )
+				LastSkin = skin
+			end)
+		end 
 end 
