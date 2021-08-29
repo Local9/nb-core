@@ -152,7 +152,9 @@ NB.SetCitizenDataCache = function(citizenID,tablename,dataslot,datas)
 		end 
 	end 
 	--]=]
-	NB.Cache.Set("CITIZEN",citizenID,tablename,dataslot,datas)
+	if playerData.citizenLoaded and playerData.citizenLoaded == citizenID then 
+		NB.Cache.Set("CITIZEN",citizenID,tablename,dataslot,datas)
+	end 
 end 
 --NB.SetCitizenDataCache("NFGT9NI218846462","citizens","test",'WHERE 1=1 --')
 NB.GetCitizenPackedDataCache = function(citizenID,tablename,dataslot,isCompress)
@@ -167,17 +169,19 @@ NB.GetCitizenPackedDataCache = function(citizenID,tablename,dataslot,isCompress)
 	return r
 end 
 NB.SetCitizenPackedDataCache = function(citizenID,tablename,dataslot,datas,isCompress)
-	local _data = NB.Cache.Get("CITIZEN",citizenID,tablename,"packeddata")
-	if not _data then NB.Cache.Set("CITIZEN",citizenID,tablename,"packeddata",{}) 
-		_data = {}
+	if playerData.citizenLoaded and playerData.citizenLoaded == citizenID then 
+		local _data = NB.Cache.Get("CITIZEN",citizenID,tablename,"packeddata")
+		if not _data then NB.Cache.Set("CITIZEN",citizenID,tablename,"packeddata",{}) 
+			_data = {}
+		end 
+		if isCompress then 
+			_data[dataslot] = NB.encodeSql(json.encode(datas))
+		else 
+			_data[dataslot] = datas
+		end 
+		NB.Cache.Set("CITIZEN",citizenID,tablename,"packeddata",_data)
+		--NB.Cache.Set("CITIZEN",citizenID,tablename,"packeddata",dataslot,datas)
 	end 
-	if isCompress then 
-		_data[dataslot] = NB.encodeSql(json.encode(datas))
-	else 
-		_data[dataslot] = datas
-	end 
-	NB.Cache.Set("CITIZEN",citizenID,tablename,"packeddata",_data)
-	--NB.Cache.Set("CITIZEN",citizenID,tablename,"packeddata",dataslot,datas)
 end 
 NB.RegisterNetEvent('NB:Citizen:SavePosition', function(coords,heading)
 	if coords and heading then 

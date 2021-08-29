@@ -80,6 +80,7 @@ if IsServer() then
 	end 
 	function OnPlayerLogin(playerId, license)
 		NB.TriggerClientEvent("NB:PlayerReadyToSpawn",playerId) -- 出生，應該跟在上面的建立角色之後，目前先在這裡
+		
 	end 
 	function OnPlayerJustJoin(playerId, license, isNew)
 		if NB.IsPlayerBanned(playerId) then 
