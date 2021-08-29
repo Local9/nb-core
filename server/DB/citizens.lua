@@ -152,7 +152,7 @@ NB.SetCitizenDataCache = function(citizenID,tablename,dataslot,datas)
 		end 
 	end 
 	--]=]
-	if playerData.citizenLoaded and playerData.citizenLoaded == citizenID then 
+	if playerData.citizenSpawned then 
 		NB.Cache.Set("CITIZEN",citizenID,tablename,dataslot,datas)
 	end 
 end 
@@ -169,7 +169,7 @@ NB.GetCitizenPackedDataCache = function(citizenID,tablename,dataslot,isCompress)
 	return r
 end 
 NB.SetCitizenPackedDataCache = function(citizenID,tablename,dataslot,datas,isCompress)
-	if playerData.citizenLoaded and playerData.citizenLoaded == citizenID then 
+	if playerData.citizenSpawned then 
 		local _data = NB.Cache.Get("CITIZEN",citizenID,tablename,"packeddata")
 		if not _data then NB.Cache.Set("CITIZEN",citizenID,tablename,"packeddata",{}) 
 			_data = {}
