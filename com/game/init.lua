@@ -12,4 +12,5 @@ if IsClient() then
 	com.game.Client.Skin = {}
 	com.game.Client.PauseMenu = {}
 	com.game.Client.Notifications = {}
+	com.game.Client.RuntimeTexture = {}
 end 

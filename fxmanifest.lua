@@ -45,5 +45,6 @@ dependencies {
 	'ghmattimysql',
 	'connectqueue',
 	'skinchanger',
-	'threads'
+	'threads',
+	'nb-imagedata'
 }
