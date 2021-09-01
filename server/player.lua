@@ -105,7 +105,7 @@ NB.AddEventHandler("NB:OnPlayerLogin",function(playerId, license)
 end)
 NB.RegisterNetEvent("NB:OnPlayerSpawn",function(PedNetid)
 	local playerid = tonumber(source)
-	local playerData = NB.GetPlayerDataFromId(playerId)
+	local playerData = NB.GetPlayerDataFromId(playerid)
 	if playerData.citizenID and playerData.citizenSpawned == false then playerData.citizenSpawned = true end 
 	if OnPlayerSpawn and playerid>0 then OnPlayerSpawn(playerid,PedNetid) end 
 end)

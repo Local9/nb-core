@@ -8,6 +8,7 @@ if IsServer() then
 end 
 if IsClient() then 
 	com.game.Client.Session = {}
+	com.game.Client.Mugshot = {}
 	com.game.Client.Skin = {}
 	com.game.Client.PauseMenu = {}
 	com.game.Client.Notifications = {}

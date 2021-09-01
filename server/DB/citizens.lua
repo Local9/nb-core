@@ -152,9 +152,9 @@ NB.SetCitizenDataCache = function(citizenID,tablename,dataslot,datas)
 		end 
 	end 
 	--]=]
-	if playerData.citizenSpawned then 
+	
 		NB.Cache.Set("CITIZEN",citizenID,tablename,dataslot,datas)
-	end 
+	 
 end 
 --NB.SetCitizenDataCache("NFGT9NI218846462","citizens","test",'WHERE 1=1 --')
 NB.GetCitizenPackedDataCache = function(citizenID,tablename,dataslot,isCompress)
@@ -169,7 +169,8 @@ NB.GetCitizenPackedDataCache = function(citizenID,tablename,dataslot,isCompress)
 	return r
 end 
 NB.SetCitizenPackedDataCache = function(citizenID,tablename,dataslot,datas,isCompress)
-	if playerData.citizenSpawned then 
+	
+	
 		local _data = NB.Cache.Get("CITIZEN",citizenID,tablename,"packeddata")
 		if not _data then NB.Cache.Set("CITIZEN",citizenID,tablename,"packeddata",{}) 
 			_data = {}
@@ -181,13 +182,15 @@ NB.SetCitizenPackedDataCache = function(citizenID,tablename,dataslot,datas,isCom
 		end 
 		NB.Cache.Set("CITIZEN",citizenID,tablename,"packeddata",_data)
 		--NB.Cache.Set("CITIZEN",citizenID,tablename,"packeddata",dataslot,datas)
-	end 
+	 
 end 
+
+
 NB.RegisterNetEvent('NB:Citizen:SavePosition', function(coords,heading)
 	if coords and heading then 
 		local playerData = NB.GetPlayerDataFromId(tonumber(source))
 		local citizenID = playerData and playerData.citizenID 
-		if citizenID then 
+		if citizenID and playerData.citizenSpawned then 
 			local x, y, z = table.unpack(coords)
 			x, y, z, heading = x , y , z , heading
 			x = com.lua.utils.Math.toFixed(x,2)
@@ -204,7 +207,7 @@ NB.RegisterNetEvent("NB:Citizen:SaveSkin",function(skindata)
 	if skindata and type(skindata) == 'table' then 
 		local playerData = NB.GetPlayerDataFromId(tonumber(source))
 		local citizenID = playerData and playerData.citizenID 
-		if citizenID then 
+		if citizenID and playerData.citizenSpawned then 
 			NB.SetCitizenPackedDataCache(citizenID,'citizens','skin',skindata,true)
 			NB.TriggerEvent("NB:log","[Citizen:"..citizenID.."] skin Saved",true)
 		end 
