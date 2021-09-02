@@ -5,6 +5,13 @@ NB.GetPlayerDataFromId = function(playerId)
 	local playerdata = NB.Players[playerId]
 	return playerdata
 end 
+NB.IsPlayerConnected = function(playerId)
+	if playerId > 0 then 
+		return not not NB.Players[playerId]
+	else 
+		return false 
+	end 
+end 
 NB.GetCitizenDataFromId = function(playerId)
 	local playerdata = NB.GetPlayerDataFromId(playerId)
 	local citizendata
@@ -118,6 +125,7 @@ NB.RegisterNetEvent("NB:OnPlayerUpdate",function(PedNetid)
 	local playerid = tonumber(source)
 	if OnPlayerUpdate then OnPlayerUpdate(playerid,PedNetid) end 
 end)
+
 AddEventHandler('playerConnecting', function(name, setKickReason, deferrals)
 	print('playerConnecting',source)
 	local playerid = tonumber(source)

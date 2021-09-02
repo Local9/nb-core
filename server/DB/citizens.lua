@@ -5,6 +5,9 @@ local LastQuery = {}
 DB.Citizen.GetData = function (citizenID,...)
 	return NB.Cache.Get("CITIZEN",citizenID,...)
 end 
+DB.Citizen.GetCitizenPlayerId = function(citizenID)
+	return NB.Cache.Get("CITIZEN",citizenID,"_T.E.M.P_","playerId")
+end 
 DB.Citizen.SetData = function (citizenID,...)
 	return NB.Cache.Set("CITIZEN",citizenID,...)
 end 
@@ -41,6 +44,7 @@ DB.Citizen.SqlToCache = function(citizenID,tablename,dataslot)
 	return t 
 end 
 DB.Citizen.CacheToSql = function(citizenID,tablename,dataslot)
+	if not NB.IsPlayerConnected(DB.Citizen.GetCitizenPlayerId(citizenID)) then return error("player not connected",2) end
 	if tablename == "_T.E.M.P_" then return end 
 	local covertDatas = function(cdata)
 		if cdata then 
@@ -118,13 +122,13 @@ DB.Citizen.AllCachesToSql = function(citizenID,isClear)
 end 
 DB.Citizen.Init = function(playerId,citizenID,cb)
 	if not NB.Cache.IsExist("CITIZEN",citizenID) then 
-		NB.Cache.Set("CITIZEN",citizenID,{['_T.E.M.P_']={playerId = playerId,Loaded = true}})
+		NB.Cache.Set("CITIZEN",citizenID,{['_T.E.M.P_']={playerId = playerId}})
 	end 
 	NB.TriggerEvent("NB:OnCitizenLoaded",playerId,citizenID)
 	return result 
 end 
 DB.Citizen.IsLoaded = function(citizenID)
-	return NB.Cache.Get("CITIZEN",citizenID,"_T.E.M.P_","Loaded") or false
+	return NB.IsPlayerConnected(DB.Citizen.GetCitizenPlayerId(citizenID)) or false
 end 
 DB.Citizen.Create = function(playerId,citizenID,license,cb)
 	local result = NB.Utils.Remote.mysql_execute_sync('INSERT INTO citizens (citizen_id,license,packeddata) VALUES (?,?,?)', {
