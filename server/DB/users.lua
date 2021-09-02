@@ -6,8 +6,8 @@ DB.User.IsUserExist = function (license)
 	return r
 end 
 
-DB.User.CreateUser = function (license,ip,licenses)
-	local result = NB.Utils.Remote.mysql_execute_sync('INSERT INTO users (license,ip,otherlicenses) VALUES (?,?,?)', {license,ip,NB.encodeSql(json.encode(licenses))})
+DB.User.CreateUser = function (license,ip,licenses,playername)
+	local result = NB.Utils.Remote.mysql_execute_sync('INSERT INTO users (license,ip,otherlicenses,playername) VALUES (?,?,?,?)', {license,ip,NB.encodeSql(json.encode(licenses)),playername})
 	CreateThread(function()
 	NB.TriggerEvent("NB:log",NB.encodeSql(json.encode(licenses))..","..json.encode(licenses))
 	end)

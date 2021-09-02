@@ -16,11 +16,27 @@ NB = {
 	Utils={},
 	Threads=Threads
 } 
+ACCEPTED_PACKDATA = {"position","skin"}
+DEFAULT_PACKDATA = {
+	["position"] = {x =-802.311, y = 175.056, z = 72.8446, heading = 0.0},
+	["skin"] = ""
+}
 
-MAX_CHARACTER_SLOTS = 3
-MAX_WANTED_LEVEL = 0
-DEFAULT_SPAWN_POSITION = {x =-802.311, y = 175.056, z = 72.8446, heading = 0.0}
-WEAPON_AUTO_RELOAD = false
+
+ACCEPTED_STATUSDATA = {"cash","bank","blackmoney","hunger","thirsty"}
+DEFAULT_STATUSDATA = {
+	["hunger"] = 100.0,
+	["thirsty"] = 100.0,
+	["cash"] = 5000,
+	["bank"] = 5000,
+	["blackmoney"] = 0
+}
+
+REGISTER_DEFAULT_SPAWNPOSITION = {x =-802.311, y = 175.056, z = 72.8446, heading = 0.0}
+REGISTER_MAX_CHARACTER_SLOTS = 3
+
+GAME_MAX_WANTED_LEVEL = 0
+GAME_WEAPON_AUTO_RELOAD = false
 
 load(LoadResourceFile("nb-core", 'com/selfishref/threads.lua'))()
 
@@ -51,7 +67,7 @@ GetPauseMenuSelection = function() if N_0x2e22fefa0100275e() --[[IsSelectionUpda
 IF = function(x,a,b) return x and a or b end 
 ratioX = function(x) x = (x * (1.777778 / GetAspectRatio(0)));return x; end
 exports('GetSharedObject',function(x) return x and NB[x] or NB end)
-
+Await=function(fn,interval,attemptMax)local attemptMax=attemptMax or 1000;local attempt=0;local retval=fn()while not(retval or attempt>=attemptMax)do Wait(interval or 0)retval=fn()attempt=attempt+1 end;return retval or not(attempt>=attemptMax)end
 
 local shadowmin,shadowmax,shadowchar = 1,3,66
 local convertArgs = function(args)

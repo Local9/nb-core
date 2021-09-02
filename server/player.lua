@@ -74,7 +74,7 @@ NB.AddEventHandler("NB:OnPlayerRegister",function(playerId, license)
 	local license = license
 	local PrePlayerData = CreatePlayerDatatable(playerId)
 	PrePlayerData.init("license",license)
-	local result = DB.User.CreateUser(license,NB.GetIP(playerId),NB.GetOtherLicenses(playerId))
+	local result = DB.User.CreateUser(license,NB.GetIP(playerId),NB.GetOtherLicenses(playerId),GetPlayerName(playerId))
 	if result then 
 		if OnPlayerRegister and playerId>0 then OnPlayerRegister(playerId, license) end 
 	end 
@@ -106,12 +106,17 @@ NB.RegisterNetEvent("NB:OnPlayerUpdate",function(PedNetid)
 	if OnPlayerUpdate then OnPlayerUpdate(playerid,PedNetid) end 
 end)
 
+AddEventHandler('playerJoining', function(newID,oldID)
+	--print('playerJoining',newID,oldID)
+end)
+
 AddEventHandler('playerConnecting', function(name, setKickReason, deferrals)
 	print('playerConnecting',source)
 	local playerid = tonumber(source)
 	NB.TriggerEvent('NB:log','Player Connected',false,playerid)
 	if OnPlayerConnect then OnPlayerConnect(playerid, name, setKickReason, deferrals) end 
 end)
+
 AddEventHandler('playerDropped', function (reason)
 	print('playerDropped',source)
 	local playerid = tonumber(source)
@@ -121,6 +126,4 @@ AddEventHandler('playerDropped', function (reason)
 		if NB.ReleasePlayer then NB.ReleasePlayer(playerid) end
 	end 
 end)
-
-
 

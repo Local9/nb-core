@@ -2,11 +2,14 @@ local CitizenSaveQueryid = {}
 local CitizenLastQuery = {}
 local LastQueryid = {}
 local LastQuery = {}
+
+
+
 DB.Citizen.GetData = function (citizenID,...)
 	return NB.Cache.Get("CITIZEN",citizenID,...)
 end 
 DB.Citizen.GetCitizenPlayerId = function(citizenID)
-	return NB.Cache.Get("CITIZEN",citizenID,"_T.E.M.P_","playerId")
+	return NB.Cache.Get("CITIZEN",citizenID,"_TEMP_","playerId")
 end 
 DB.Citizen.SetData = function (citizenID,...)
 	return NB.Cache.Set("CITIZEN",citizenID,...)
@@ -45,7 +48,7 @@ DB.Citizen.SqlToCache = function(citizenID,tablename,dataslot)
 end 
 DB.Citizen.CacheToSql = function(citizenID,tablename,dataslot)
 	--if not NB.IsPlayerConnected(DB.Citizen.GetCitizenPlayerId(citizenID)) then return error("player not connected",2) end
-	if tablename == "_T.E.M.P_" then return end 
+	if tablename == "_TEMP_" then return end 
 	local covertDatas = function(cdata)
 		if cdata then 
 			if type(cdata) == 'table' then 
@@ -92,7 +95,7 @@ DB.Citizen.AllCachesToSql = function(citizenID,isClear)
 				local task = function(cb)
 						DB.Citizen.CacheToSql(citizenID,tablename,citizendata)
 						--print(citizenidstr,tablename,dataslot,data)
-					cb({citizenID = citizenID,result = "Async "..(tablename~="_T.E.M.P_" and "Saving " or " Temping ") ..citizenID.." "..tablename.." "..json.encode(citizendata).." Okay"})
+					cb({citizenID = citizenID,result = "Async "..(tablename~="_TEMP_" and "Saving " or " Temping ") ..citizenID.." "..tablename.." "..json.encode(citizendata).." Okay"})
 				end
 				table.insert(tasks, task)
 			end 
@@ -102,7 +105,7 @@ DB.Citizen.AllCachesToSql = function(citizenID,isClear)
 					local task = function(cb)
 							DB.Citizen.CacheToSql(citizenidstr,tablename,citizendata)
 							--print(citizenidstr,tablename,dataslot,data)
-						cb({citizenID = citizenidstr,result = "Async "..(tablename~="_T.E.M.P_" and "Saving " or " Temping ")..citizenidstr.." "..tablename.." "..json.encode(citizendata).." Okay"})
+						cb({citizenID = citizenidstr,result = "Async "..(tablename~="_TEMP_" and "Saving " or " Temping ")..citizenidstr.." "..tablename.." "..json.encode(citizendata).." Okay"})
 					end
 					table.insert(tasks, task)
 				end 
@@ -119,24 +122,6 @@ DB.Citizen.AllCachesToSql = function(citizenID,isClear)
 			end 
 		end)
 	end 
-end 
-DB.Citizen.Init = function(playerId,citizenID,cb)
-	if not NB.Cache.IsExist("CITIZEN",citizenID) then 
-		NB.Cache.Set("CITIZEN",citizenID,{['_T.E.M.P_']={playerId = playerId}})
-	end 
-	NB.TriggerEvent("NB:OnCitizenLoaded",playerId,citizenID)
-	return result 
-end 
-DB.Citizen.IsLoaded = function(citizenID)
-	return (NB.IsPlayerConnected(DB.Citizen.GetCitizenPlayerId(citizenID)) and NB.GetPlayerDataFromId(DB.Citizen.GetCitizenPlayerId(citizenID)).citizenID==citizenID) or false
-end 
-DB.Citizen.Create = function(playerId,citizenID,license,cb)
-	local result = NB.Utils.Remote.mysql_execute_sync('INSERT INTO citizens (citizen_id,license,packeddata) VALUES (?,?,?)', {
-		citizenID,
-		license,
-		json.encode({position=DEFAULT_SPAWN_POSITION})
-	})
-	return result 
 end 
 
 CreateThread(function()
@@ -178,18 +163,78 @@ NB.GetCitizenPackedDataCache = function(citizenID,tablename,dataslot,isCompress)
 	return r
 end 
 NB.SetCitizenPackedDataCache = function(citizenID,tablename,dataslot,datas,isCompress)
-		local _data = NB.Cache.Get("CITIZEN",citizenID,tablename,"packeddata")
-		if not _data then NB.Cache.Set("CITIZEN",citizenID,tablename,"packeddata",{}) 
-			_data = {}
-		end 
-		if isCompress then 
-			_data[dataslot] = NB.encodeSql(json.encode(datas))
-		else 
-			_data[dataslot] = datas
-		end 
-		NB.Cache.Set("CITIZEN",citizenID,tablename,"packeddata",_data)
-		--NB.Cache.Set("CITIZEN",citizenID,tablename,"packeddata",dataslot,datas)
+	local _data = NB.Cache.Get("CITIZEN",citizenID,tablename,"packeddata")
+	if not _data then NB.Cache.Set("CITIZEN",citizenID,tablename,"packeddata",{}) 
+		_data = {}
+	end 
+	if isCompress then 
+		_data[dataslot] = NB.encodeSql(json.encode(datas))
+	else 
+		_data[dataslot] = datas
+	end 
+	NB.Cache.Set("CITIZEN",citizenID,tablename,"packeddata",_data)
+	--NB.Cache.Set("CITIZEN",citizenID,tablename,"packeddata",dataslot,datas)
 end 
+RegisterServerCallback("NB:GetCharacterPackedData",function(playerId,cb,datatype,isCompress)
+	local playerData = NB.GetPlayerDataFromId(playerId)
+	local citizenID = playerData and playerData.citizenID 
+	if citizenID then 
+		local ava = ACCEPTED_PACKDATA
+		local found = false 
+		for i=1,#ava do 
+			if datatype == ava[i] then 
+				found = true 
+			end 
+		end 
+		if not found then return end 
+		local result = NB.GetCitizenPackedDataCache(citizenID,'citizens',datatype,isCompress)
+		if result then 
+			cb(result)
+			--cb(vector3(pos[1], pos[2], pos[3]), pos[4])
+		end 
+	end 
+end )
+NB.GetCitizenStatusCache = function(citizenID,tablename,dataslot,isCompress)
+	local pd = NB.Cache.Get("CITIZEN",citizenID,tablename,"statusdata",dataslot)
+	local r = pd or DB.Citizen.SqlToCache(citizenID,tablename,"statusdata")[dataslot] 
+	if isCompress then 
+		if r then 
+			local rt = NB.decodeSql(r)
+			r = json.decodetable(rt)
+		end 
+	end 
+	return r
+end 
+NB.SetCitizenStatusCache = function(citizenID,tablename,dataslot,datas,isCompress)
+	local _data = NB.Cache.Get("CITIZEN",citizenID,tablename,"statusdata")
+	if not _data then NB.Cache.Set("CITIZEN",citizenID,tablename,"statusdata",{}) 
+		_data = {}
+	end 
+	if isCompress then 
+		_data[dataslot] = NB.encodeSql(json.encode(datas))
+	else 
+		_data[dataslot] = datas
+	end 
+	NB.Cache.Set("CITIZEN",citizenID,tablename,"statusdata",_data)
+end 
+RegisterServerCallback("NB:GetCharacterStatusData",function(playerId,cb,datatype,isCompress)
+	local playerData = NB.GetPlayerDataFromId(playerId)
+	local citizenID = playerData and playerData.citizenID 
+	if citizenID then 
+		local ava = ACCEPTED_STATUSDATA
+		local found = false 
+		for i=1,#ava do 
+			if datatype == ava[i] then 
+				found = true 
+			end 
+		end 
+		if not found then return end 
+		local result = NB.GetCitizenStatusCache(citizenID,'citizens',datatype,isCompress)
+		if result then 
+			cb(result)
+		end 
+	end 
+end )
 NB.RegisterNetEvent('NB:Citizen:SavePosition', function(coords,heading)
 	if coords and heading then 
 		local playerData = NB.GetPlayerDataFromId(tonumber(source))
@@ -201,7 +246,7 @@ NB.RegisterNetEvent('NB:Citizen:SavePosition', function(coords,heading)
 			y = com.lua.utils.Math.toFixed(y,2)
 			z = com.lua.utils.Math.toFixed(z,2)
 			heading = com.lua.utils.Math.toFixed(heading,2)
-			NB.SetCitizenDataCache(citizenID,'citizens','test',"test")
+			--NB.SetCitizenDataCache(citizenID,'citizens','test',"test")
 			NB.SetCitizenPackedDataCache(citizenID,'citizens','position',{x=x,y=y,z=z,heading=heading})
 			NB.TriggerEvent("NB:log","[Citizen:"..citizenID.."] position Saved")
 		end 
@@ -217,28 +262,47 @@ NB.RegisterNetEvent("NB:Citizen:SaveSkin",function(skindata)
 		end 
 	end 
 end )
-RegisterServerCallback("NB:GetCharacterPackedData",function(playerId,cb,datatype,isCompress)
-	local playerData = NB.GetPlayerDataFromId(playerId)
-	local citizenID = playerData and playerData.citizenID 
-	if citizenID then 
-		local ava = {"position","skin"}
-		local found = false 
-		for i=1,#ava do 
-			if datatype == ava[i] then 
-				found = true 
-			end 
-		end 
-		if not found then return end 
-		local result = NB.GetCitizenPackedDataCache(citizenID,'citizens',datatype,isCompress)
-		if result then 
-			cb(result)
-			--cb(vector3(pos[1], pos[2], pos[3]), pos[4])
-		end 
-	end 
-end )
+
 
 RegisterServerCallback("NB:IsCharacterLoaded",function(playerId,cb)
 	local playerData = NB.GetPlayerDataFromId(playerId)
 	local citizenID = playerData and playerData.citizenID 
 	cb(DB.Citizen.IsLoaded(citizenID))
 end )
+
+RegisterServerCallback("NB:GetCitizenDataDynamic",function(playerId,cb)
+	local playerData = NB.GetPlayerDataFromId(playerId)
+	local citizenID = playerData and playerData.citizenID 
+	cb(DB.Citizen.GetData(citizenID))
+end )
+
+
+DB.Citizen.Init = function(playerId,citizenID,cb)
+	if not NB.Cache.IsExist("CITIZEN",citizenID) then 
+		NB.Cache.Set("CITIZEN",citizenID,{['_TEMP_']={playerId = playerId,citizenID = citizenID}})
+	end 
+	NB.TriggerEvent("NB:OnCitizenLoaded",playerId,citizenID,NB.Cache.Get("CITIZEN",citizenID))
+	return result 
+end 
+DB.Citizen.IsLoaded = function(citizenID)
+	return (NB.IsPlayerConnected(DB.Citizen.GetCitizenPlayerId(citizenID)) and NB.GetPlayerDataFromId(DB.Citizen.GetCitizenPlayerId(citizenID)).citizenID==citizenID) or false
+end 
+DB.Citizen.Create = function(playerId,citizenID,license,cb)
+	local status = {}
+	for i=1,#(ACCEPTED_STATUSDATA) do 
+		status[ACCEPTED_STATUSDATA[i]] = DEFAULT_STATUSDATA[ACCEPTED_STATUSDATA[i]] or 0
+	end 
+	local packs ={}
+	for i=1,#(ACCEPTED_PACKDATA) do 
+		packs[ACCEPTED_PACKDATA[i]] = DEFAULT_PACKDATA[ACCEPTED_PACKDATA[i]] or 0
+	end 
+	
+	local result = NB.Utils.Remote.mysql_execute_sync('INSERT INTO citizens (citizen_id,license,packeddata,statusdata,inventory) VALUES (?,?,?,?,?)', {
+		citizenID,
+		license,
+		json.encode(packs),
+		json.encode(status),
+		"[]"
+	})
+	return result 
+end 
