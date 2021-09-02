@@ -128,7 +128,7 @@ DB.Citizen.Init = function(playerId,citizenID,cb)
 	return result 
 end 
 DB.Citizen.IsLoaded = function(citizenID)
-	return NB.IsPlayerConnected(DB.Citizen.GetCitizenPlayerId(citizenID)) or false
+	return (NB.IsPlayerConnected(DB.Citizen.GetCitizenPlayerId(citizenID)) and NB.GetPlayerDataFromId(DB.Citizen.GetCitizenPlayerId(citizenID)).citizenID==citizenID) or false
 end 
 DB.Citizen.Create = function(playerId,citizenID,license,cb)
 	local result = NB.Utils.Remote.mysql_execute_sync('INSERT INTO citizens (citizen_id,license,packeddata) VALUES (?,?,?)', {
