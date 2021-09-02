@@ -83,35 +83,31 @@ NB.AddEventHandler("NB:OnPlayerRegister",function(playerId, license)
 	--下面是新建角色才會執行，目前先省略建立步驟
 	local CreateChar = true 
 	if CreateChar then 
+		if OnPlayerLogin then OnPlayerLogin(playerId,license) end 
+		
 		local citizenID = DB.User.DataSlotTemplateGenerator('citizen_id','citizens','xxyyyyyyyyyx')
-		DB.Citizen.Create(citizenID,license,function(citizenData) --創建Citizen在這裡
+		local create = DB.Citizen.Create(playerId,citizenID,license)
+		if create then 
 			print("Created a character into database")
 			PrePlayerData.init("citizenID",citizenID)
-			PrePlayerData.init("citizenData",citizenData)
-			if OnPlayerLogin then OnPlayerLogin(playerId,license) end 
-			NB.TriggerEvent("NB:OnCitizenLoaded",playerId)
-		end )
+			DB.Citizen.Init(playerId,citizenID)
+		end 
 	end 
 end)
 NB.AddEventHandler("NB:OnPlayerLogin",function(playerId, license)
 	local PrePlayerData = CreatePlayerDatatable(playerId)
 	local license = license
 	PrePlayerData.init("license",license)
-	local citizenID = DB.Citizen.GetIDFromLicense(license,1)
-	local citizenData = DB.Citizen.GetData(citizenID)
-	PrePlayerData.init("citizenID",citizenID)
-	PrePlayerData.init("citizenData",citizenData)
-	PrePlayerData.init("citizenLoaded",false)
 	if OnPlayerLogin and playerId>0 then OnPlayerLogin(playerId, license) end 
-	NB.TriggerEvent("NB:OnCitizenLoaded",playerId)
+	local citizenID = DB.Citizen.GetIDFromLicense(license,1)
+	PrePlayerData.init("citizenID",citizenID)
+	DB.Citizen.Init(playerId,citizenID)
 end)
 
 
-NB.RegisterNetEvent("NB:OnCitizenLoaded",function(playerId)
-	local playerData = NB.GetPlayerDataFromId(playerId)
-	if playerData.citizenID and playerData.citizenLoaded == false then playerData.citizenLoaded = true end 
-	NB.TriggerClientEvent("NB:CitizenLoaded",playerId,playerData.citizenID)
-	if OnCitizenLoaded then OnCitizenLoaded(playerData.citizenID) end 
+NB.RegisterNetEvent("NB:OnCitizenLoaded",function(playerId,citizenID) 
+	NB.TriggerClientEvent("NB:CitizenLoaded",playerId,citizenID)
+	if OnCitizenLoaded then OnCitizenLoaded(playerId,citizenID) end 
 end)
 
 NB.RegisterNetEvent("NB:OnPlayerSpawn",function(PedNetid)

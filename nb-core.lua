@@ -82,7 +82,7 @@ if IsServer() then
 		
 		
 	end 
-	function OnCitizenLoaded(citizenID)
+	function OnCitizenLoaded(playerId,citizenID)
 		
 		 -- 出生，應該跟在上面的建立角色之後，目前先在這裡
 	end 

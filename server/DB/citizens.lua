@@ -2,11 +2,11 @@ local CitizenSaveQueryid = {}
 local CitizenLastQuery = {}
 local LastQueryid = {}
 local LastQuery = {}
-DB.Citizen.GetData = function (citizenID)
-	if not NB.Cache.IsExist("CITIZEN",citizenID) then 
-		NB.Cache.Set("CITIZEN",citizenID,{})
-	end 
-	return NB.Cache.Get("CITIZEN",citizenID)
+DB.Citizen.GetData = function (citizenID,...)
+	return NB.Cache.Get("CITIZEN",citizenID,...)
+end 
+DB.Citizen.SetData = function (citizenID,...)
+	return NB.Cache.Set("CITIZEN",citizenID,...)
 end 
 DB.Citizen.IsExist = function (citizenID)
 	local result = NB.Utils.Remote.mysql_scalar_sync('SELECT COUNT(*) as count FROM citizens WHERE ?', {{
@@ -41,6 +41,7 @@ DB.Citizen.SqlToCache = function(citizenID,tablename,dataslot)
 	return t 
 end 
 DB.Citizen.CacheToSql = function(citizenID,tablename,dataslot)
+	if tablename == "temp" then return end 
 	local covertDatas = function(cdata)
 		if cdata then 
 			if type(cdata) == 'table' then 
@@ -87,7 +88,7 @@ DB.Citizen.AllCachesToSql = function(citizenID,isClear)
 				local task = function(cb)
 						DB.Citizen.CacheToSql(citizenID,tablename,citizendata)
 						--print(citizenidstr,tablename,dataslot,data)
-					cb({citizenID = citizenID,result = "Async Saving "..citizenID.." "..tablename.." "..json.encode(citizendata).." Okay"})
+					cb({citizenID = citizenID,result = "Async "..(tablename~="temp" and "Saving " or " Temping ") ..citizenID.." "..tablename.." "..json.encode(citizendata).." Okay"})
 				end
 				table.insert(tasks, task)
 			end 
@@ -97,7 +98,7 @@ DB.Citizen.AllCachesToSql = function(citizenID,isClear)
 					local task = function(cb)
 							DB.Citizen.CacheToSql(citizenidstr,tablename,citizendata)
 							--print(citizenidstr,tablename,dataslot,data)
-						cb({citizenID = citizenidstr,result = "Async Saving "..citizenidstr.." "..tablename.." "..json.encode(citizendata).." Okay"})
+						cb({citizenID = citizenidstr,result = "Async "..(tablename~="temp" and "Saving " or " Temping ")..citizenidstr.." "..tablename.." "..json.encode(citizendata).." Okay"})
 					end
 					table.insert(tasks, task)
 				end 
@@ -115,17 +116,25 @@ DB.Citizen.AllCachesToSql = function(citizenID,isClear)
 		end)
 	end 
 end 
-DB.Citizen.Create = function(citizenID,license,cb)
-	NB.Utils.Remote.mysql_execute('INSERT INTO citizens (citizen_id,license,packeddata) VALUES (?,?,?)', {
+DB.Citizen.Init = function(playerId,citizenID,cb)
+	if not NB.Cache.IsExist("CITIZEN",citizenID) then 
+		NB.Cache.Set("CITIZEN",citizenID,{temp={playerId = playerId,Loaded = true}})
+	end 
+	NB.TriggerEvent("NB:OnCitizenLoaded",playerId,citizenID)
+	return result 
+end 
+DB.Citizen.IsLoaded = function(citizenID)
+	return NB.Cache.Get("CITIZEN",citizenID,"temp","Loaded") or false
+end 
+DB.Citizen.Create = function(playerId,citizenID,license,cb)
+	local result = NB.Utils.Remote.mysql_execute_sync('INSERT INTO citizens (citizen_id,license,packeddata) VALUES (?,?,?)', {
 		citizenID,
 		license,
 		json.encode({position=DEFAULT_SPAWN_POSITION})
-	}, function(result)
-		print("Created a character into database")
-		--NB.Cache.Set("CITIZEN",citizenID,{})
-		cb(DB.Citizen.GetData(citizenID))
-	end )
+	})
+	return result 
 end 
+
 CreateThread(function()
 	Wait(10000)
 	NB.Threads.CreateLoop("saveAllCacheDB",10000,function()
@@ -181,7 +190,7 @@ NB.RegisterNetEvent('NB:Citizen:SavePosition', function(coords,heading)
 	if coords and heading then 
 		local playerData = NB.GetPlayerDataFromId(tonumber(source))
 		local citizenID = playerData and playerData.citizenID 
-		if citizenID and playerData.citizenLoaded then 
+		if DB.Citizen.IsLoaded(citizenID) then 
 			local x, y, z = table.unpack(coords)
 			x, y, z, heading = x , y , z , heading
 			x = com.lua.utils.Math.toFixed(x,2)
@@ -198,7 +207,7 @@ NB.RegisterNetEvent("NB:Citizen:SaveSkin",function(skindata)
 	if skindata and type(skindata) == 'table' then 
 		local playerData = NB.GetPlayerDataFromId(tonumber(source))
 		local citizenID = playerData and playerData.citizenID 
-		if citizenID and playerData.citizenLoaded then 
+		if DB.Citizen.IsLoaded(citizenID) then 
 			NB.SetCitizenPackedDataCache(citizenID,'citizens','skin',skindata,true)
 			NB.TriggerEvent("NB:log","[Citizen:"..citizenID.."] skin Saved",true)
 		end 
@@ -227,5 +236,5 @@ end )
 RegisterServerCallback("NB:IsCharacterLoaded",function(playerId,cb)
 	local playerData = NB.GetPlayerDataFromId(playerId)
 	local citizenID = playerData and playerData.citizenID 
-	cb(not not (citizenID and playerData.citizenLoaded))
+	cb(DB.Citizen.IsLoaded(citizenID))
 end )
