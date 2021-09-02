@@ -41,7 +41,7 @@ DB.Citizen.SqlToCache = function(citizenID,tablename,dataslot)
 	return t 
 end 
 DB.Citizen.CacheToSql = function(citizenID,tablename,dataslot)
-	if tablename == "temp" then return end 
+	if tablename == "_T.E.M.P_" then return end 
 	local covertDatas = function(cdata)
 		if cdata then 
 			if type(cdata) == 'table' then 
@@ -88,7 +88,7 @@ DB.Citizen.AllCachesToSql = function(citizenID,isClear)
 				local task = function(cb)
 						DB.Citizen.CacheToSql(citizenID,tablename,citizendata)
 						--print(citizenidstr,tablename,dataslot,data)
-					cb({citizenID = citizenID,result = "Async "..(tablename~="temp" and "Saving " or " Temping ") ..citizenID.." "..tablename.." "..json.encode(citizendata).." Okay"})
+					cb({citizenID = citizenID,result = "Async "..(tablename~="_T.E.M.P_" and "Saving " or " Temping ") ..citizenID.." "..tablename.." "..json.encode(citizendata).." Okay"})
 				end
 				table.insert(tasks, task)
 			end 
@@ -98,7 +98,7 @@ DB.Citizen.AllCachesToSql = function(citizenID,isClear)
 					local task = function(cb)
 							DB.Citizen.CacheToSql(citizenidstr,tablename,citizendata)
 							--print(citizenidstr,tablename,dataslot,data)
-						cb({citizenID = citizenidstr,result = "Async "..(tablename~="temp" and "Saving " or " Temping ")..citizenidstr.." "..tablename.." "..json.encode(citizendata).." Okay"})
+						cb({citizenID = citizenidstr,result = "Async "..(tablename~="_T.E.M.P_" and "Saving " or " Temping ")..citizenidstr.." "..tablename.." "..json.encode(citizendata).." Okay"})
 					end
 					table.insert(tasks, task)
 				end 
@@ -118,13 +118,13 @@ DB.Citizen.AllCachesToSql = function(citizenID,isClear)
 end 
 DB.Citizen.Init = function(playerId,citizenID,cb)
 	if not NB.Cache.IsExist("CITIZEN",citizenID) then 
-		NB.Cache.Set("CITIZEN",citizenID,{temp={playerId = playerId,Loaded = true}})
+		NB.Cache.Set("CITIZEN",citizenID,{['_T.E.M.P_']={playerId = playerId,Loaded = true}})
 	end 
 	NB.TriggerEvent("NB:OnCitizenLoaded",playerId,citizenID)
 	return result 
 end 
 DB.Citizen.IsLoaded = function(citizenID)
-	return NB.Cache.Get("CITIZEN",citizenID,"temp","Loaded") or false
+	return NB.Cache.Get("CITIZEN",citizenID,"_T.E.M.P_","Loaded") or false
 end 
 DB.Citizen.Create = function(playerId,citizenID,license,cb)
 	local result = NB.Utils.Remote.mysql_execute_sync('INSERT INTO citizens (citizen_id,license,packeddata) VALUES (?,?,?)', {
