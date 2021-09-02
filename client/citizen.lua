@@ -49,7 +49,7 @@ NB.RegisterNetEvent("NB:CitizenLoaded",function(citizenID)
 		if pos then 
 			coords,heading = vector3(pos.x, pos.y, pos.z), pos.heading 
 		else 
-			coords,heading = REGISTER_DEFAULT_SPAWNPOSITION
+			coords,heading = vector3(REGISTER_DEFAULT_SPAWNPOSITION.x,REGISTER_DEFAULT_SPAWNPOSITION.y,REGISTER_DEFAULT_SPAWNPOSITION.z),REGISTER_DEFAULT_SPAWNPOSITION.heading
 		end 
 		--print(coords,heading )
 		NB.Skin.LoadDefaultModel( true,function()

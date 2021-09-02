@@ -9,7 +9,7 @@ end
 NB_LOCAL.SpawnPlayerDefault = function()
 	local player = PlayerId()
 	SetPlayerControl(player, true, false)
-	local coords,heading = REGISTER_DEFAULT_SPAWNPOSITION
+	local coords,heading = vector3(REGISTER_DEFAULT_SPAWNPOSITION.x,REGISTER_DEFAULT_SPAWNPOSITION.y,REGISTER_DEFAULT_SPAWNPOSITION.z),REGISTER_DEFAULT_SPAWNPOSITION.heading
 	NB.Skin.LoadDefaultModel(true,function()
 		NB.SpawnPlayer(coords, heading)
 	end )
