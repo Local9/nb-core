@@ -44,7 +44,7 @@ DB.Citizen.SqlToCache = function(citizenID,tablename,dataslot)
 	return t 
 end 
 DB.Citizen.CacheToSql = function(citizenID,tablename,dataslot)
-	if not NB.IsPlayerConnected(DB.Citizen.GetCitizenPlayerId(citizenID)) then return error("player not connected",2) end
+	--if not NB.IsPlayerConnected(DB.Citizen.GetCitizenPlayerId(citizenID)) then return error("player not connected",2) end
 	if tablename == "_T.E.M.P_" then return end 
 	local covertDatas = function(cdata)
 		if cdata then 

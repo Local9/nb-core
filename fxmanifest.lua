@@ -31,13 +31,14 @@ shared_scripts {
 }
 
 client_scripts {
-	'client/player.lua'
-	
+	'client/player.lua',
+	'client/citizen.lua'
 }
 
 server_scripts{
 	'server/DB/*.lua',
-	'server/player.lua'
+	'server/player.lua',
+	'server/citizen.lua',	
 }
 
 dependencies {
