@@ -53,10 +53,8 @@ DB.Citizen.CacheToSql = function(citizenID,tablename,dataslot)
 	if type(dataslot) == 'table' then 
 		local datastore = {}
 		local querys = {}
-		
 		for dataslot_,data_ in pairs(dataslot) do 
 			table.insert(querys,--[[dataslot_..' = ]]'?')
-			
 			table.insert(datastore,{[dataslot_] = covertDatas(data_)})
 		end 
 		querys = table.concat(querys,",")
@@ -152,9 +150,7 @@ NB.SetCitizenDataCache = function(citizenID,tablename,dataslot,datas)
 		end 
 	end 
 	--]=]
-	
 		NB.Cache.Set("CITIZEN",citizenID,tablename,dataslot,datas)
-	 
 end 
 --NB.SetCitizenDataCache("NFGT9NI218846462","citizens","test",'WHERE 1=1 --')
 NB.GetCitizenPackedDataCache = function(citizenID,tablename,dataslot,isCompress)
@@ -169,8 +165,6 @@ NB.GetCitizenPackedDataCache = function(citizenID,tablename,dataslot,isCompress)
 	return r
 end 
 NB.SetCitizenPackedDataCache = function(citizenID,tablename,dataslot,datas,isCompress)
-	
-	
 		local _data = NB.Cache.Get("CITIZEN",citizenID,tablename,"packeddata")
 		if not _data then NB.Cache.Set("CITIZEN",citizenID,tablename,"packeddata",{}) 
 			_data = {}
@@ -182,15 +176,12 @@ NB.SetCitizenPackedDataCache = function(citizenID,tablename,dataslot,datas,isCom
 		end 
 		NB.Cache.Set("CITIZEN",citizenID,tablename,"packeddata",_data)
 		--NB.Cache.Set("CITIZEN",citizenID,tablename,"packeddata",dataslot,datas)
-	 
 end 
-
-
 NB.RegisterNetEvent('NB:Citizen:SavePosition', function(coords,heading)
 	if coords and heading then 
 		local playerData = NB.GetPlayerDataFromId(tonumber(source))
 		local citizenID = playerData and playerData.citizenID 
-		if citizenID and playerData.citizenSpawned then 
+		if citizenID and playerData.citizenLoaded then 
 			local x, y, z = table.unpack(coords)
 			x, y, z, heading = x , y , z , heading
 			x = com.lua.utils.Math.toFixed(x,2)
@@ -207,7 +198,7 @@ NB.RegisterNetEvent("NB:Citizen:SaveSkin",function(skindata)
 	if skindata and type(skindata) == 'table' then 
 		local playerData = NB.GetPlayerDataFromId(tonumber(source))
 		local citizenID = playerData and playerData.citizenID 
-		if citizenID and playerData.citizenSpawned then 
+		if citizenID and playerData.citizenLoaded then 
 			NB.SetCitizenPackedDataCache(citizenID,'citizens','skin',skindata,true)
 			NB.TriggerEvent("NB:log","[Citizen:"..citizenID.."] skin Saved",true)
 		end 
@@ -231,4 +222,10 @@ RegisterServerCallback("NB:GetCharacterPackedData",function(playerId,cb,datatype
 			--cb(vector3(pos[1], pos[2], pos[3]), pos[4])
 		end 
 	end 
+end )
+
+RegisterServerCallback("NB:IsCharacterLoaded",function(playerId,cb)
+	local playerData = NB.GetPlayerDataFromId(playerId)
+	local citizenID = playerData and playerData.citizenID 
+	cb(not not (citizenID and playerData.citizenLoaded))
 end )

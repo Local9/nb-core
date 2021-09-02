@@ -89,6 +89,7 @@ NB.AddEventHandler("NB:OnPlayerRegister",function(playerId, license)
 			PrePlayerData.init("citizenID",citizenID)
 			PrePlayerData.init("citizenData",citizenData)
 			if OnPlayerLogin then OnPlayerLogin(playerId,license) end 
+			NB.TriggerEvent("NB:OnCitizenLoaded",playerId)
 		end )
 	end 
 end)
@@ -100,13 +101,21 @@ NB.AddEventHandler("NB:OnPlayerLogin",function(playerId, license)
 	local citizenData = DB.Citizen.GetData(citizenID)
 	PrePlayerData.init("citizenID",citizenID)
 	PrePlayerData.init("citizenData",citizenData)
-	PrePlayerData.init("citizenSpawned",false)
+	PrePlayerData.init("citizenLoaded",false)
 	if OnPlayerLogin and playerId>0 then OnPlayerLogin(playerId, license) end 
+	NB.TriggerEvent("NB:OnCitizenLoaded",playerId)
 end)
+
+
+NB.RegisterNetEvent("NB:OnCitizenLoaded",function(playerId)
+	local playerData = NB.GetPlayerDataFromId(playerId)
+	if playerData.citizenID and playerData.citizenLoaded == false then playerData.citizenLoaded = true end 
+	NB.TriggerClientEvent("NB:CitizenLoaded",playerId,playerData.citizenID)
+	if OnCitizenLoaded then OnCitizenLoaded(playerData.citizenID) end 
+end)
+
 NB.RegisterNetEvent("NB:OnPlayerSpawn",function(PedNetid)
 	local playerid = tonumber(source)
-	local playerData = NB.GetPlayerDataFromId(playerid)
-	if playerData.citizenID and playerData.citizenSpawned == false then playerData.citizenSpawned = true end 
 	if OnPlayerSpawn and playerid>0 then OnPlayerSpawn(playerid,PedNetid) end 
 end)
 NB.RegisterNetEvent("NB:OnPlayerUpdate",function(PedNetid)

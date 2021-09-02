@@ -59,8 +59,12 @@ NB.RegisterNetEvent("NB:OnPlayerSpawn",function()
 		NB.Async.parallelLimit(CheckPedTasks(ped), 10,function(result)
 			local length = #result
 			NB.Flow.CheckChange("(name)checkpedtask",length,function(olddata,newdata)
-				if OnPlayerUpdate then OnPlayerUpdate(PlayerId(),ped) end
-				NB.TriggerServerEvent("NB:OnPlayerUpdate",PedToNet(ped))
+				TriggerServerCallback('NB:IsCharacterLoaded',function (bool)
+					if bool then 
+						if OnPlayerUpdate then OnPlayerUpdate(PlayerId(),ped) end
+						NB.TriggerServerEvent("NB:OnPlayerUpdate",PedToNet(ped))
+					end 
+				end)
 				
 			end)
 			SetTimeout((length+1)*500,loop)
@@ -71,11 +75,11 @@ end)
 
 
 
-if DEFAULT_SPAWN_METHOD then  
-NB.RegisterNetEvent("NB:PlayerReadyToSpawn",function()
-	NB.TriggerEvent('NB:CancelPlayerDefaultSpawn')
-	print("CancelPlayerDefaultSpawn with Default Spawn Method Example")
 	
+
+
+NB.RegisterNetEvent("NB:CitizenLoaded",function(citizenID)
+
 	TriggerServerCallback('NB:GetCharacterPackedData',function (pos)
 		--print(json.encode(pos))
 		local coords,heading 
@@ -86,6 +90,7 @@ NB.RegisterNetEvent("NB:PlayerReadyToSpawn",function()
 		end 
 		--print(coords,heading )
 		NB.Skin.LoadDefaultModel( true,function()
+			NB.TriggerEvent('NB:CancelPlayerDefaultSpawn')
 			NB.SpawnPlayer(coords, heading) -- using SpawnManager to spawn,trigger Event NB:OnPlayerSpawn
 		end )
 	end, "position", false)
@@ -95,4 +100,3 @@ NB.RegisterNetEvent("NB:PlayerReadyToSpawn",function()
 	end,'skin',true)
 	
 end )
-end 

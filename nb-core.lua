@@ -79,8 +79,12 @@ if IsServer() then
 		
 	end 
 	function OnPlayerLogin(playerId, license)
-		NB.TriggerClientEvent("NB:PlayerReadyToSpawn",playerId) -- 出生，應該跟在上面的建立角色之後，目前先在這裡
 		
+		
+	end 
+	function OnCitizenLoaded(citizenID)
+		
+		 -- 出生，應該跟在上面的建立角色之後，目前先在這裡
 	end 
 	function OnPlayerJustJoin(playerId, license, isNew)
 		if NB.IsPlayerBanned(playerId) then 
@@ -118,11 +122,11 @@ if IsClient() then
 	function OnPlayerUpdate(player,ped)
 			NB.Flow.CheckNativeChangeVector("(name)checkcoords",GetEntityCoords,ped,1.0,function(oldcoords,newcoords)
 				local heading = GetEntityHeading(ped)
-				NB.TriggerServerEvent('NB:Citizen:SavePosition',newcoords,heading) --注意必須Loaded後
+				NB.TriggerServerEvent('NB:Citizen:SavePosition',newcoords,heading) --注意server檢測必須Loaded後防止數據覆蓋
 			end)
 			NB.Skin.CitizenGetSkin(function (skin)
 				NB.Flow.CheckChange("(name)skinchanger:getSkin",LastSkin,function(oldskin,newskin)
-					NB.TriggerServerEvent("NB:Citizen:SaveSkin",newskin) --注意必須Loaded後
+					NB.TriggerServerEvent("NB:Citizen:SaveSkin",newskin) --注意server檢測必須Loaded後防止數據覆蓋
 				end )
 				LastSkin = skin
 			end)
